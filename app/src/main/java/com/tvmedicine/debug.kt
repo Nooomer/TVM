@@ -4,10 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LiveData
-import com.beust.klaxon.Klaxon
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 
 
 class debug : AppCompatActivity() {

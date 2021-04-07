@@ -9,4 +9,6 @@
     <string name="enter_you_password">Enter you password</string>
     <string name="login_btn">Login</string>
     <string name="cancel_btn">Cancel</string>
+    <string name="auth_result_good">Successful authorization</string>
+    <string name="auth_result_bad">Authorization failed</string>
 </resources>

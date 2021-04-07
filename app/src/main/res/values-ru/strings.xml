@@ -9,4 +9,6 @@
     <string name="enter_you_password">Введите пароль</string>
     <string name="login_btn">Войти</string>
     <string name="cancel_btn">Отмена</string>
+    <string name="auth_result_good">Авторизация успешна</string>
+    <string name="auth_result_bad">Авторизация не удалась</string>
 </resources>

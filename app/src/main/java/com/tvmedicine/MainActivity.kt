@@ -8,6 +8,7 @@ import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
@@ -34,9 +35,17 @@ class MainActivity : AppCompatActivity() {
         mDialogBuilder
                 .setCancelable(true)
                 .setPositiveButton(getString(R.string.login_btn)) { _: DialogInterface, _: Int ->
-                    api.doctorAuth(userInput1.text.toString(),userInput2.text.toString())
+                    val ret = api.doctorAuth(userInput1.text.toString(),userInput2.text.toString())
+                    if(ret){
+                        val toast = Toast.makeText(applicationContext, getString(R.string.auth_result_good), Toast.LENGTH_SHORT)
+                        toast.show()
+                    }
+                    else{
+                        val toast = Toast.makeText(applicationContext, getString(R.string.auth_result_bad), Toast.LENGTH_SHORT)
+                        toast.show()
+                    }
                 }
-                .setPositiveButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->
+                .setNegativeButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->
                     dialogInterface.cancel()
                 }
         val alertDialog: AlertDialog = mDialogBuilder.create();
