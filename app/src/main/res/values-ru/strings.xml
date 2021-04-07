@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Телемедицина</string>
+    <string name="debug_btn">Отладка</string>
+    <string name="use_api_method">Использовать АПИ метод</string>
+    <string name="login_like_doctor">Войти как доктор</string>
+    <string name="login_like_patient">Войти как пациент</string>
+</resources>

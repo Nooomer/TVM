@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="debug_btn">Debug</string>
+    <string name="use_api_method">Use API method</string>
+    <string name="login_like_doctor">Login like doctor</string>
+    <string name="login_like_patient">Login like patient</string>
+    <string name="enter_mobile_number">Enter mobile number:</string>
+    <string name="enter_you_password">Enter you password</string>
+</resources>
