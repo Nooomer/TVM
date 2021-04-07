@@ -5,4 +5,8 @@
     <string name="use_api_method">Использовать АПИ метод</string>
     <string name="login_like_doctor">Войти как доктор</string>
     <string name="login_like_patient">Войти как пациент</string>
+    <string name="enter_mobile_number">Введите номер телефона</string>
+    <string name="enter_you_password">Введите пароль</string>
+    <string name="login_btn">Войти</string>
+    <string name="cancel_btn">Отмена</string>
 </resources>

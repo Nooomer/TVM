@@ -6,4 +6,6 @@
     <string name="login_like_patient">Login like patient</string>
     <string name="enter_mobile_number">Enter mobile number:</string>
     <string name="enter_you_password">Enter you password</string>
+    <string name="login_btn">Login</string>
+    <string name="cancel_btn">Cancel</string>
 </resources>

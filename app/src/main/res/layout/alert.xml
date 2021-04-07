@@ -22,14 +22,14 @@
         <requestFocus />
     </EditText>
     <TextView
-        android:id="@+id/tv"
+        android:id="@+id/password_text_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/enter_you_password"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <EditText
-        android:id="@+id/input_text"
+        android:id="@+id/password_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autofillHints="Enter you password">
