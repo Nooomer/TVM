@@ -15,21 +15,13 @@ class API {
         return "https://1515714571567515.000webhostapp.com/getUsers.php"
     }
     fun doctorAuth(number: String, password:String): Boolean{
-        var lgc: Boolean = false
-        val url:String = "https://1515714571567515.000webhostapp.com/doctorAuth.php?number=$number&password=$password"
-                try {
+        val lgc: Boolean
+        val url = "https://1515714571567515.000webhostapp.com/doctorAuth.php?phone_number=$number&password=$password"
                     val doc: Document = Jsoup
                         .connect(url)
                         .get()
-                    var BodyText = doc.select("body")
+                    val BodyText = doc.select("body")
                    lgc = BodyText.text().toBoolean()
-                }
-                catch(ioException: Exception) {
-
-                }
-
-
         return lgc
-
     }
 }
