@@ -43,29 +43,32 @@ class MainActivity : AppCompatActivity() {
                 .setPositiveButton(getString(R.string.login_btn)) { _: DialogInterface, _: Int ->
                     var ret: Boolean = false
                     val mService = Common.retrofitService
-                    CoroutineScope(Dispatchers.IO).launch(){mService.getData(userInput1.text.toString(), userInput2.text.toString())
+                    mService.getData(userInput1.text.toString(), userInput2.text.toString())
                         ?.enqueue(object : Callback<List<authModel?>?> {
-                            override fun onFailure(call: Call<List<authModel?>?>?, t: Throwable?) {
-                                val toast = Toast.makeText(
-                                    applicationContext,
-                                    getString(R.string.auth_result_bad),
-                                    Toast.LENGTH_SHORT
-                                )
-                                toast.show()
-                            }
+
 
                             override fun onResponse(
                                 call: Call<List<authModel?>?>?,
                                 response: Response<List<authModel?>?>?
                             ) {
+                                if(response?.body()?.get(0)?.responce=="true"){
+                                    val toast = Toast.makeText(
+                                        applicationContext,
+                                        getString(R.string.auth_result_good),
+                                        Toast.LENGTH_SHORT
+                                    )
+                                    toast.show()
+                                }
+                            }
+                            override fun onFailure(call: Call<List<authModel?>?>?, t: Throwable?) {
                                 val toast = Toast.makeText(
                                     applicationContext,
-                                    getString(R.string.auth_result_good),
+                                    t.toString(),
                                     Toast.LENGTH_SHORT
                                 )
                                 toast.show()
                             }
-                        })}
+                        })
 
                 }
                 .setNegativeButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->

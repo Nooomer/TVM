@@ -8,7 +8,7 @@ import retrofit2.http.Query
 interface RetrofitServices {
     @GET("doctorAuth.php")
     fun getData(
-        @Query("number") resourceName: String?,
+        @Query("phone_number") resourceName: String?,
         @Query("password") count: String
     ): Call<List<authModel?>?>?
 }
