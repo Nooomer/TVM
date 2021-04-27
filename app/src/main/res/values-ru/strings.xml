@@ -11,4 +11,5 @@
     <string name="cancel_btn">Отмена</string>
     <string name="auth_result_good">Авторизация успешна</string>
     <string name="auth_result_bad">Авторизация не удалась</string>
+    <string name="action_settings">Настройки</string>
 </resources>

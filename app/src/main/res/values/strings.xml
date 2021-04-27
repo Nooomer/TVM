@@ -10,4 +10,7 @@
     <string name="cancel_btn">Cancel</string>
     <string name="auth_result_good">Successful authorization</string>
     <string name="auth_result_bad">Authorization failed</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_doctor">Doctor Activity</string>
+    <string name="loading">Loading</string>
 </resources>
