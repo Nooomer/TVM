@@ -11,4 +11,6 @@
     <string name="auth_result_bad">Authorization failed</string>
     <string name="title_activity_doctor">Doctor Activity</string>
     <string name="loading">Loading</string>
+    <string name="name_string">Enter you name</string>
+    <string name="enter_phone_number">Enter you phone number</string>
 </resources>

@@ -13,4 +13,12 @@ interface RetrofitServices {
         @Query("phone_number") phone_number: String?,
         @Query("password") password: String
     ): Call<List<authModel?>?>?
+    fun userAuth(
+            @Path("method") method_name: String?,
+            @Query("snils") phone_number: String?,
+            @Query("password") password: String
+    ): Call<List<authModel?>?>?
+    fun getPatient(
+            @Path("method") method_name: String?
+    ): Call<List<getPatientModel?>?>?
 }
