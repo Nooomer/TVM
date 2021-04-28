@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
 
                     //Авторизация для доктора
                     val mService = Common.retrofitService
-                    mService.doctorAuth("doctorAuth",userInput1.text.toString(), userInput2.text.toString())
+                    mService.doctorAuth("doctorAuth.php",userInput1.text.toString(), userInput2.text.toString())
                         ?.enqueue(object : Callback<List<authModel?>?> {
 
 
