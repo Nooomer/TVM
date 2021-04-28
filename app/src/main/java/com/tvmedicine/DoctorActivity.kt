@@ -16,7 +16,7 @@ class DoctorActivity : AppCompatActivity() {
 
     private fun fillList(): List<String> {
         val data = mutableListOf<String>()
-        (0..30).forEach { i -> data.add("\$i element") }
+        (0..30).forEach { i -> data.add("$i element") }
         return data
     }
 }

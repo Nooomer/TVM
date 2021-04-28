@@ -50,8 +50,11 @@ class MainActivity : AppCompatActivity() {
                     hideKeyboardFrom(applicationContext,alertView)
                     alertDialog2.show()
                     var ret: Boolean = false
+
+
+                    //Авторизация для доктора
                     val mService = Common.retrofitService
-                    mService.getData(userInput1.text.toString(), userInput2.text.toString())
+                    mService.doctorAuth("doctorAuth",userInput1.text.toString(), userInput2.text.toString())
                         ?.enqueue(object : Callback<List<authModel?>?> {
 
 
@@ -86,7 +89,6 @@ class MainActivity : AppCompatActivity() {
                 }
         val alertDialog: AlertDialog = mDialogBuilder.create();
         alertDialog.show();
-
     }
     fun click(view: View){
         val intent = Intent(this@MainActivity, debug::class.java)
