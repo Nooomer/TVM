@@ -1,6 +1,6 @@
 package com.tvmedicine
 
-data class getPatientModel(
+data class PatientModel(
         var id: Int? = null,
         var name: String? = null,
         var s_name: String? = null,

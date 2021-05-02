@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TVMedicine">
         <activity
+            android:name=".TreatmentActivity"
+            android:label="Список обращений" />
+        <activity
             android:name=".DoctorActivity"
             android:label="@string/title_activity_doctor"
             android:theme="@style/Theme.TVMedicine.NoActionBar" />

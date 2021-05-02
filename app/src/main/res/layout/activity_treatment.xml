@@ -18,10 +18,10 @@
         tools:listitem="@layout/rv_item" />
 
     <TextView
-        android:id="@+id/patient_treatment"
+        android:id="@+id/you_treatment"
         android:layout_width="326dp"
         android:layout_height="53dp"
-        android:text="@string/patient_treatment"
+        android:text="@string/you_treatment"
         android:textSize="40sp"
         app:layout_constraintBottom_toTopOf="@+id/rv_view"
         app:layout_constraintEnd_toEndOf="parent"

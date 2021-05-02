@@ -15,10 +15,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DoctorActivity : AppCompatActivity() {
+class TreatmentActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_doctor)
+        setContentView(R.layout.activity_treatment)
         val recyclerView: RecyclerView = findViewById(R.id.rv_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
         lateinit var mService: RetrofitServices

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class rv_adapter(private name: String, s_name:String,donable: String) :
+class rv_adapter(private val names: List<String>,private val s_name:List<String>,private val status: List<String>) :
     RecyclerView.Adapter<rv_adapter.MyViewHolder>()  {
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         var largeTextView: TextView? = null
@@ -27,9 +27,9 @@ class rv_adapter(private name: String, s_name:String,donable: String) :
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.largeTextView?.text = name
-        holder.largeTextView2?.text = s_name
-        holder.smallTextView?.text = donable
+        holder.largeTextView?.text = names[position]
+        holder.largeTextView2?.text = s_name[position]
+        holder.smallTextView?.text = status[position]
     }
 
     override fun getItemCount(): Int {

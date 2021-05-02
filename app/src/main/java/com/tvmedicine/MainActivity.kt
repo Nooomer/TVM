@@ -30,24 +30,24 @@ class MainActivity : AppCompatActivity() {
     fun patient_auth_btn(view: View){
         lateinit var mService: RetrofitServices
 
-        val li: LayoutInflater = LayoutInflater.from(this);
-        val alertView: View = li.inflate(R.layout.patient_auth_alert, null);
+        val li: LayoutInflater = LayoutInflater.from(this)
+        val alertView: View = li.inflate(R.layout.patient_auth_alert, null)
         val loading_view: View = li.inflate(R.layout.loading, null)
         //Создаем AlertDialog
-        val mDialogBuilder: AlertDialog.Builder  = AlertDialog.Builder(this);
+        val mDialogBuilder: AlertDialog.Builder  = AlertDialog.Builder(this)
         val mDialogBuilder2: AlertDialog.Builder = AlertDialog.Builder(this)
         //Настраиваем alert.xml для нашего AlertDialog:
-        mDialogBuilder.setView(alertView);
+        mDialogBuilder.setView(alertView)
         mDialogBuilder2.setView(loading_view)
         //Настраиваем отображение поля для ввода текста в открытом диалоге:
-        val userInput1: EditText  = alertView.findViewById(R.id.phone_number_field);
-        val userInput2: EditText  = alertView.findViewById(R.id.password_field);
+        val userInput1: EditText  = alertView.findViewById(R.id.phone_number_field)
+        val userInput2: EditText  = alertView.findViewById(R.id.password_field)
 
 
         //Билдер для диалога авторизации
         mDialogBuilder2
                 .setCancelable(false)
-        val alertDialog2: AlertDialog = mDialogBuilder2.create();
+        val alertDialog2: AlertDialog = mDialogBuilder2.create()
 
 
         //Диалог для входа
@@ -56,12 +56,11 @@ class MainActivity : AppCompatActivity() {
                 .setPositiveButton(getString(R.string.login_btn)) { _: DialogInterface, _: Int ->
                     hideKeyboardFrom(applicationContext,alertView)
                     alertDialog2.show()
-                    var ret: Boolean = false
 
 
                     //Авторизация для доктора
                     val mService2 = Common.retrofitService
-                    mService2.doctorAuth("userAuth.php",userInput1.text.toString(), userInput2.text.toString())
+                    mService2.auth("userAuth.php",userInput1.text.toString(), userInput2.text.toString())
                             ?.enqueue(object : Callback<List<authModel?>?> {
 
 
@@ -72,7 +71,7 @@ class MainActivity : AppCompatActivity() {
                                     if (response?.body()?.get(0)?.responce == "true") {
                                         val intent = Intent(
                                                 applicationContext,
-                                                DoctorActivity::class.java
+                                                TreatmentActivity::class.java
                                         )
                                         alertDialog2.cancel()
                                         startActivity(intent)
@@ -94,31 +93,31 @@ class MainActivity : AppCompatActivity() {
                 .setNegativeButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->
                     dialogInterface.cancel()
                 }
-        val alertDialog: AlertDialog = mDialogBuilder.create();
-        alertDialog.show();
+        val alertDialog: AlertDialog = mDialogBuilder.create()
+        alertDialog.show()
     }
 
     fun doctor_auth_btn(view: View){
         lateinit var mService: RetrofitServices
 
-        val li: LayoutInflater = LayoutInflater.from(this);
-        val alertView: View = li.inflate(R.layout.alert, null);
+        val li: LayoutInflater = LayoutInflater.from(this)
+        val alertView: View = li.inflate(R.layout.alert, null)
         val loading_view: View = li.inflate(R.layout.loading, null)
         //Создаем AlertDialog
-       val mDialogBuilder: AlertDialog.Builder  = AlertDialog.Builder(this);
+       val mDialogBuilder: AlertDialog.Builder  = AlertDialog.Builder(this)
         val mDialogBuilder2: AlertDialog.Builder = AlertDialog.Builder(this)
         //Настраиваем alert.xml для нашего AlertDialog:
-        mDialogBuilder.setView(alertView);
+        mDialogBuilder.setView(alertView)
         mDialogBuilder2.setView(loading_view)
         //Настраиваем отображение поля для ввода текста в открытом диалоге:
-        val userInput1: EditText  = alertView.findViewById(R.id.phone_number_field);
-        val userInput2: EditText  = alertView.findViewById(R.id.password_field);
+        val userInput1: EditText  = alertView.findViewById(R.id.phone_number_field)
+        val userInput2: EditText  = alertView.findViewById(R.id.password_field)
 
 
         //Билдер для диалога авторизации
         mDialogBuilder2
             .setCancelable(false)
-        val alertDialog2: AlertDialog = mDialogBuilder2.create();
+        val alertDialog2: AlertDialog = mDialogBuilder2.create()
 
 
         //Диалог для входа
@@ -127,12 +126,11 @@ class MainActivity : AppCompatActivity() {
                 .setPositiveButton(getString(R.string.login_btn)) { _: DialogInterface, _: Int ->
                     hideKeyboardFrom(applicationContext,alertView)
                     alertDialog2.show()
-                    var ret: Boolean = false
 
 
                     //Авторизация для доктора
                     val mService = Common.retrofitService
-                    mService.doctorAuth("doctorAuth.php",userInput1.text.toString(), userInput2.text.toString())
+                    mService.auth("doctorAuth.php",userInput1.text.toString(), userInput2.text.toString())
                         ?.enqueue(object : Callback<List<authModel?>?> {
 
 
@@ -165,8 +163,8 @@ class MainActivity : AppCompatActivity() {
                 .setNegativeButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->
                     dialogInterface.cancel()
                 }
-        val alertDialog: AlertDialog = mDialogBuilder.create();
-        alertDialog.show();
+        val alertDialog: AlertDialog = mDialogBuilder.create()
+        alertDialog.show()
     }
     fun click(view: View){
         val intent = Intent(this@MainActivity, debug::class.java)
