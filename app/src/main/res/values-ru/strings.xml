@@ -12,4 +12,10 @@
     <string name="auth_result_good">Авторизация успешна</string>
     <string name="auth_result_bad">Авторизация не удалась</string>
     <string name="action_settings">Настройки</string>
+    <string name="title_activity_doctor">Активити врача</string>
+    <string name="loading">Загрузка</string>
+    <string name="name_string">Введите ваше имя</string>
+    <string name="enter_phone_number">Введите номер телефона</string>
+    <string name="you_treatment">Ваши обращения</string>
+    <string name="patient_treatment">Обращения пациентов</string>
 </resources>

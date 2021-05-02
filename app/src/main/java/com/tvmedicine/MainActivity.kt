@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         lateinit var mService: RetrofitServices
 
         val li: LayoutInflater = LayoutInflater.from(this)
-        val alertView: View = li.inflate(R.layout.patient_auth_alert, null)
+        val alertView: View = li.inflate(R.layout.alert, null)
         val loading_view: View = li.inflate(R.layout.loading, null)
         //Создаем AlertDialog
         val mDialogBuilder: AlertDialog.Builder  = AlertDialog.Builder(this)
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
 
                     //Авторизация для доктора
                     val mService2 = Common.retrofitService
-                    mService2.auth("userAuth.php",userInput1.text.toString(), userInput2.text.toString())
+                    mService2.auth("authUser.php",userInput1.text.toString(), userInput2.text.toString())
                             ?.enqueue(object : Callback<List<authModel?>?> {
 
 
