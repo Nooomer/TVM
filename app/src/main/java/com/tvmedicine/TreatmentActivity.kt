@@ -32,11 +32,14 @@ class TreatmentActivity : AppCompatActivity() {
         val userInput1: EditText = alertView.findViewById(R.id.phone_number_field)
         val userInput2: EditText = alertView.findViewById(R.id.password_field)
         val data = mutableListOf<String?>()
-        val doctor_surname: String = ""
-        var patient_surname: String = ""
-        //Билдер для диалога авторизации
-
-
+        var doctor_surname: String?
+        var patient_surname: String?
+        var size: Int = 0
+        //Билдер для загрузки
+       // mDialogBuilder2
+               //.setCancelable(false)
+        //val alertDialog2: AlertDialog = mDialogBuilder2.create()
+//alertDialog2.show()
 
         //Диалог для входа
 
@@ -52,9 +55,10 @@ class TreatmentActivity : AppCompatActivity() {
                                     mService.getDoctorFromId("getDoctor.php", TreatmentResponse.body()?.get(i)!!.doctor_id)
                                             ?.enqueue(object : Callback<List<DoctorModel?>?> {
                                                 override fun onResponse(call: Call<List<DoctorModel?>?>, response: Response<List<DoctorModel?>?>) {
-                                                    (0 until response.body()?.size!!).forEach { i ->
-                                                        data.add(response.body()?.get(i)?.surename)
-                                                    }
+
+                                                        doctor_surname = response.body()!![i]!!.surename
+                                                        data.add(doctor_surname)
+
                                                 }
                                                 override fun onFailure(call: Call<List<DoctorModel?>?>, t: Throwable) {
                                                     val toast = Toast.makeText(
@@ -68,9 +72,8 @@ class TreatmentActivity : AppCompatActivity() {
                                         mService.getPatientFromId("getPatient.php", TreatmentResponse.body()?.get(i)!!.patient_id)
                                                 ?.enqueue(object : Callback<List<PatientModel?>?> {
                                                     override fun onResponse(call: Call<List<PatientModel?>?>, response: Response<List<PatientModel?>?>) {
-                                                        (0 until response.body()?.size!!).forEach { i ->
-                                                            data.add(response.body()?.get(i)?.surename)
-                                                        }
+                                                           patient_surname = response.body()!![i]!!.surename
+                                                            data.add(patient_surname)
                                                     }
                                                     override fun onFailure(call: Call<List<PatientModel?>?>, t: Throwable) {
                                                         val toast = Toast.makeText(
@@ -80,9 +83,14 @@ class TreatmentActivity : AppCompatActivity() {
                                                         )
                                                         toast.show()
                                                     }})
+
+
                                         data.add(TreatmentResponse.body()!![i]?.status)
-                                    recyclerView.adapter = rv_adapter(data as List<String>, TreatmentResponse.body()?.size!!)
-                                }}
+                                        size = TreatmentResponse.body()!!.size
+                                        recyclerView.adapter = rv_adapter(data as List<String>, size)
+                                }
+
+                                }
                                 override fun onFailure(call: Call<List<TreatmentModel?>?>, t: Throwable) {
                                     val toast = Toast.makeText(
                                             applicationContext,
@@ -93,5 +101,6 @@ class TreatmentActivity : AppCompatActivity() {
                                 }
                             })
 
+//alertDialog2.cancel()
     }
 }
