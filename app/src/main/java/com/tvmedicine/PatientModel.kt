@@ -1,11 +1,12 @@
 package com.tvmedicine
 
 data class PatientModel(
-        var id: Int? = null,
-        var name: String? = null,
-        var s_name: String? = null,
-        var text_comlaints: String? = null,
-        var sound_server_link_id: Int? = null,
-        var phone_number: String? = null,
-        var password: String? = null
+        val id : Int,
+        val surename : String,
+        val name : String,
+        val s_name : String,
+        val text_complaints : String,
+        val sound_server_link_id : Int?,
+        val phone_number : String,
+        val password : String
         )

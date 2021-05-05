@@ -1,7 +1,5 @@
 package com.tvmedicine
 
-import android.content.DialogInterface
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,8 +19,6 @@ class TreatmentActivity : AppCompatActivity() {
         setContentView(R.layout.activity_treatment)
         val recyclerView: RecyclerView = findViewById(R.id.rv_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        lateinit var mService: RetrofitServices
-
         val li: LayoutInflater = LayoutInflater.from(this)
         val alertView: View = li.inflate(R.layout.alert, null)
         val loading_view: View = li.inflate(R.layout.loading, null)
@@ -35,66 +31,67 @@ class TreatmentActivity : AppCompatActivity() {
         //Настраиваем отображение поля для ввода текста в открытом диалоге:
         val userInput1: EditText = alertView.findViewById(R.id.phone_number_field)
         val userInput2: EditText = alertView.findViewById(R.id.password_field)
-
-
+        val data = mutableListOf<String?>()
+        val doctor_surname: String = ""
+        var patient_surname: String = ""
         //Билдер для диалога авторизации
-        mDialogBuilder2
-            .setCancelable(false)
-        val alertDialog2: AlertDialog = mDialogBuilder2.create()
+
 
 
         //Диалог для входа
-        /* mDialogBuilder
-                .setCancelable(true)
-                .setPositiveButton(getString(R.string.login_btn)) { _: DialogInterface, _: Int ->
-                    alertDialog2.show()
-                    var ret: Boolean = false
-
 
                     //Получение всех пациентов
                     val mService = Common.retrofitService
-                    mService.getPatient("getPatient.php")
-                            ?.enqueue(object : Callback<List<PatientModel?>?> {
-
-
+                    mService.getAllTreatment("getTreatment.php")
+                            ?.enqueue(object : Callback<List<TreatmentModel?>?> {
                                 override fun onResponse(
-                                        call: Call<List<PatientModel?>?>?,
-                                        response: Response<List<PatientModel?>?>?
+                                        call: Call<List<TreatmentModel?>?>?,
+                                        TreatmentResponse: Response<List<TreatmentModel?>?>?
                                 ) {
-
-                                        val intent = Intent(
-                                                applicationContext,
-                                                DoctorActivity::class.java
-                                        )
-                                        alertDialog2.cancel()
-                                        startActivity(intent)
-
-                                }
-
-                                override fun onFailure(call: Call<List<PatientModel?>?>?, t: Throwable?) {
+                                    (0 until TreatmentResponse?.body()?.size!!).forEach { i ->
+                                    mService.getDoctorFromId("getDoctor.php", TreatmentResponse.body()?.get(i)!!.doctor_id)
+                                            ?.enqueue(object : Callback<List<DoctorModel?>?> {
+                                                override fun onResponse(call: Call<List<DoctorModel?>?>, response: Response<List<DoctorModel?>?>) {
+                                                    (0 until response.body()?.size!!).forEach { i ->
+                                                        data.add(response.body()?.get(i)?.surename)
+                                                    }
+                                                }
+                                                override fun onFailure(call: Call<List<DoctorModel?>?>, t: Throwable) {
+                                                    val toast = Toast.makeText(
+                                                            applicationContext,
+                                                            t.toString(),
+                                                            Toast.LENGTH_SHORT
+                                                    )
+                                                    toast.show()
+                                                }
+                                            })
+                                        mService.getPatientFromId("getPatient.php", TreatmentResponse.body()?.get(i)!!.patient_id)
+                                                ?.enqueue(object : Callback<List<PatientModel?>?> {
+                                                    override fun onResponse(call: Call<List<PatientModel?>?>, response: Response<List<PatientModel?>?>) {
+                                                        (0 until response.body()?.size!!).forEach { i ->
+                                                            data.add(response.body()?.get(i)?.surename)
+                                                        }
+                                                    }
+                                                    override fun onFailure(call: Call<List<PatientModel?>?>, t: Throwable) {
+                                                        val toast = Toast.makeText(
+                                                                applicationContext,
+                                                                t.toString(),
+                                                                Toast.LENGTH_SHORT
+                                                        )
+                                                        toast.show()
+                                                    }})
+                                        data.add(TreatmentResponse.body()!![i]?.status)
+                                    recyclerView.adapter = rv_adapter(data as List<String>, TreatmentResponse.body()?.size!!)
+                                }}
+                                override fun onFailure(call: Call<List<TreatmentModel?>?>, t: Throwable) {
                                     val toast = Toast.makeText(
                                             applicationContext,
                                             t.toString(),
                                             Toast.LENGTH_SHORT
                                     )
-                                    alertDialog2.cancel()
                                     toast.show()
                                 }
                             })
 
-                }
-                .setNegativeButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->
-                    dialogInterface.cancel()
-                }
-        val alertDialog: AlertDialog = mDialogBuilder.create();
-        alertDialog.show();
-        recyclerView.adapter = rv_adapter(fillList())
-    }*/
-
-        fun fillList(): List<String> {
-            val data = mutableListOf<String>()
-            (0..30).forEach { i -> data.add("$i element") }
-            return data
-        }
     }
 }
