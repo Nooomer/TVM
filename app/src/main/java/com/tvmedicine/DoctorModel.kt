@@ -1,5 +1,5 @@
 package com.tvmedicine
-
+/**Response model for doctor information*/
 data class DoctorModel(
         val id : Int,
         val surename : String,

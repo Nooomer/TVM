@@ -18,4 +18,5 @@
     <string name="enter_phone_number">Enter you phone number</string>
     <string name="you_treatment">You treatment</string>
     <string name="patient_treatment">Patient treatment</string>
+    <string name="auth_complete">Authorization failed</string>
 </resources>

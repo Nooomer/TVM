@@ -18,4 +18,5 @@
     <string name="enter_phone_number">Введите номер телефона</string>
     <string name="you_treatment">Ваши обращения</string>
     <string name="patient_treatment">Обращения пациентов</string>
+    <string name="auth_complete">Авторизация не удалась</string>
 </resources>
