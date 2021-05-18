@@ -4,6 +4,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        signing {
+            storeFile file('C:\\Users\\ampil\\personal_android_key.jks')
+            storePassword 'qwaszxplm1Q'
+            keyAlias 'key0'
+            keyPassword 'qwaszxplm1Q'
+        }
+    }
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
@@ -21,6 +29,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.signing
         }
     }
     compileOptions {
@@ -36,6 +45,7 @@ dependencies {
     def lifecycle_version = "2.3.1"
     def arch_version = "2.1.0"
 
+    implementation("com.google.android.material:material:1.3.0")
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     // LiveData

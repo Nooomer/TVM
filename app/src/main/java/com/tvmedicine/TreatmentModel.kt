@@ -4,5 +4,8 @@ data class TreatmentModel(
         val id : Int,
         val patient_id : Int,
         val doctor_id : Int,
-        val status : String
+        val start_date: String,
+        val symptoms_id: Int,
+        val sound_server_link_id: Int,
+        val conclusion_id:Int
 )

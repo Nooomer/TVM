@@ -22,7 +22,6 @@ class DoctorActivity : AppCompatActivity() {
         val recyclerView: RecyclerView = findViewById(R.id.rv_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
         lateinit var mService: RetrofitServices
-
         val li: LayoutInflater = LayoutInflater.from(this)
         val alertView: View = li.inflate(R.layout.alert, null)
         val loading_view: View = li.inflate(R.layout.loading, null)
