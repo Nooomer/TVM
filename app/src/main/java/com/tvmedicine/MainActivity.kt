@@ -121,6 +121,8 @@ class MainActivity : AppCompatActivity() {
         //Создаем AlertDialog
        val mDialogBuilder: AlertDialog.Builder  = AlertDialog.Builder(this)
         val mDialogBuilder2: AlertDialog.Builder = AlertDialog.Builder(this)
+       val sPref = getSharedPreferences("User", MODE_PRIVATE)
+       val ed: SharedPreferences.Editor = sPref.edit()
         //Настраиваем alert.xml для нашего AlertDialog:
         mDialogBuilder.setView(alertView)
         mDialogBuilder2.setView(loadingView)
@@ -151,7 +153,10 @@ class MainActivity : AppCompatActivity() {
                                             applicationContext,
                                             TreatmentActivity::class.java
                                     )
-                                    intent.putExtra("user_type", "doctor");
+                                    ed.putString("user_type", "doctor")
+                                    ed.putString("login", userInput1.text.toString())
+                                    ed.putString("password", userInput2.text.toString())
+                                    ed.apply()
                                     alertDialog2.cancel()
                                     startActivity(intent)
                                 } else {

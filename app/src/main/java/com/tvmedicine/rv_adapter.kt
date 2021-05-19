@@ -29,8 +29,8 @@ class rv_adapter(private val ppl_list: List<String>,private val item_count: Int)
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
             holder.largeTextView?.text = ppl_list[0]
-            holder.largeTextView2?.text = ppl_list[1]
-            holder.smallTextView?.text = ppl_list[2]
+            holder.largeTextView2?.text = ppl_list[2]
+            holder.smallTextView?.text = ppl_list[1]
 
     }
 
