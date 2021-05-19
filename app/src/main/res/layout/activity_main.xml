@@ -20,17 +20,14 @@
 
     <Button
         android:id="@+id/login_like_patient"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="320dp"
-        android:layout_marginBottom="28dp"
+        android:layout_width="203dp"
+        android:layout_height="48dp"
+        android:onClick="patientAuthBtn"
         android:text="@string/login_like_patient"
         app:layout_constraintBottom_toTopOf="@+id/doc_login_btn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.977"
-        android:onClick="patientAuthBtn"/>
+        app:layout_constraintVertical_bias="0.942" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

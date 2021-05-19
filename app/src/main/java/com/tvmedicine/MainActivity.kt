@@ -3,6 +3,7 @@ package com.tvmedicine
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,9 +18,18 @@ import retrofit2.Response
 
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val sPref = getSharedPreferences("User", MODE_PRIVATE)
         setContentView(R.layout.activity_main)
+        if (!sPref.getString("login", "").isNullOrEmpty() and !sPref.getString("password", "").isNullOrEmpty() and !sPref.getString("user_type", "").isNullOrEmpty()) {
+            val intent = Intent(
+                    applicationContext,
+                    TreatmentActivity::class.java
+            )
+            startActivity(intent)
+        }
     }
     /**Method for hiding the keyboard*/
     private fun hideKeyboardFrom(context: Context, view: View) {
@@ -32,6 +42,8 @@ class MainActivity : AppCompatActivity() {
         val li: LayoutInflater = LayoutInflater.from(this)
         val alertView: View = li.inflate(R.layout.alert, null)
         val loadingView: View = li.inflate(R.layout.loading, null)
+        val sPref = getSharedPreferences("User", MODE_PRIVATE)
+        val ed: SharedPreferences.Editor = sPref.edit()
         //Создаем AlertDialog
         val mDialogBuilder: AlertDialog.Builder  = AlertDialog.Builder(this)
         val mDialogBuilder2: AlertDialog.Builder = AlertDialog.Builder(this)
@@ -49,47 +61,52 @@ class MainActivity : AppCompatActivity() {
         mDialogBuilder
                 .setCancelable(true)
                 .setPositiveButton(getString(R.string.login_btn)) { _: DialogInterface, _: Int ->
-                    hideKeyboardFrom(applicationContext,alertView)
+                    hideKeyboardFrom(applicationContext, alertView)
                     alertDialog2.show()
                     //Авторизация для пациента
-                    val mService2 = Common.retrofitService
-                    mService2.auth("authUser.php",userInput1.text.toString(), userInput2.text.toString())
-                            ?.enqueue(object : Callback<List<AuthModel?>?> {
-                                override fun onResponse(
-                                    call: Call<List<AuthModel?>?>?,
-                                    AuthResponse: Response<List<AuthModel?>?>?
-                                ) {
-                                    if (AuthResponse?.body()?.get(0)?.response == "true") {
-                                        val intent = Intent(
-                                                applicationContext,
-                                                TreatmentActivity::class.java
-                                        )
-                                        intent.putExtra("user_type", "patient");
-                                        alertDialog2.cancel()
-                                        startActivity(intent)
+
+                        val mService2 = Common.retrofitService
+                        mService2.auth("authUser.php", userInput1.text.toString(), userInput2.text.toString())
+                                ?.enqueue(object : Callback<List<AuthModel?>?> {
+                                    override fun onResponse(
+                                            call: Call<List<AuthModel?>?>?,
+                                            AuthResponse: Response<List<AuthModel?>?>?
+                                    ) {
+                                        if (AuthResponse?.body()?.get(0)?.response == "true") {
+                                            val intent = Intent(
+                                                    applicationContext,
+                                                    TreatmentActivity::class.java
+                                            )
+                                            ed.putString("user_type", "patient")
+                                            ed.putString("login", userInput1.text.toString())
+                                            ed.putString("password", userInput2.text.toString())
+                                            ed.apply()
+                                            alertDialog2.cancel()
+                                            startActivity(intent)
+                                        } else {
+                                            val toast = Toast.makeText(
+                                                    applicationContext,
+                                                    getString(R.string.auth_complete),
+                                                    Toast.LENGTH_SHORT
+                                            )
+                                            alertDialog2.cancel()
+                                            toast.show()
+                                        }
                                     }
-                                    else{
+
+                                    override fun onFailure(call: Call<List<AuthModel?>?>?, t: Throwable?) {
                                         val toast = Toast.makeText(
                                                 applicationContext,
-                                                getString(R.string.auth_complete),
+                                                t.toString(),
                                                 Toast.LENGTH_SHORT
                                         )
                                         alertDialog2.cancel()
                                         toast.show()
                                     }
-                                }
-                                override fun onFailure(call: Call<List<AuthModel?>?>?, t: Throwable?) {
-                                    val toast = Toast.makeText(
-                                            applicationContext,
-                                            t.toString(),
-                                            Toast.LENGTH_SHORT
-                                    )
-                                    alertDialog2.cancel()
-                                    toast.show()
-                                }
-                            })
+                                })
 
-                }
+                    }
+
                 .setNegativeButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->
                     dialogInterface.cancel()
                 }
@@ -118,11 +135,12 @@ class MainActivity : AppCompatActivity() {
         mDialogBuilder
                 .setCancelable(true)
                 .setPositiveButton(getString(R.string.login_btn)) { _: DialogInterface, _: Int ->
-                    hideKeyboardFrom(applicationContext,alertView)
+                    hideKeyboardFrom(applicationContext, alertView)
                     alertDialog2.show()
                     //Авторизация для доктора
+
                     val mService = Common.retrofitService
-                    mService.auth("doctorAuth.php",userInput1.text.toString(), userInput2.text.toString())
+                    mService.auth("doctorAuth.php", userInput1.text.toString(), userInput2.text.toString())
                         ?.enqueue(object : Callback<List<AuthModel?>?> {
                             override fun onResponse(
                                     call: Call<List<AuthModel?>?>?,
@@ -130,14 +148,13 @@ class MainActivity : AppCompatActivity() {
                             ) {
                                 if (response?.body()?.get(0)?.response == "true") {
                                     val intent = Intent(
-                                        applicationContext,
-                                        DoctorActivity::class.java
+                                            applicationContext,
+                                            TreatmentActivity::class.java
                                     )
                                     intent.putExtra("user_type", "doctor");
                                     alertDialog2.cancel()
                                     startActivity(intent)
-                                }
-                                else{
+                                } else {
                                     val toast = Toast.makeText(
                                             applicationContext,
                                             getString(R.string.auth_complete),
@@ -147,11 +164,12 @@ class MainActivity : AppCompatActivity() {
                                     toast.show()
                                 }
                             }
+
                             override fun onFailure(call: Call<List<AuthModel?>?>?, t: Throwable?) {
                                 val toast = Toast.makeText(
-                                    applicationContext,
-                                    t.toString(),
-                                    Toast.LENGTH_SHORT
+                                        applicationContext,
+                                        t.toString(),
+                                        Toast.LENGTH_SHORT
                                 )
                                 alertDialog2.cancel()
                                 toast.show()

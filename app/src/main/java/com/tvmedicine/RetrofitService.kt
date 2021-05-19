@@ -23,7 +23,7 @@ interface RetrofitServices {
             /**Get patient by ID methods. Parameters: id*/
     fun getPatientFromId(
             @Path("method") method_name: String?,
-            @Query("id") id:Int
+            @Query("id") id:Int?
     ): Call<List<PatientModel?>?>?
     @GET("api/{method}")
             /**Get all treatment methods. Parameters: None*/
@@ -37,6 +37,12 @@ interface RetrofitServices {
             @Query("id") id:Int
     ): Call<List<TreatmentModel?>?>?
     @GET("api/{method}")
+            /**Get treatment for User by phone number. Parameters: phone_number*/
+    fun getTreatmentByUser(
+            @Path("method") method_name: String?,
+            @Query("phone_number") phone_number: String?
+    ): Call<List<TreatmentModel?>?>?
+    @GET("api/{method}")
             /**Get all doctors methods. Parameters: None*/
     fun getAllDoctor(
             @Path("method") method_name: String?,
@@ -45,6 +51,6 @@ interface RetrofitServices {
             /**Get doctor by ID methods. Parameters: id*/
     fun getDoctorFromId(
             @Path("method") method_name: String?,
-            @Query("id") id:Int
+            @Query("id") id:Int?
     ): Call<List<DoctorModel?>?>?
 }

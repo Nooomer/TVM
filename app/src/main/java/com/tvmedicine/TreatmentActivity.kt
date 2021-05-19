@@ -3,7 +3,6 @@ package com.tvmedicine
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,21 +14,65 @@ import kotlinx.coroutines.*
 class TreatmentActivity : AppCompatActivity() {
     val data = mutableListOf<String?>()
     private fun <T> CoroutineScope.asyncIO(ioFun: () -> T) = async(Dispatchers.IO) { ioFun() }
-    /**Метод для запроса через Корутину */
+    /**Метод для запроса через Корутину*/
    private fun request() {
         val mService = Common.retrofitService
-       val call = mService.getAllTreatment("getTreatment.php")
-        val result = call?.execute()?.body()
-       data.add(result?.get(0)?.patient_id.toString())
-        data.add(result?.get(0)?.patient_id.toString())
-        data.add(result?.get(0)?.patient_id.toString())
+        val sPref = getSharedPreferences("User", MODE_PRIVATE)
+        val userType: String? = sPref.getString("user_type", "")
+        if(userType=="patient")
+        {
+       val call = mService.getTreatmentByUser("getTreatment.php",sPref.getString("phone_number",""))
+            println(sPref.getString("phone_number",""))
+            val result = call?.execute()?.body()
+            val call2 = mService.getPatientFromId("getPatient.php", result?.get(0)?.patient_id)
+            val call3 = mService.getDoctorFromId("getDoctor.php", result?.get(0)?.doctor_id)
+            val result2 = call2?.execute()?.body()
+            val result3 = call3?.execute()?.body()
+            data.add(result2?.get(0)?.surename)
+            data.add(result3?.get(0)?.surename)
+            data.add(result?.get(0)?.start_date)
+        }
+
+
+    }
+    private fun request2(result: List<TreatmentModel?>?) {
+        val mService = Common.retrofitService
+            val call2 = mService.getPatientFromId("getPatient.php", result?.get(0)?.patient_id)
+            val call3 = mService.getDoctorFromId("getDoctor.php", result?.get(0)?.doctor_id)
+            val result2 = call2?.execute()?.body()
+            val result3 = call3?.execute()?.body()
+            data.add(result2?.get(0)?.surename)
+            data.add(result3?.get(0)?.surename)
+            data.add(result?.get(0)?.start_date)
+        }
+
+
+    }
+    private fun request3() {
+        val mService = Common.retrofitService
+        val sPref = getSharedPreferences("User", MODE_PRIVATE)
+        val userType: String? = sPref.getString("user_type", "")
+        if(userType=="patient")
+        {
+            val call = mService.getTreatmentByUser("getTreatment.php",sPref.getString("phone_number",""))
+            println(sPref.getString("phone_number",""))
+            val result = call?.execute()?.body()
+            val call2 = mService.getPatientFromId("getPatient.php", result?.get(0)?.patient_id)
+            val call3 = mService.getDoctorFromId("getDoctor.php", result?.get(0)?.doctor_id)
+            val result2 = call2?.execute()?.body()
+            val result3 = call3?.execute()?.body()
+            data.add(result2?.get(0)?.surename)
+            data.add(result3?.get(0)?.surename)
+            data.add(result?.get(0)?.start_date)
+        }
+
+
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         val arguments = intent.extras
-        val UserType = arguments!!["user_type"].toString()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_treatment)
-        var indicator = findViewById<LinearProgressIndicator>(R.id.ProgressIndicator)
+        val indicator = findViewById<LinearProgressIndicator>(R.id.ProgressIndicator)
         indicator.showAnimationBehavior = BaseProgressIndicator.SHOW_OUTWARD
         indicator.hideAnimationBehavior = BaseProgressIndicator.HIDE_OUTWARD
         indicator.show()
