@@ -53,4 +53,18 @@ interface RetrofitServices {
             @Path("method") method_name: String?,
             @Query("id") id:Int?
     ): Call<List<DoctorModel?>?>?
+    @GET("api/{method}")
+            /**Get symptoms methods. Parameters: none*/
+    fun getAllSymptoms(
+            @Path("method") method_name: String?,
+    ): Call<List<SymptomsModel?>?>?
+    @GET("api/{method}")
+            /**Add new treatment method. Parameters: phone_number,start_date,symptoms_id,sound_server_link_id*/
+    fun addTreatment(
+            @Path("method") method_name: String?,
+            @Query("phone_number") phone_number: String?,
+            @Query("start_date") start_date:String?,
+            @Query("symptoms_id") symptoms_id:Int?,
+            @Query("sound_server_link_id") sound_server_link_id:Int?
+    ): Call<List<AuthModel?>?>?
 }
