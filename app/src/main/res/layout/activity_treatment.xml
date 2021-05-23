@@ -57,7 +57,7 @@
         android:layout_margin="16dp"
         android:contentDescription="000"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/floating_action_button"
+        app:layout_constraintEnd_toStartOf="@+id/add_btn"
         app:layout_constraintHorizontal_bias="0.095"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
