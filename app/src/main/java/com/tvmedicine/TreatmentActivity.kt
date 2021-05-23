@@ -1,7 +1,6 @@
 package com.tvmedicine
 
 
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,8 +15,11 @@ import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.*
 
 class TreatmentActivity : AppCompatActivity() {
-    val data = mutableListOf<String?>()
-    var viewSize: Int = 0
+    val data: Array<Array<String?>> = Array(10) { Array(3) { "" } }
+    private var viewSize: Int = 0
+    var startDate: String? = ""
+    var patientSurename: String? = ""
+    var doctorSurename: String? = ""
     private fun <T> CoroutineScope.asyncIO(ioFun: () -> T) = async(Dispatchers.IO) { ioFun() }
     /**Метод для запроса через Корутину*/
    private fun patientRequest(): List<TreatmentModel?> {
@@ -27,25 +29,46 @@ class TreatmentActivity : AppCompatActivity() {
             println(sPref.getString("login",""))
         val result = call?.execute()?.body()
         viewSize = result!!.size
-        data.add(result[0]?.start_date)
+        startDate = result[0]?.start_date
         return result
         }
     private fun getPatientName(result: List<TreatmentModel?>?) {
         val mService = Common.retrofitService
-            val call = mService.getPatientFromId("getPatient.php", result?.get(0)?.patient_id)
-            val result2 = call?.execute()?.body()
-            data.add(result2?.get(0)?.surename)
-        }
+        val call = mService.getPatientFromId("getPatient.php", result?.get(0)?.patient_id)
+        val result2 = call?.execute()?.body()
+        patientSurename = result2?.get(0)?.surename
+    }
     private fun getDoctorName(result: List<TreatmentModel?>?) {
         val mService = Common.retrofitService
         val call = mService.getPatientFromId("getDoctor.php", result?.get(0)?.doctor_id)
         val result3 = call?.execute()?.body()
-        data.add(result3?.get(0)?.surename)
+        doctorSurename = result3?.get(0)?.surename
+    }
+    private fun doctorRequest(): List<TreatmentModel?> {
+        val mService = Common.retrofitService
+        val call = mService.getAllTreatment("getTreatment.php")
+        val result = call?.execute()?.body()
+        viewSize = result!!.size
+        return result
+    }
+    private fun getPatientNameForDoctor(result: List<TreatmentModel?>?, i:Int) {
+        val mService = Common.retrofitService
+        val call = mService.getPatientFromId("getPatient.php", result?.get(i)?.patient_id)
+        val result2 = call?.execute()?.body()
+        startDate = result?.get(i)?.start_date
+        patientSurename = result2?.get(0)?.surename
+    }
+    private fun getDoctorNameForDoctor(result: List<TreatmentModel?>?,i:Int) {
+        val mService = Common.retrofitService
+        val call = mService.getPatientFromId("getDoctor.php", result?.get(i)?.doctor_id)
+        val result3 = call?.execute()?.body()
+        doctorSurename = result3?.get(0)?.surename
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         val arguments = intent.extras
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_treatment)
+        val sPref = getSharedPreferences("User", MODE_PRIVATE)
         val indicator = findViewById<LinearProgressIndicator>(R.id.ProgressIndicator)
         indicator.showAnimationBehavior = BaseProgressIndicator.SHOW_OUTWARD
         indicator.hideAnimationBehavior = BaseProgressIndicator.HIDE_OUTWARD
@@ -64,22 +87,7 @@ class TreatmentActivity : AppCompatActivity() {
         val job = Job()
         val scope = CoroutineScope(Dispatchers.Main + job)
         var result: List<TreatmentModel?>? = null
-        scope.launch {
-            val deferredList = listOf(
-                    scope.asyncIO { result = patientRequest() }
-            )
-            deferredList.awaitAll()
-        }
-        scope.launch {
-            val deferredList2 = listOf(
-                    scope.asyncIO { getPatientName(result) },
-                    scope.asyncIO { getDoctorName(result) }
-            )
-            deferredList2.awaitAll()
-            indicator.hide()
-            recyclerView.adapter = rv_adapter(data as List<String>, viewSize)
-        }
-        for(i in 1..viewSize){
+        if(sPref.getString("user_type","")=="patient") {
             scope.launch {
                 val deferredList = listOf(
                         scope.asyncIO { result = patientRequest() }
@@ -92,9 +100,60 @@ class TreatmentActivity : AppCompatActivity() {
                         scope.asyncIO { getDoctorName(result) }
                 )
                 deferredList2.awaitAll()
+                data[0][0] = patientSurename
+                data[0][1] = doctorSurename
+                data[0][2] = startDate
                 indicator.hide()
-                recyclerView.adapter?.notifyDataSetChanged()
+                recyclerView.adapter = rvAdapter(data, viewSize)
             }
+
+            for (i in 1..viewSize) {
+                scope.launch {
+                    val deferredList = listOf(
+                            scope.asyncIO { result = patientRequest() }
+                    )
+                    deferredList.awaitAll()
+                }
+                scope.launch {
+                    val deferredList2 = listOf(
+                            scope.asyncIO { getPatientName(result) },
+                            scope.asyncIO { getDoctorName(result) }
+                    )
+                    deferredList2.awaitAll()
+                    data[i][0] = patientSurename
+                    data[i][1] = doctorSurename
+                    data[i][2] = startDate
+                    indicator.hide()
+                    recyclerView.adapter = rvAdapter(data, viewSize)
+                    recyclerView.adapter?.notifyDataSetChanged()
+                }
+            }
+        }
+        if(sPref.getString("user_type","")=="doctor") {
+            scope.launch {
+                val deferredList = listOf(
+                        scope.asyncIO { result = doctorRequest() }
+                )
+                deferredList.awaitAll()
+            }
+            for (i in 0..viewSize) {
+                scope.launch {
+                    val deferredList2 = listOf(
+                            scope.asyncIO { getPatientNameForDoctor(result,i) },
+                            scope.asyncIO { getDoctorNameForDoctor(result,i) }
+                    )
+                    deferredList2.awaitAll()
+                    data[i][0] = patientSurename
+                    data[i][1] = doctorSurename
+                    data[i][2] = startDate
+
+                    recyclerView.adapter = rvAdapter(data, viewSize)
+                    println(viewSize)
+                    recyclerView.adapter?.notifyDataSetChanged()
+                }
+
+            }
+            indicator.hide()
         }
         val fab1 = findViewById<FloatingActionButton>(R.id.out_btn)
         fab1.setOnClickListener {
@@ -102,11 +161,12 @@ class TreatmentActivity : AppCompatActivity() {
             val ed: SharedPreferences.Editor = sPref.edit()
             ed.clear()
             ed.apply()
-            val intent = Intent(
-                    applicationContext,
-                    MainActivity::class.java
-            )
-            startActivity(intent)
+            /*val intent = Intent(
+                  /applicationContext,
+                    //MainActivity::class.java
+            //)
+            //startActivity(intent)*/
+            finish()
         }
     }
 }

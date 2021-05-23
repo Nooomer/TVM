@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class rv_adapter(private val ppl_list: List<String>,private val item_count: Int) :
-    RecyclerView.Adapter<rv_adapter.MyViewHolder>()  {
+class rvAdapter(private val ppl_list: Array<Array<String?>>, private val item_count: Int) :
+    RecyclerView.Adapter<rvAdapter.MyViewHolder>()  {
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         var largeTextView: TextView? = null
         var largeTextView2: TextView? = null
@@ -26,11 +26,10 @@ class rv_adapter(private val ppl_list: List<String>,private val item_count: Int)
         return MyViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-
-            holder.largeTextView?.text = ppl_list[0]
-            holder.largeTextView2?.text = ppl_list[2]
-            holder.smallTextView?.text = ppl_list[1]
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int){
+            holder.largeTextView?.text = ppl_list[position][0]
+            holder.largeTextView2?.text = ppl_list[position][1]
+            holder.smallTextView?.text = ppl_list[position][2]
 
     }
 

@@ -87,7 +87,7 @@ class DoctorActivity : AppCompatActivity() {
                 }
         val alertDialog: AlertDialog = mDialogBuilder.create();
         alertDialog.show();
-        recyclerView.adapter = rv_adapter(fillList())
+        recyclerView.adapter = rvAdapter(fillList())
     }*/
 
         fun fillList(): List<String> {
