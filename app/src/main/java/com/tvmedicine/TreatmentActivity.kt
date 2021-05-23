@@ -51,16 +51,15 @@ class TreatmentActivity : AppCompatActivity() {
         viewSize = result!!.size
         return result
     }
-    private fun getPatientNameForDoctor(result: List<TreatmentModel?>?, i:Int) {
+    private fun getPatientNameForDoctor(patientId:Int?) {
         val mService = Common.retrofitService
-        val call = mService.getPatientFromId("getPatient.php", result?.get(i)?.patient_id)
+        val call = mService.getPatientFromId("getPatient.php", patientId)
         val result2 = call?.execute()?.body()
-        startDate = result?.get(i)?.start_date
         patientSurename = result2?.get(0)?.surename
     }
-    private fun getDoctorNameForDoctor(result: List<TreatmentModel?>?,i:Int) {
+    private fun getDoctorNameForDoctor(doctorId:Int?) {
         val mService = Common.retrofitService
-        val call = mService.getPatientFromId("getDoctor.php", result?.get(i)?.doctor_id)
+        val call = mService.getPatientFromId("getDoctor.php", doctorId)
         val result3 = call?.execute()?.body()
         doctorSurename = result3?.get(0)?.surename
     }
@@ -120,6 +119,7 @@ class TreatmentActivity : AppCompatActivity() {
                             scope.asyncIO { getDoctorName(result) }
                     )
                     deferredList2.awaitAll()
+
                     data[i][0] = patientSurename
                     data[i][1] = doctorSurename
                     data[i][2] = startDate
@@ -132,24 +132,25 @@ class TreatmentActivity : AppCompatActivity() {
         if(sPref.getString("user_type","")=="doctor") {
             scope.launch {
                 val deferredList = listOf(
-                        scope.asyncIO { result = doctorRequest() }
+                        scope.asyncIO { doctorRequest().also { result = it } }
                 )
                 deferredList.awaitAll()
             }
-            for (i in 0..viewSize) {
-                scope.launch {
+            scope.launch {
+            for (i in 0..viewSize step 1) {
                     val deferredList2 = listOf(
-                            scope.asyncIO { getPatientNameForDoctor(result,i) },
-                            scope.asyncIO { getDoctorNameForDoctor(result,i) }
+                            scope.asyncIO { getPatientNameForDoctor(result?.get(i)?.patient_id) },
+                            scope.asyncIO { getDoctorNameForDoctor(result?.get(i)?.doctor_id) }
                     )
                     deferredList2.awaitAll()
+                    startDate = result?.get(i)?.start_date
                     data[i][0] = patientSurename
                     data[i][1] = doctorSurename
                     data[i][2] = startDate
-
                     recyclerView.adapter = rvAdapter(data, viewSize)
-                    println(viewSize)
+                    println(i)
                     recyclerView.adapter?.notifyDataSetChanged()
+
                 }
 
             }
