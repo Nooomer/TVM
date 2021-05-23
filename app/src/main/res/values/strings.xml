@@ -18,4 +18,5 @@
     <string name="you_treatment">You treatment</string>
     <string name="patient_treatment">Patient treatment</string>
     <string name="auth_complete">Authorization failed</string>
+    <string name="deasease_category">Select the category of your disease</string>
 </resources>

@@ -19,4 +19,5 @@
     <string name="you_treatment">Ваши обращения</string>
     <string name="patient_treatment">Обращения пациентов</string>
     <string name="auth_complete">Авторизация не удалась</string>
+    <string name="deasease_category">Выберите категорию ващего заболевания</string>
 </resources>
