@@ -37,21 +37,20 @@ class TreatmentActivity : AppCompatActivity() {
     }
 
     /**Метод для запроса через Корутину*/
-    private fun patientRequest(): List<TreatmentModel?>
-    {
+    private fun patientRequest(): List<TreatmentModel?>? {
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
         val call = mService.getTreatmentByUser("getTreatment.php", sPref.getString("login", ""))
         println(sPref.getString("login", ""))
         val result = call?.execute()?.body()
-        viewSize = result!!.size
+        //viewSize = result!!.size
         return result
     }
 
-    private fun treatmentAdding(symptoms_id:Int, sound_server_link_id:Int): Boolean {
+    private fun treatmentAdding(symptoms_id: Int, sound_server_link_id: Int): Boolean {
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
-        val call = mService.addTreatment("addTreatment.php",sPref.getString("login",""), Calendar.getInstance().time.toString("yyyy/MM/dd HH:mm:ss"),symptoms_id,sound_server_link_id)
+        val call = mService.addTreatment("addTreatment.php", sPref.getString("login", ""), Calendar.getInstance().time.toString("yyyy/MM/dd HH:mm:ss"), symptoms_id, sound_server_link_id)
         val result = call?.execute()?.body()
         return result?.get(0)?.response != "false"
     }
@@ -60,10 +59,10 @@ class TreatmentActivity : AppCompatActivity() {
         val mService = Common.retrofitService
         val call = mService.getAllSymptoms("getSymptoms.php")
         val result = call?.execute()?.body()
-        val symptoms: Array<String?> = arrayOf(result?.get(0)?.symptoms_name,result?.get(1)?.symptoms_name,result?.get(2)?.symptoms_name,result?.get(3)?.symptoms_name,result?.get(4)?.symptoms_name,result?.get(5)?.symptoms_name)
+        val symptoms: Array<String?> = arrayOf(result?.get(0)?.symptoms_name, result?.get(1)?.symptoms_name, result?.get(2)?.symptoms_name, result?.get(3)?.symptoms_name, result?.get(4)?.symptoms_name, result?.get(5)?.symptoms_name)
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, symptoms)
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
-       return  adapter
+        return adapter
     }
 
     private fun getPatientName(result: List<TreatmentModel?>?) {
@@ -80,11 +79,11 @@ class TreatmentActivity : AppCompatActivity() {
         doctorSurename = result3?.get(0)?.surename
     }
 
-    private fun doctorRequest(): List<TreatmentModel?> {
+    private fun doctorRequest(): List<TreatmentModel?>? {
         val mService = Common.retrofitService
         val call = mService.getAllTreatment("getTreatment.php")
         val result = call?.execute()?.body()
-        viewSize = result!!.size
+        //viewSize = result!!.size
         return result
     }
 
@@ -96,8 +95,11 @@ class TreatmentActivity : AppCompatActivity() {
     }
 
     private fun getDoctorNameForDoctor(doctorId: Int?) {
+        if(doctorId == 0){
+            return
+        }
         val mService = Common.retrofitService
-        val call = mService.getPatientFromId("getDoctor.php", doctorId)
+        val call = mService.getDoctorFromId("getDoctor.php", doctorId)
         val result3 = call?.execute()?.body()
         doctorSurename = result3?.get(0)?.surename
     }
@@ -130,56 +132,7 @@ class TreatmentActivity : AppCompatActivity() {
         mDialogBuilder3.setView(addView)
         val scope = CoroutineScope(Dispatchers.Main + Job())
         var result: List<TreatmentModel?>? = null
-        if (sPref.getString("user_type", "") == "patient") {
-            scope.launch {
-                       val def =  scope.asyncIO { patientRequest().also { result = it } }
-                def.await()
-            }
-            scope.launch {
-                for (i in 0 .. viewSize){
-                           val def1 = scope.asyncIO { getPatientNameForDoctor(result?.get(i)?.patient_id) }
-                    def1.await()
-                           val def2 = scope.asyncIO { getDoctorNameForDoctor(result?.get(i)?.doctor_id) }
-                    def2.await()
-                    startDate = result?.get(i)?.start_date
-                    data[i][0] = patientSurename
-                    data[i][1] = doctorSurename
-                    data[i][2] = startDate
-                    recyclerView.adapter = rvAdapter(data, viewSize)
-                    println(i)
-                    recyclerView.adapter?.notifyDataSetChanged()
-                }
-
-            }
-            indicator.hide()
-        }
-        if (sPref.getString("user_type", "") == "doctor") {
-            scope.launch {
-                val deferredList = listOf(
-                        scope.asyncIO { doctorRequest().also { result = it } }
-                )
-                deferredList.awaitAll()
-            }
-            scope.launch {
-                for (i in 0..viewSize step 1) {
-                    val deferredList2 = listOf(
-                            scope.asyncIO { getPatientNameForDoctor(result?.get(i)?.patient_id) },
-                            scope.asyncIO { getDoctorNameForDoctor(result?.get(i)?.doctor_id) }
-                    )
-                    deferredList2.awaitAll()
-                    startDate = result?.get(i)?.start_date
-                    data[i][0] = patientSurename
-                    data[i][1] = doctorSurename
-                    data[i][2] = startDate
-                    recyclerView.adapter = rvAdapter(data, viewSize)
-                    println(i)
-                    recyclerView.adapter?.notifyDataSetChanged()
-
-                }
-
-            }
-            indicator.hide()
-        }
+        load(sPref, scope, result, recyclerView, indicator)
         val fab1 = findViewById<FloatingActionButton>(R.id.out_btn)
         fab1.setOnClickListener {
             val sPref = getSharedPreferences("User", MODE_PRIVATE)
@@ -193,29 +146,85 @@ class TreatmentActivity : AppCompatActivity() {
             fab2.visibility = View.GONE
         }
         fab2.setOnClickListener {
-var adapter: ArrayAdapter<String>? = null
+            var adapter: ArrayAdapter<String>? = null
             scope.launch {
-                       val def =  scope.asyncIO {adapter = symptomsRequest() }
+                val def = scope.asyncIO { adapter = symptomsRequest() }
                 def.await()
                 spinner.adapter = adapter
             }
             mDialogBuilder3
                     .setCancelable(false)
                     .setPositiveButton("Добавить обращение") { _: DialogInterface, _: Int ->
-                            scope.launch {
+                        scope.launch {
 
-                                     var def = scope.asyncIO { treatmentAdding(spinner.selectedItemPosition+1, sound_server_link_id = 1) }
-                                def.await()
-                            }
+                            val def = scope.asyncIO { treatmentAdding(spinner.selectedItemPosition + 1, sound_server_link_id = 1) }
+                            def.await()
                         }
-                    .setNegativeButton("Отмена"){
-                        dialogInterface: DialogInterface, _: Int ->
+
+                    }
+                    .setNegativeButton("Отмена") { dialogInterface: DialogInterface, _: Int ->
                         dialogInterface.cancel()
                     }
 
             mDialogBuilder3.create()
             mDialogBuilder3.show()
 
+        }
+    }
+
+    private fun load(sPref: SharedPreferences, scope: CoroutineScope, result: List<TreatmentModel?>?, recyclerView: RecyclerView, indicator: LinearProgressIndicator) {
+        var result1 = result
+        if (sPref.getString("user_type", "") == "patient") {
+            scope.launch {
+                val def = scope.asyncIO { result1 = patientRequest() }
+                def.await()
+                viewSize = result1!!.size
+
+
+                println(viewSize)
+                for (i in 0 until viewSize) {
+                    val def1 = scope.asyncIO { getPatientNameForDoctor(result1?.get(i)?.patient_id) }
+                    def1.await()
+                    val def2 = scope.asyncIO { getDoctorNameForDoctor(result1?.get(i)?.doctor_id) }
+                    def2.await()
+                    startDate = result1?.get(i)?.start_date
+                    data[i][0] = patientSurename
+                    data[i][1] = doctorSurename
+                    data[i][2] = startDate
+                    recyclerView.adapter = rvAdapter(data, viewSize)
+                    println(i)
+                    recyclerView.adapter?.notifyDataSetChanged()
+                }
+                indicator.hide()
+            }
+
+        }
+        if (sPref.getString("user_type", "") == "doctor") {
+            scope.launch {
+                val deferredList = listOf(
+                        scope.asyncIO { doctorRequest().also { result1 = it } }
+                )
+                deferredList.awaitAll()
+            }
+            scope.launch {
+                for (i in 0..viewSize step 1) {
+                    val deferredList2 = listOf(
+                            scope.asyncIO { getPatientNameForDoctor(result1?.get(i)?.patient_id) },
+                            scope.asyncIO { getDoctorNameForDoctor(result1?.get(i)?.doctor_id) }
+                    )
+                    deferredList2.awaitAll()
+                    startDate = result1?.get(i)?.start_date
+                    data[i][0] = patientSurename
+                    data[i][1] = doctorSurename
+                    data[i][2] = startDate
+                    recyclerView.adapter = rvAdapter(data, viewSize)
+                    println(i)
+                    recyclerView.adapter?.notifyDataSetChanged()
+
+                }
+
+            }
+            indicator.hide()
         }
     }
 
