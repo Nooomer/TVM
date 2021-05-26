@@ -1,13 +1,18 @@
 package com.tvmedicine
 
 
+
+import android.content.ContextWrapper
 import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,7 +23,6 @@ import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.reflect.jvm.internal.impl.resolve.constants.BooleanValue
 
 
 class TreatmentActivity : AppCompatActivity() {
@@ -29,6 +33,11 @@ class TreatmentActivity : AppCompatActivity() {
     var patientSurename: String? = ""
     var doctorSurename: String? = ""
     var spinner: Spinner? = null
+   lateinit var sPref: SharedPreferences
+   lateinit var indicator: LinearProgressIndicator
+   lateinit var recyclerView: RecyclerView
+    val scope = CoroutineScope(Dispatchers.Main + Job())
+    val result: List<TreatmentModel?>? = null
     private fun <T> CoroutineScope.asyncIO(ioFun: () -> T) = async(Dispatchers.IO) { ioFun() }
 
     private fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
@@ -108,12 +117,12 @@ class TreatmentActivity : AppCompatActivity() {
         val arguments = intent.extras
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_treatment)
-        val sPref = getSharedPreferences("User", MODE_PRIVATE)
-        val indicator = findViewById<LinearProgressIndicator>(R.id.ProgressIndicator)
+        sPref = getSharedPreferences("User", MODE_PRIVATE)
+        indicator = findViewById<LinearProgressIndicator>(R.id.ProgressIndicator)
         indicator.showAnimationBehavior = BaseProgressIndicator.SHOW_OUTWARD
         indicator.hideAnimationBehavior = BaseProgressIndicator.HIDE_OUTWARD
         indicator.show()
-        val recyclerView: RecyclerView = findViewById(R.id.rv_view)
+        recyclerView = findViewById(R.id.rv_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
         val li: LayoutInflater = LayoutInflater.from(this)
         val alertView: View = li.inflate(R.layout.alert, null)
@@ -130,8 +139,7 @@ class TreatmentActivity : AppCompatActivity() {
         mDialogBuilder.setView(alertView)
         mDialogBuilder2.setView(loadingView)
         mDialogBuilder3.setView(addView)
-        val scope = CoroutineScope(Dispatchers.Main + Job())
-        val result: List<TreatmentModel?>? = null
+
         load(sPref, scope, result, recyclerView, indicator)
         val fab1 = findViewById<FloatingActionButton>(R.id.out_btn)
         fab1.setOnClickListener {
@@ -238,6 +246,18 @@ class TreatmentActivity : AppCompatActivity() {
         super.onDestroy()
         Job().cancel()
     }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.app_bar_menu, menu)
+        return true
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.refresh_button -> load(sPref, scope, result, recyclerView, indicator)
+        }
+        return true
+    }
+
 }
 
 
