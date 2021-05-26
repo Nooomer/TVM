@@ -131,7 +131,7 @@ class TreatmentActivity : AppCompatActivity() {
         mDialogBuilder2.setView(loadingView)
         mDialogBuilder3.setView(addView)
         val scope = CoroutineScope(Dispatchers.Main + Job())
-        var result: List<TreatmentModel?>? = null
+        val result: List<TreatmentModel?>? = null
         load(sPref, scope, result, recyclerView, indicator)
         val fab1 = findViewById<FloatingActionButton>(R.id.out_btn)
         fab1.setOnClickListener {
@@ -159,6 +159,7 @@ class TreatmentActivity : AppCompatActivity() {
 
                             val def = scope.asyncIO { treatmentAdding(spinner.selectedItemPosition + 1, sound_server_link_id = 1) }
                             def.await()
+                            load(sPref, scope, result, recyclerView, indicator)
                         }
 
                     }
@@ -174,7 +175,39 @@ class TreatmentActivity : AppCompatActivity() {
 
     private fun load(sPref: SharedPreferences, scope: CoroutineScope, result: List<TreatmentModel?>?, recyclerView: RecyclerView, indicator: LinearProgressIndicator) {
         var result1 = result
+        indicator.show()
         if (sPref.getString("user_type", "") == "patient") {
+            scope.launch {
+                val def = scope.asyncIO { result1 = patientRequest() }
+                def.await()
+                viewSize = result1!!.size
+
+
+                println(viewSize)
+                for (i in 0 until viewSize) {
+                    val def1 = scope.asyncIO { getPatientNameForDoctor(result1?.get(i)?.patient_id) }
+                    def1.await()
+                    val def2 = scope.asyncIO { getDoctorNameForDoctor(result1?.get(i)?.doctor_id) }
+                    def2.await()
+                    startDate = result1?.get(i)?.start_date
+                    if(doctorSurename==""){
+                        doctorSurename = "Врач не назначен"
+                    }
+                    data[i][0] = patientSurename
+                    data[i][1] = doctorSurename
+                    data[i][2] = startDate
+                    recyclerView.adapter = rvAdapter(data, viewSize)
+                    println(i)
+                    recyclerView.adapter?.notifyDataSetChanged()
+                    patientSurename = ""
+                    doctorSurename = ""
+                    startDate = ""
+                }
+                indicator.hide()
+            }
+
+        }
+        if (sPref.getString("user_type", "") == "doctor") {
             scope.launch {
                 val def = scope.asyncIO { result1 = patientRequest() }
                 def.await()
@@ -198,33 +231,6 @@ class TreatmentActivity : AppCompatActivity() {
                 indicator.hide()
             }
 
-        }
-        if (sPref.getString("user_type", "") == "doctor") {
-            scope.launch {
-                val deferredList = listOf(
-                        scope.asyncIO { doctorRequest().also { result1 = it } }
-                )
-                deferredList.awaitAll()
-            }
-            scope.launch {
-                for (i in 0..viewSize step 1) {
-                    val deferredList2 = listOf(
-                            scope.asyncIO { getPatientNameForDoctor(result1?.get(i)?.patient_id) },
-                            scope.asyncIO { getDoctorNameForDoctor(result1?.get(i)?.doctor_id) }
-                    )
-                    deferredList2.awaitAll()
-                    startDate = result1?.get(i)?.start_date
-                    data[i][0] = patientSurename
-                    data[i][1] = doctorSurename
-                    data[i][2] = startDate
-                    recyclerView.adapter = rvAdapter(data, viewSize)
-                    println(i)
-                    recyclerView.adapter?.notifyDataSetChanged()
-
-                }
-
-            }
-            indicator.hide()
         }
     }
 
