@@ -16,4 +16,5 @@
     <string name="you_treatment">You treatment</string>
     <string name="patient_treatment">Patient treatment</string>
     <string name="deasease_category">Select the category of your disease</string>
+    <string name="update">Update</string>
 </resources>
