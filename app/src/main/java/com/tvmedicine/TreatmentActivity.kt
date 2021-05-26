@@ -10,9 +10,7 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -54,6 +52,14 @@ class TreatmentActivity : AppCompatActivity() {
         val result = call?.execute()?.body()
         //viewSize = result!!.size
         return result
+    }
+    private fun addConclusionRequest(): Boolean {
+        val mService = Common.retrofitService
+        val sPref = getSharedPreferences("User", MODE_PRIVATE)
+        val call = mService.addConclusion("addConclusion.php",sPref.getString("phone_number",""))
+        println(sPref.getString("login", ""))
+        val result = call?.execute()?.body()
+        return call!!.isExecuted
     }
 
     private fun treatmentAdding(symptoms_id: Int, sound_server_link_id: Int): Boolean {
@@ -118,7 +124,7 @@ class TreatmentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_treatment)
         sPref = getSharedPreferences("User", MODE_PRIVATE)
-        indicator = findViewById<LinearProgressIndicator>(R.id.ProgressIndicator)
+        indicator = findViewById(R.id.ProgressIndicator)
         indicator.showAnimationBehavior = BaseProgressIndicator.SHOW_OUTWARD
         indicator.hideAnimationBehavior = BaseProgressIndicator.HIDE_OUTWARD
         indicator.show()
@@ -128,10 +134,12 @@ class TreatmentActivity : AppCompatActivity() {
         val alertView: View = li.inflate(R.layout.alert, null)
         val loadingView: View = li.inflate(R.layout.loading, null)
         val addView: View = li.inflate(R.layout.add_layout, null)
+        val addConclusion: View = li.inflate(R.layout.conclusion, null)
         //Создаем AlertDialog
         val mDialogBuilder: AlertDialog.Builder = AlertDialog.Builder(this)
         val mDialogBuilder2: AlertDialog.Builder = AlertDialog.Builder(this)
         val mDialogBuilder3: AlertDialog.Builder = AlertDialog.Builder(this)
+        val mDialogBuilder4: AlertDialog.Builder = AlertDialog.Builder(this)
 
         val spinner = addView.findViewById<View>(R.id.symptoms_spinner) as Spinner
 
@@ -139,6 +147,7 @@ class TreatmentActivity : AppCompatActivity() {
         mDialogBuilder.setView(alertView)
         mDialogBuilder2.setView(loadingView)
         mDialogBuilder3.setView(addView)
+        mDialogBuilder4.setView(addConclusion)
 
         load(sPref, scope, result, recyclerView, indicator)
         val fab1 = findViewById<FloatingActionButton>(R.id.out_btn)
@@ -162,7 +171,7 @@ class TreatmentActivity : AppCompatActivity() {
             }
             mDialogBuilder3
                     .setCancelable(false)
-                    .setPositiveButton("Добавить обращение") { _: DialogInterface, _: Int ->
+                    .setPositiveButton(getString(R.string.add_treatment)) { _: DialogInterface, _: Int ->
                         scope.launch {
 
                             val def = scope.asyncIO { treatmentAdding(spinner.selectedItemPosition + 1, sound_server_link_id = 1) }
@@ -171,7 +180,7 @@ class TreatmentActivity : AppCompatActivity() {
                         }
 
                     }
-                    .setNegativeButton("Отмена") { dialogInterface: DialogInterface, _: Int ->
+                    .setNegativeButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->
                         dialogInterface.cancel()
                     }
 
@@ -179,8 +188,37 @@ class TreatmentActivity : AppCompatActivity() {
             mDialogBuilder3.show()
 
         }
-    }
 
+        val conclusionView: View = li.inflate(R.layout.rv_item, null)
+        val userBlock: TextView = conclusionView.findViewById(R.id.textViewLarge2)
+       var rep: Boolean = false
+        mDialogBuilder4
+               .setCancelable(false)
+               .setPositiveButton(getString(R.string.add_conclusion)) { _: DialogInterface, _: Int ->
+                   if (sPref.getString("user_type", "") == "doctor") {
+                       scope.launch {
+                           val def = scope.asyncIO { rep = addConclusionRequest() }
+                           def.await()
+                           if (rep) {
+                               val toast = Toast.makeText(
+                                       applicationContext,
+                                       getString(R.string.good_add),
+                                       Toast.LENGTH_SHORT
+                               )
+                               toast.show()
+                           }
+                       }
+                   }
+               }
+               .setNegativeButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->
+                   dialogInterface.cancel()
+               }
+        mDialogBuilder4.create()
+        userBlock.setOnClickListener{
+
+            mDialogBuilder4.show()
+        }
+    }
     private fun load(sPref: SharedPreferences, scope: CoroutineScope, result: List<TreatmentModel?>?, recyclerView: RecyclerView, indicator: LinearProgressIndicator) {
         var result1 = result
         indicator.show()
@@ -217,7 +255,7 @@ class TreatmentActivity : AppCompatActivity() {
         }
         if (sPref.getString("user_type", "") == "doctor") {
             scope.launch {
-                val def = scope.asyncIO { result1 = patientRequest() }
+                val def = scope.asyncIO { result1 = doctorRequest() }
                 def.await()
                 viewSize = result1!!.size
 
@@ -241,7 +279,6 @@ class TreatmentActivity : AppCompatActivity() {
 
         }
     }
-
     override fun onDestroy() {
         super.onDestroy()
         Job().cancel()

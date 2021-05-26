@@ -21,4 +21,8 @@
     <string name="auth_complete">Авторизация не удалась</string>
     <string name="deasease_category">Выберите категорию ващего заболевания</string>
     <string name="update">Обновить</string>
+    <string name="enter_conclusion">Введите заключение</string>
+    <string name="add_conclusion">Добавить заключение</string>
+    <string name="add_treatment">Добавить обращение</string>
+    <string name="good_add">Добавление успешно</string>
 </resources>

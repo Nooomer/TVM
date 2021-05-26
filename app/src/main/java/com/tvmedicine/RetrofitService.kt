@@ -67,4 +67,10 @@ interface RetrofitServices {
             @Query("symptoms_id") symptoms_id:Int?,
             @Query("sound_server_link_id") sound_server_link_id:Int?
     ): Call<List<AuthModel?>?>?
+    /**Get symptoms methods. Parameters: none*/
+    @GET("api/{method}")
+    fun addConclusion(
+            @Path("method") method_name: String?,
+            @Query("phone_number") phone_number: String?
+    ): Call<List<AuthModel?>?>?
 }
