@@ -2,7 +2,7 @@ package com.tvmedicine
 
 
 
-import android.content.ContextWrapper
+import RecyclerItemClickListener
 import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -31,6 +31,8 @@ class TreatmentActivity : AppCompatActivity() {
     var patientSurename: String? = ""
     var doctorSurename: String? = ""
     var spinner: Spinner? = null
+    var position = 0
+    var conc_text: String? = ""
    lateinit var sPref: SharedPreferences
    lateinit var indicator: LinearProgressIndicator
    lateinit var recyclerView: RecyclerView
@@ -53,10 +55,10 @@ class TreatmentActivity : AppCompatActivity() {
         //viewSize = result!!.size
         return result
     }
-    private fun addConclusionRequest(): Boolean {
+    private fun addConclusionRequest(position: Int,conc_text: String?): Boolean {
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
-        val call = mService.addConclusion("addConclusion.php",sPref.getString("phone_number",""))
+        val call = mService.addConclusion("addConclusion.php", position, conc_text, sPref.getString("login",""))
         println(sPref.getString("login", ""))
         val result = call?.execute()?.body()
         return call!!.isExecuted
@@ -189,15 +191,16 @@ class TreatmentActivity : AppCompatActivity() {
 
         }
 
-        val conclusionView: View = li.inflate(R.layout.rv_item, null)
-        val userBlock: TextView = conclusionView.findViewById(R.id.textViewLarge2)
+        val conclusionView: View = li.inflate(R.layout.conclusion, null)
        var rep: Boolean = false
         mDialogBuilder4
                .setCancelable(false)
                .setPositiveButton(getString(R.string.add_conclusion)) { _: DialogInterface, _: Int ->
-                   if (sPref.getString("user_type", "") == "doctor") {
+                  if (sPref.getString("user_type", "") == "doctor") {
                        scope.launch {
-                           val def = scope.asyncIO { rep = addConclusionRequest() }
+                           val m = conclusionView.findViewById<EditText>(R.id.conclusion_add_text_field)
+                          val text = m.text.toString()
+                           val def = scope.asyncIO { rep = addConclusionRequest(position,text) }
                            def.await()
                            if (rep) {
                                val toast = Toast.makeText(
@@ -214,10 +217,21 @@ class TreatmentActivity : AppCompatActivity() {
                    dialogInterface.cancel()
                }
         mDialogBuilder4.create()
-        userBlock.setOnClickListener{
 
-            mDialogBuilder4.show()
-        }
+        val recyclerView = findViewById<RecyclerView>(R.id.rv_view)
+        recyclerView.addOnItemTouchListener(
+                RecyclerItemClickListener(this, recyclerView, object : RecyclerItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+                        this@TreatmentActivity.position = position
+                        if(sPref.getString("user_type","")=="doctor") {
+                            mDialogBuilder4.show()
+                        }
+                    }
+                    override fun onLongItemClick(view: View?, position: Int) {
+                        // do whatever
+                    }
+                })
+        )
     }
     private fun load(sPref: SharedPreferences, scope: CoroutineScope, result: List<TreatmentModel?>?, recyclerView: RecyclerView, indicator: LinearProgressIndicator) {
         var result1 = result
@@ -267,12 +281,18 @@ class TreatmentActivity : AppCompatActivity() {
                     val def2 = scope.asyncIO { getDoctorNameForDoctor(result1?.get(i)?.doctor_id) }
                     def2.await()
                     startDate = result1?.get(i)?.start_date
+                    if(doctorSurename==""){
+                        doctorSurename = "Врач не назначен"
+                    }
                     data[i][0] = patientSurename
                     data[i][1] = doctorSurename
                     data[i][2] = startDate
                     recyclerView.adapter = rvAdapter(data, viewSize)
                     println(i)
                     recyclerView.adapter?.notifyDataSetChanged()
+                    patientSurename = ""
+                    doctorSurename = ""
+                    startDate = ""
                 }
                 indicator.hide()
             }

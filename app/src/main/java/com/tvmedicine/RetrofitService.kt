@@ -71,6 +71,8 @@ interface RetrofitServices {
     @GET("api/{method}")
     fun addConclusion(
             @Path("method") method_name: String?,
+            @Query("treat_id") treat_id: Int?,
+            @Query("conc_text") conc_text: String?,
             @Query("phone_number") phone_number: String?
     ): Call<List<AuthModel?>?>?
 }
