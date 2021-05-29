@@ -18,4 +18,5 @@
     <string name="deasease_category">Select the category of your disease</string>
     <string name="update">Update</string>
     <string name="enter_conclusion">Enter conclusion</string>
+    <string name="treatment_delete_string">You really want delete treatment?</string>
 </resources>

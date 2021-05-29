@@ -24,4 +24,5 @@
     <string name="add_conclusion">Add conclusion</string>
     <string name="add_treatment">Add treatment</string>
     <string name="good_add">Adding sucessful</string>
+    <string name="treatment_delete_string">You really want delete treatment?</string>
 </resources>
