@@ -32,19 +32,16 @@ class TreatmentActivity : AppCompatActivity() {
     var doctorSurename: String? = ""
     var spinner: Spinner? = null
     var position = 0
-    var conc_text: String? = ""
-   lateinit var sPref: SharedPreferences
+    lateinit var sPref: SharedPreferences
    lateinit var indicator: LinearProgressIndicator
    lateinit var recyclerView: RecyclerView
     val scope = CoroutineScope(Dispatchers.Main + Job())
     val result: List<TreatmentModel?>? = null
     private fun <T> CoroutineScope.asyncIO(ioFun: () -> T) = async(Dispatchers.IO) { ioFun() }
-
     private fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
         val formatter = SimpleDateFormat(format, locale)
         return formatter.format(this)
     }
-
     /**Метод для запроса через Корутину*/
     private fun patientRequest(): List<TreatmentModel?>? {
         val mService = Common.retrofitService
@@ -74,7 +71,6 @@ class TreatmentActivity : AppCompatActivity() {
         val result = call?.execute()?.body()
         return call!!.isExecuted
     }
-
     private fun treatmentAdding(symptoms_id: Int, sound_server_link_id: Int): Boolean {
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
@@ -82,7 +78,6 @@ class TreatmentActivity : AppCompatActivity() {
         val result = call?.execute()?.body()
         return result?.get(0)?.response != "false"
     }
-
     private fun symptomsRequest(): ArrayAdapter<String> {
         val mService = Common.retrofitService
         val call = mService.getAllSymptoms("getSymptoms.php")
@@ -92,21 +87,18 @@ class TreatmentActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
         return adapter
     }
-
     private fun getPatientName(result: List<TreatmentModel?>?) {
         val mService = Common.retrofitService
         val call = mService.getPatientFromId("getPatient.php", result?.get(0)?.patient_id)
         val result2 = call?.execute()?.body()
         patientSurename = result2?.get(0)?.surename
     }
-
     private fun getDoctorName(result: List<TreatmentModel?>?) {
         val mService = Common.retrofitService
         val call = mService.getPatientFromId("getDoctor.php", result?.get(0)?.doctor_id)
         val result3 = call?.execute()?.body()
         doctorSurename = result3?.get(0)?.surename
     }
-
     private fun doctorRequest(): List<TreatmentModel?>? {
         val mService = Common.retrofitService
         val call = mService.getAllTreatment("getTreatment.php")
@@ -114,14 +106,12 @@ class TreatmentActivity : AppCompatActivity() {
         //viewSize = result!!.size
         return result
     }
-
     private fun getPatientNameForDoctor(patientId: Int?) {
         val mService = Common.retrofitService
         val call = mService.getPatientFromId("getPatient.php", patientId)
         val result2 = call?.execute()?.body()
         patientSurename = result2?.get(0)?.surename
     }
-
     private fun getDoctorNameForDoctor(doctorId: Int?) {
         if(doctorId == 0){
             return
@@ -133,7 +123,6 @@ class TreatmentActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val arguments = intent.extras
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_treatment)
         sPref = getSharedPreferences("User", MODE_PRIVATE)
@@ -149,24 +138,21 @@ class TreatmentActivity : AppCompatActivity() {
         val addView: View = li.inflate(R.layout.add_layout, null)
         val addConclusion: View = li.inflate(R.layout.conclusion, null)
         val deleteAlert: View = li.inflate(R.layout.delete_alert, null)
-        //Создаем AlertDialog
         val mDialogBuilder: AlertDialog.Builder = AlertDialog.Builder(this)
         val mDialogBuilder2: AlertDialog.Builder = AlertDialog.Builder(this)
         val mDialogBuilder3: AlertDialog.Builder = AlertDialog.Builder(this)
         val mDialogBuilder4: AlertDialog.Builder = AlertDialog.Builder(this)
         val mDialogBuilder5: AlertDialog.Builder = AlertDialog.Builder(this)
-
+        val fab1 = findViewById<FloatingActionButton>(R.id.out_btn)
         val spinner = addView.findViewById<View>(R.id.symptoms_spinner) as Spinner
-
-        //Настраиваем alert.xml для нашего AlertDialog:
+        val fab2 = findViewById<FloatingActionButton>(R.id.add_btn)
+        var rep: Boolean = false
         mDialogBuilder.setView(alertView)
         mDialogBuilder2.setView(loadingView)
         mDialogBuilder3.setView(addView)
         mDialogBuilder4.setView(addConclusion)
         mDialogBuilder5.setView(deleteAlert)
-
         load(sPref, scope, result, recyclerView, indicator)
-        val fab1 = findViewById<FloatingActionButton>(R.id.out_btn)
         fab1.setOnClickListener {
             val sPref = getSharedPreferences("User", MODE_PRIVATE)
             val ed: SharedPreferences.Editor = sPref.edit()
@@ -174,7 +160,6 @@ class TreatmentActivity : AppCompatActivity() {
             ed.apply()
             finish()
         }
-        val fab2 = findViewById<FloatingActionButton>(R.id.add_btn)
         if (sPref.getString("user_type", "") == "doctor") {
             fab2.visibility = View.GONE
         }
@@ -200,12 +185,10 @@ class TreatmentActivity : AppCompatActivity() {
                         dialogInterface.cancel()
                     }
 
-           var alert3 = mDialogBuilder3.create()
+           val alert3 = mDialogBuilder3.create()
             alert3.show()
 
         }
-
-        var rep: Boolean = false
         mDialogBuilder4
                .setCancelable(false)
                .setPositiveButton(getString(R.string.add_conclusion)) { _: DialogInterface, _: Int ->
@@ -223,6 +206,7 @@ class TreatmentActivity : AppCompatActivity() {
                                        Toast.LENGTH_SHORT
                                )
                                toast.show()
+                               load(sPref, scope, result, recyclerView, indicator)
                            }
                        }
                    }
@@ -230,7 +214,6 @@ class TreatmentActivity : AppCompatActivity() {
                .setNegativeButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->
                    dialogInterface.cancel()
                }
-
         mDialogBuilder5
                 .setCancelable(false)
                 .setPositiveButton(getString(R.string.delete_string)) { _: DialogInterface, _: Int ->
@@ -246,6 +229,7 @@ class TreatmentActivity : AppCompatActivity() {
                                         Toast.LENGTH_SHORT
                                 )
                                 toast.show()
+                                load(sPref, scope, result, recyclerView, indicator)
                             }
                         }
                     }
@@ -294,8 +278,6 @@ class TreatmentActivity : AppCompatActivity() {
                 val def = scope.asyncIO { result1 = patientRequest() }
                 def.await()
                 viewSize = result1!!.size
-
-
                 println(viewSize)
                 for (i in 0 until viewSize) {
                     val def1 = scope.asyncIO { getPatientNameForDoctor(result1?.get(i)?.patient_id) }
@@ -304,7 +286,7 @@ class TreatmentActivity : AppCompatActivity() {
                     def2.await()
                     startDate = result1?.get(i)?.start_date
                     if(doctorSurename==""){
-                        doctorSurename = "Врач не назначен"
+                        doctorSurename = getString(R.string.doctor_assign)
                     }
                     data[i][0] = patientSurename
                     data[i][1] = doctorSurename
@@ -318,15 +300,12 @@ class TreatmentActivity : AppCompatActivity() {
                 }
                 indicator.hide()
             }
-
         }
         if (sPref.getString("user_type", "") == "doctor") {
             scope.launch {
                 val def = scope.asyncIO { result1 = doctorRequest() }
                 def.await()
                 viewSize = result1!!.size
-
-
                 println(viewSize)
                 for (i in 0 until viewSize) {
                     val def1 = scope.asyncIO { getPatientNameForDoctor(result1?.get(i)?.patient_id) }
@@ -335,7 +314,7 @@ class TreatmentActivity : AppCompatActivity() {
                     def2.await()
                     startDate = result1?.get(i)?.start_date
                     if(doctorSurename==""){
-                        doctorSurename = "Врач не назначен"
+                        doctorSurename = getString(R.string.doctor_assign)
                     }
                     data[i][0] = patientSurename
                     data[i][1] = doctorSurename
@@ -349,7 +328,6 @@ class TreatmentActivity : AppCompatActivity() {
                 }
                 indicator.hide()
             }
-
         }
     }
     override fun onDestroy() {

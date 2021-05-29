@@ -31,7 +31,9 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-    /**Method for hiding the keyboard*/
+    /**Method for hiding the keyboard
+     * @param context it you app context, you may use [this] if you write code in activity kt-file
+     * @param view it view where you open keyboard and where her need hide*/
     private fun hideKeyboardFrom(context: Context, view: View) {
         val imm: InputMethodManager =
             context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager

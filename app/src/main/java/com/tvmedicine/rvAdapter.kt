@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-
+/**Class for [RecyclerView.Adapter]*/
 class rvAdapter(private var ppl_list: Array<Array<String?>>, private val item_count: Int) :
     RecyclerView.Adapter<rvAdapter.MyViewHolder>()  {
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){

@@ -27,4 +27,5 @@
     <string name="good_add">Добавление успешно</string>
     <string name="treatment_delete_string">Вы правда хотите удалить обращение?</string>
     <string name="delete_string">Удалить</string>
+    <string name="doctor_assign">Врач не назначен</string>
 </resources>

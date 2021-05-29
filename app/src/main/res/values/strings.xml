@@ -26,4 +26,5 @@
     <string name="good_add">Adding sucessful</string>
     <string name="treatment_delete_string">You really want delete treatment?</string>
     <string name="delete_string">Delete</string>
+    <string name="doctor_assign">Doctor not assign</string>
 </resources>
