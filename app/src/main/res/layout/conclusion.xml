@@ -16,11 +16,18 @@
         android:layout_height="wrap_content"
         android:text="@string/enter_conclusion"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+    <TextView
+        android:id="@+id/symptoms_field"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <EditText
         android:id="@+id/conclusion_add_text_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:autofillHints="Enter conclusion">
+        android:autofillHints="Enter conclusion"
+        android:inputType="text">
     </EditText>
 </LinearLayout>

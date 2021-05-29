@@ -67,7 +67,7 @@ interface RetrofitServices {
             @Query("symptoms_id") symptoms_id:Int?,
             @Query("sound_server_link_id") sound_server_link_id:Int?
     ): Call<List<AuthModel?>?>?
-    /**Get symptoms methods. Parameters: none*/
+    /**Add conclusion methods. Parameters: treat_id,conc_text,phone_number*/
     @GET("api/{method}")
     fun addConclusion(
             @Path("method") method_name: String?,
@@ -75,4 +75,16 @@ interface RetrofitServices {
             @Query("conc_text") conc_text: String?,
             @Query("phone_number") phone_number: String?
     ): Call<List<AuthModel?>?>?
+    /**Delete treatment methods. Parameters: treat_id*/
+    @GET("api/{method}")
+    fun deleteTreatment(
+            @Path("method") method_name: String?,
+            @Query("treat_id") treat_id: Int?
+    ): Call<List<AuthModel?>?>?
+    @GET("api/{method}")
+            /**Get symptoms methods. Parameters: none*/
+    fun getSymptomsForUser(
+            @Path("method") method_name: String?,
+            @Query("treat_id") treat_id: Int?
+    ): Call<List<SymptomsModel?>?>?
 }
