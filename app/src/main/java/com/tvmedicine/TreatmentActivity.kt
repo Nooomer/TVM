@@ -59,7 +59,18 @@ class TreatmentActivity : AppCompatActivity() {
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
         val call = mService.addConclusion("addConclusion.php", position, conc_text, sPref.getString("login",""))
-        println(sPref.getString("login", ""))
+        val result = call?.execute()?.body()
+        return call!!.isExecuted
+    }
+    private fun getSymptomsForAlertRequest(position: Int): String? {
+        val mService = Common.retrofitService
+        val call = mService.getSymptomsForUser("getSymptoms.php", position)
+        val result = call?.execute()?.body()
+        return result?.get(0)?.symptoms_name
+    }
+    private fun deleteTreatmentRequest(position: Int): Boolean {
+        val mService = Common.retrofitService
+        val call = mService.deleteTreatment("deleteTreatment.php", position)
         val result = call?.execute()?.body()
         return call!!.isExecuted
     }
@@ -137,11 +148,13 @@ class TreatmentActivity : AppCompatActivity() {
         val loadingView: View = li.inflate(R.layout.loading, null)
         val addView: View = li.inflate(R.layout.add_layout, null)
         val addConclusion: View = li.inflate(R.layout.conclusion, null)
+        val deleteAlert: View = li.inflate(R.layout.delete_alert, null)
         //Создаем AlertDialog
         val mDialogBuilder: AlertDialog.Builder = AlertDialog.Builder(this)
         val mDialogBuilder2: AlertDialog.Builder = AlertDialog.Builder(this)
         val mDialogBuilder3: AlertDialog.Builder = AlertDialog.Builder(this)
         val mDialogBuilder4: AlertDialog.Builder = AlertDialog.Builder(this)
+        val mDialogBuilder5: AlertDialog.Builder = AlertDialog.Builder(this)
 
         val spinner = addView.findViewById<View>(R.id.symptoms_spinner) as Spinner
 
@@ -150,6 +163,7 @@ class TreatmentActivity : AppCompatActivity() {
         mDialogBuilder2.setView(loadingView)
         mDialogBuilder3.setView(addView)
         mDialogBuilder4.setView(addConclusion)
+        mDialogBuilder5.setView(deleteAlert)
 
         load(sPref, scope, result, recyclerView, indicator)
         val fab1 = findViewById<FloatingActionButton>(R.id.out_btn)
@@ -186,21 +200,21 @@ class TreatmentActivity : AppCompatActivity() {
                         dialogInterface.cancel()
                     }
 
-            mDialogBuilder3.create()
-            mDialogBuilder3.show()
+           var alert3 = mDialogBuilder3.create()
+            alert3.show()
 
         }
 
-        val conclusionView: View = li.inflate(R.layout.conclusion, null)
-       var rep: Boolean = false
+        var rep: Boolean = false
         mDialogBuilder4
                .setCancelable(false)
                .setPositiveButton(getString(R.string.add_conclusion)) { _: DialogInterface, _: Int ->
-                  if (sPref.getString("user_type", "") == "doctor") {
+
                        scope.launch {
-                           val m = conclusionView.findViewById<EditText>(R.id.conclusion_add_text_field)
-                          val text = m.text.toString()
-                           val def = scope.asyncIO { rep = addConclusionRequest(position,text) }
+                           val m: EditText = addConclusion.findViewById(R.id.conclusion_add_text_field)
+
+                           if (sPref.getString("user_type", "") == "doctor") {
+                           val def = scope.asyncIO { rep = addConclusionRequest(position,m.text.toString()) }
                            def.await()
                            if (rep) {
                                val toast = Toast.makeText(
@@ -216,23 +230,62 @@ class TreatmentActivity : AppCompatActivity() {
                .setNegativeButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->
                    dialogInterface.cancel()
                }
-        mDialogBuilder4.create()
 
+        mDialogBuilder5
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.delete_string)) { _: DialogInterface, _: Int ->
+                    if (sPref.getString("user_type", "") == "patient") {
+                        scope.launch {
+                            val m = addConclusion.findViewById<EditText>(R.id.conclusion_add_text_field)
+                            val def = scope.asyncIO { rep = deleteTreatmentRequest(position) }
+                            def.await()
+                            if (rep) {
+                                val toast = Toast.makeText(
+                                        applicationContext,
+                                        "Удалено",
+                                        Toast.LENGTH_SHORT
+                                )
+                                toast.show()
+                            }
+                        }
+                    }
+                }
+                .setNegativeButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->
+                    dialogInterface.cancel()
+                }
+       val alert2 = mDialogBuilder4.create()
+        val alert1 = mDialogBuilder5.create()
         val recyclerView = findViewById<RecyclerView>(R.id.rv_view)
         recyclerView.addOnItemTouchListener(
                 RecyclerItemClickListener(this, recyclerView, object : RecyclerItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
-                        this@TreatmentActivity.position = position
+                        this@TreatmentActivity.position = position+1
                         if(sPref.getString("user_type","")=="doctor") {
-                            mDialogBuilder4.show()
+                            loadSymptomsName(addConclusion)
+                           alert2.show()
                         }
                     }
                     override fun onLongItemClick(view: View?, position: Int) {
-                        // do whatever
+                        this@TreatmentActivity.position = position
+                        if(sPref.getString("user_type","")=="patient") {
+                            loadSymptomsName(addConclusion)
+                           alert1.show()
+                        }
                     }
                 })
         )
     }
+
+    private fun loadSymptomsName(addConclusion: View) {
+        val m2: TextView = addConclusion.findViewById(R.id.symptoms_field)
+        scope.launch {
+            var symptoms: String? = ""
+            val def2 = scope.asyncIO { symptoms = getSymptomsForAlertRequest(position) }
+            def2.await()
+            m2.text = symptoms
+        }
+    }
+
     private fun load(sPref: SharedPreferences, scope: CoroutineScope, result: List<TreatmentModel?>?, recyclerView: RecyclerView, indicator: LinearProgressIndicator) {
         var result1 = result
         indicator.show()
