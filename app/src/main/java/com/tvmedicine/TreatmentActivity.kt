@@ -67,7 +67,8 @@ class TreatmentActivity : AppCompatActivity() {
     }
     private fun deleteTreatmentRequest(position: Int): Boolean {
         val mService = Common.retrofitService
-        val call = mService.deleteTreatment("deleteTreatment.php", position)
+        val sPref = getSharedPreferences("User", MODE_PRIVATE)
+        val call = mService.deleteTreatment("deleteTreatment.php", position,sPref.getString("login",""))
         val result = call?.execute()?.body()
         return call!!.isExecuted
     }

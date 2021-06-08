@@ -106,7 +106,8 @@ interface RetrofitServices {
     @GET("api/{method}")
     fun deleteTreatment(
             @Path("method") method_name: String?,
-            @Query("treat_id") treat_id: Int?
+            @Query("treat_id") treat_id: Int?,
+            @Query("phone_number") phone_number: String?
     ): Call<List<AuthModel?>?>?
     @GET("api/{method}")
             /**Get symptoms methods.
