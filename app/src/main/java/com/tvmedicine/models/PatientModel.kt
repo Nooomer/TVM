@@ -1,4 +1,4 @@
-package com.tvmedicine
+package com.tvmedicine.models
 /**Patient response model */
 data class PatientModel(
         val id : Int,

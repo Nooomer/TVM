@@ -3,8 +3,11 @@ package com.tvmedicine
 
 
 import RecyclerItemClickListener
+import android.Manifest
 import android.content.DialogInterface
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.media.MediaRecorder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -13,17 +16,26 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.BaseProgressIndicator
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.tvmedicine.models.TreatmentModel
 import kotlinx.coroutines.*
+import java.io.File
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 class TreatmentActivity : AppCompatActivity() {
+    val output = File(getExternalFilesDir(null), "/recording.mp3")
+    var mediaRecorder = MediaRecorder()
+
+
     val data: Array<Array<String?>> = Array(10) { Array(3) { "" } }
     val symptomsArray: Array<Array<String?>> = Array(6) { Array(2) { "" } }
     private var viewSize: Int = 0
@@ -41,6 +53,7 @@ class TreatmentActivity : AppCompatActivity() {
     private fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
         val formatter = SimpleDateFormat(format, locale)
         return formatter.format(this)
+
     }
     /**Метод для запроса через Корутину*/
     private fun patientRequest(): List<TreatmentModel?>? {
@@ -122,10 +135,26 @@ class TreatmentActivity : AppCompatActivity() {
         val result3 = call?.execute()?.body()
         doctorSurename = result3?.get(0)?.surename
     }
+    private fun startRecording() {
+        try {
+            mediaRecorder.prepare()
+            mediaRecorder.start()
+            var state = true
+            Toast.makeText(this, "Recording started!", Toast.LENGTH_SHORT).show()
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_treatment)
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+        mediaRecorder.setOutputFile(output)
         sPref = getSharedPreferences("User", MODE_PRIVATE)
         indicator = findViewById(R.id.ProgressIndicator)
         indicator.showAnimationBehavior = BaseProgressIndicator.SHOW_OUTWARD
@@ -147,6 +176,8 @@ class TreatmentActivity : AppCompatActivity() {
         val fab1 = findViewById<FloatingActionButton>(R.id.out_btn)
         val spinner = addView.findViewById<View>(R.id.symptoms_spinner) as Spinner
         val fab2 = findViewById<FloatingActionButton>(R.id.add_btn)
+        val fab3 = findViewById<FloatingActionButton>(R.id.fab3)
+        lateinit var firstButtonListener:View.OnClickListener
         var rep: Boolean = false
         mDialogBuilder.setView(alertView)
         mDialogBuilder2.setView(loadingView)
@@ -161,6 +192,31 @@ class TreatmentActivity : AppCompatActivity() {
             ed.apply()
             finish()
         }
+
+        val secondButtonListener:View.OnClickListener = View.OnClickListener() {
+            if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                val permissions = arrayOf(android.Manifest.permission.RECORD_AUDIO, android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                ActivityCompat.requestPermissions(this, permissions,0)
+            }// else {
+                //stopRecording()
+                //fab3.setOnClickListener(fisrtButtonListener)
+            //}
+        }
+        firstButtonListener = View.OnClickListener() {
+            if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                val permissions = arrayOf(android.Manifest.permission.RECORD_AUDIO, android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                ActivityCompat.requestPermissions(this, permissions,0)
+            } else {
+                startRecording()
+                fab3.setOnClickListener(secondButtonListener)
+            }
+        }
+
+        fab3.setOnClickListener(firstButtonListener)
         if (sPref.getString("user_type", "") == "doctor") {
             fab2.visibility = View.GONE
         }

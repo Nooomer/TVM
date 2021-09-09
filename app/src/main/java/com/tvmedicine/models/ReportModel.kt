@@ -1,4 +1,4 @@
-package com.tvmedicine
+package com.tvmedicine.models
 
 data class ReportModel(
     val id:Int,

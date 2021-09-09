@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.tvmedicine.models.AuthModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -71,8 +72,8 @@ class MainActivity : AppCompatActivity() {
                         mService2.auth("authUser.php", userInput1.text.toString(), userInput2.text.toString())
                                 ?.enqueue(object : Callback<List<AuthModel?>?> {
                                     override fun onResponse(
-                                            call: Call<List<AuthModel?>?>?,
-                                            AuthResponse: Response<List<AuthModel?>?>?
+                                        call: Call<List<AuthModel?>?>?,
+                                        AuthResponse: Response<List<AuthModel?>?>?
                                     ) {
                                         if (AuthResponse?.body()?.get(0)?.response == "true") {
                                             val intent = Intent(
@@ -147,8 +148,8 @@ class MainActivity : AppCompatActivity() {
                     mService.auth("doctorAuth.php", userInput1.text.toString(), userInput2.text.toString())
                         ?.enqueue(object : Callback<List<AuthModel?>?> {
                             override fun onResponse(
-                                    call: Call<List<AuthModel?>?>?,
-                                    response: Response<List<AuthModel?>?>?
+                                call: Call<List<AuthModel?>?>?,
+                                response: Response<List<AuthModel?>?>?
                             ) {
                                 if (response?.body()?.get(0)?.response == "true") {
                                     val intent = Intent(

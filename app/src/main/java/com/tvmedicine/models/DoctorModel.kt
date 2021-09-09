@@ -1,4 +1,4 @@
-package com.tvmedicine
+package com.tvmedicine.models
 /**Response model for doctor information
  * @param id it id's from DB. Return type [Int]
  * @param surename it doctor surename from DB. Return type [String]

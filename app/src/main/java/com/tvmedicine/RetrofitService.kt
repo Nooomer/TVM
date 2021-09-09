@@ -1,5 +1,6 @@
 package com.tvmedicine
 
+import com.tvmedicine.models.*
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
