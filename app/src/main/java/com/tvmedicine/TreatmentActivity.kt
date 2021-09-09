@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.BaseProgressIndicator
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.tvmedicine.RetrifitService.Common
 import com.tvmedicine.models.TreatmentModel
 import kotlinx.coroutines.*
 import java.io.File
@@ -69,7 +70,7 @@ class TreatmentActivity : AppCompatActivity() {
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
         val call = mService.addConclusion("addConclusion.php", position, conc_text, sPref.getString("login",""))
-        val result = call?.execute()?.body()
+        call?.execute()?.body()
         return call!!.isExecuted
     }
     private fun getSymptomsForAlertRequest(position: Int): String? {
@@ -82,7 +83,7 @@ class TreatmentActivity : AppCompatActivity() {
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
         val call = mService.deleteTreatment("deleteTreatment.php", position,sPref.getString("login",""))
-        val result = call?.execute()?.body()
+        call?.execute()?.body()
         return call!!.isExecuted
     }
     private fun treatmentAdding(symptoms_id: Int, sound_server_link_id: Int): Boolean {
@@ -139,7 +140,6 @@ class TreatmentActivity : AppCompatActivity() {
         try {
             mediaRecorder.prepare()
             mediaRecorder.start()
-            var state = true
             Toast.makeText(this, "Recording started!", Toast.LENGTH_SHORT).show()
         } catch (e: IllegalStateException) {
             e.printStackTrace()
@@ -178,7 +178,7 @@ class TreatmentActivity : AppCompatActivity() {
         val fab2 = findViewById<FloatingActionButton>(R.id.add_btn)
         val fab3 = findViewById<FloatingActionButton>(R.id.fab3)
         lateinit var firstButtonListener:View.OnClickListener
-        var rep: Boolean = false
+        var rep = false
         mDialogBuilder.setView(alertView)
         mDialogBuilder2.setView(loadingView)
         mDialogBuilder3.setView(addView)
@@ -197,7 +197,7 @@ class TreatmentActivity : AppCompatActivity() {
             if (ContextCompat.checkSelfPermission(this,
                             Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                val permissions = arrayOf(android.Manifest.permission.RECORD_AUDIO, android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                val permissions = arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
                 ActivityCompat.requestPermissions(this, permissions,0)
             }// else {
                 //stopRecording()
@@ -208,7 +208,7 @@ class TreatmentActivity : AppCompatActivity() {
             if (ContextCompat.checkSelfPermission(this,
                             Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                val permissions = arrayOf(android.Manifest.permission.RECORD_AUDIO, android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                val permissions = arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
                 ActivityCompat.requestPermissions(this, permissions,0)
             } else {
                 startRecording()
@@ -276,7 +276,7 @@ class TreatmentActivity : AppCompatActivity() {
                 .setPositiveButton(getString(R.string.delete_string)) { _: DialogInterface, _: Int ->
                     if (sPref.getString("user_type", "") == "patient") {
                         scope.launch {
-                            val m = addConclusion.findViewById<EditText>(R.id.conclusion_add_text_field)
+                            addConclusion.findViewById<EditText>(R.id.conclusion_add_text_field)
                             val def = scope.asyncIO { rep = deleteTreatmentRequest(position) }
                             def.await()
                             if (rep) {
@@ -348,7 +348,7 @@ class TreatmentActivity : AppCompatActivity() {
                     data[i][0] = patientSurename
                     data[i][1] = doctorSurename
                     data[i][2] = startDate
-                    recyclerView.adapter = rvAdapter(data, viewSize)
+                    recyclerView.adapter = RvAdapter(data, viewSize)
                     println(i)
                     recyclerView.adapter?.notifyDataSetChanged()
                     patientSurename = ""
@@ -376,7 +376,7 @@ class TreatmentActivity : AppCompatActivity() {
                     data[i][0] = patientSurename
                     data[i][1] = doctorSurename
                     data[i][2] = startDate
-                    recyclerView.adapter = rvAdapter(data, viewSize)
+                    recyclerView.adapter = RvAdapter(data, viewSize)
                     println(i)
                     recyclerView.adapter?.notifyDataSetChanged()
                     patientSurename = ""

@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.tvmedicine.RetrifitService.Common
 import com.tvmedicine.models.AuthModel
 import retrofit2.Call
 import retrofit2.Callback
@@ -33,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
     /**Method for hiding the keyboard
-     * @param context it you app context, you may use [this] if you write code in activity kt-file
+     * @param context it you app context, you may use "this" if you write code in activity kt-file
      * @param view it view where you open keyboard and where her need hide*/
     private fun hideKeyboardFrom(context: Context, view: View) {
         val imm: InputMethodManager =
@@ -41,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
     /**A method that implements the logic of patient authorization*/
-    fun patientAuthBtn(view: View){
+    fun patientAuthBtn() {
         val li: LayoutInflater = LayoutInflater.from(this)
         val alertView: View = li.inflate(R.layout.alert, null)
         val loadingView: View = li.inflate(R.layout.loading, null)
@@ -117,7 +118,7 @@ class MainActivity : AppCompatActivity() {
         alertDialog.show()
     }
    /**A method that implements the logic of doctor authorization*/
-    fun doctorAuthBtn(view: View){
+    fun doctorAuthBtn() {
         val li: LayoutInflater = LayoutInflater.from(this)
         val alertView: View = li.inflate(R.layout.alert, null)
         val loadingView: View = li.inflate(R.layout.loading, null)

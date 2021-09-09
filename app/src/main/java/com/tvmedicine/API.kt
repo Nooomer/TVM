@@ -7,7 +7,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 /**Implementation of api methods and their parameters. Any method expects the name of the api method to be passed in the form method_name.php*/
-interface RetrofitServices {
+interface API {
     @GET("api/{method}")
     /**Auth methods.
      * @param method_name it method name which need use. Type - [String]

@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 /**Class for [RecyclerView.Adapter]*/
-class rvAdapter(private var ppl_list: Array<Array<String?>>, private val item_count: Int) :
-    RecyclerView.Adapter<rvAdapter.MyViewHolder>()  {
+class RvAdapter(private var ppl_list: Array<Array<String?>>, private val item_count: Int) :
+    RecyclerView.Adapter<RvAdapter.MyViewHolder>()  {
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         var largeTextView: TextView? = null
         var largeTextView2: TextView? = null
