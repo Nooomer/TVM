@@ -33,7 +33,7 @@ import java.util.*
 
 
 class TreatmentActivity : AppCompatActivity() {
-    val output = File(getExternalFilesDir(null), "/recording.mp3")
+    //val output = File(getExternalFilesDir(null), "/recording.mp3")
     var mediaRecorder = MediaRecorder()
 
 
@@ -151,10 +151,10 @@ class TreatmentActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_treatment)
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-        mediaRecorder.setOutputFile(output)
+        //mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
+        //mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+        //mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+        //mediaRecorder.setOutputFile(output)
         sPref = getSharedPreferences("User", MODE_PRIVATE)
         indicator = findViewById(R.id.ProgressIndicator)
         indicator.showAnimationBehavior = BaseProgressIndicator.SHOW_OUTWARD
@@ -176,7 +176,7 @@ class TreatmentActivity : AppCompatActivity() {
         val fab1 = findViewById<FloatingActionButton>(R.id.out_btn)
         val spinner = addView.findViewById<View>(R.id.symptoms_spinner) as Spinner
         val fab2 = findViewById<FloatingActionButton>(R.id.add_btn)
-        val fab3 = findViewById<FloatingActionButton>(R.id.fab3)
+        //val fab3 = findViewById<FloatingActionButton>(R.id.fab3)
         lateinit var firstButtonListener:View.OnClickListener
         var rep = false
         mDialogBuilder.setView(alertView)
@@ -204,19 +204,19 @@ class TreatmentActivity : AppCompatActivity() {
                 //fab3.setOnClickListener(fisrtButtonListener)
             //}
         }
-        firstButtonListener = View.OnClickListener() {
-            if (ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                val permissions = arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-                ActivityCompat.requestPermissions(this, permissions,0)
-            } else {
-                startRecording()
-                fab3.setOnClickListener(secondButtonListener)
-            }
-        }
+        //firstButtonListener = View.OnClickListener() {
+            //if (ContextCompat.checkSelfPermission(this,
+                            //Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
+                            //Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                //val permissions = arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                //ActivityCompat.requestPermissions(this, permissions,0)
+           // } else {
+                //startRecording()
+               // fab3.setOnClickListener(secondButtonListener)
+            //}
+       // }
 
-        fab3.setOnClickListener(firstButtonListener)
+        //fab3.setOnClickListener(firstButtonListener)
         if (sPref.getString("user_type", "") == "doctor") {
             fab2.visibility = View.GONE
         }

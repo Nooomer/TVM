@@ -3,7 +3,8 @@
     package="com.tvmedicine">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -14,11 +15,7 @@
         <activity
             android:name=".TreatmentActivity"
             android:label="Список обращений" />
-        <activity
-            android:name=".DoctorActivity"
-            android:label="@string/title_activity_doctor"
-            android:theme="@style/Theme.TVMedicine.NoActionBar" />
-        <activity android:name=".debug" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

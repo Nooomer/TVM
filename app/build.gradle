@@ -12,13 +12,13 @@ android {
             keyPassword 'qwaszxplm1Q'
         }
     }
-    compileSdkVersion 30
+    compileSdk 30
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.tvmedicine"
-        minSdkVersion 21
-        targetSdkVersion 30
+        minSdk 29
+        targetSdk 30
         versionCode 1
         versionName "1.0"
 
