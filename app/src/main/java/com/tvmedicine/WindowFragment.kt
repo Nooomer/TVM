@@ -24,7 +24,7 @@ class WindowFragment : BottomSheetDialogFragment(), OnBottomSheetCallbacks {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        textResult.setOnClickListener {
+       /* textResult.setOnClickListener {
             (activity as TreatmentActivity).openBottomSheet()
         }
 
@@ -34,12 +34,12 @@ class WindowFragment : BottomSheetDialogFragment(), OnBottomSheetCallbacks {
             } else  {
                 (activity as TreatmentActivity).openBottomSheet()
             }
-        }
+        }*/
     }
 
     override fun onStateChanged(bottomSheet: View, newState: Int) {
         currentState = newState
-        when (newState) {
+       /* when (newState) {
             BottomSheetBehavior.STATE_EXPANDED -> {
                 textResult.text = "0 results"
                 filterImage.setImageResource(R.drawable.ic_baseline_filter_list_24)
@@ -48,6 +48,6 @@ class WindowFragment : BottomSheetDialogFragment(), OnBottomSheetCallbacks {
                 textResult.text = "See the results"
                 filterImage.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
             }
-        }
+        }*/
     }
 }
