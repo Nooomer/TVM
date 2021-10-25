@@ -20,6 +20,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.BaseProgressIndicator
 import com.google.android.material.progressindicator.LinearProgressIndicator
@@ -33,6 +34,8 @@ import java.util.*
 
 
 class TreatmentActivity : AppCompatActivity() {
+    private lateinit var listener: OnBottomSheetCallbacks
+
     //val output = File(getExternalFilesDir(null), "/recording.mp3")
     var mediaRecorder = MediaRecorder()
 
@@ -46,8 +49,8 @@ class TreatmentActivity : AppCompatActivity() {
     var spinner: Spinner? = null
     var position = 0
     lateinit var sPref: SharedPreferences
-   lateinit var indicator: LinearProgressIndicator
-   lateinit var recyclerView: RecyclerView
+    lateinit var indicator: LinearProgressIndicator
+    lateinit var recyclerView: RecyclerView
     val scope = CoroutineScope(Dispatchers.Main + Job())
     val result: List<TreatmentModel?>? = null
     private fun <T> CoroutineScope.asyncIO(ioFun: () -> T) = async(Dispatchers.IO) { ioFun() }
@@ -56,6 +59,7 @@ class TreatmentActivity : AppCompatActivity() {
         return formatter.format(this)
 
     }
+
     /**Метод для запроса через Корутину*/
     private fun patientRequest(): List<TreatmentModel?>? {
         val mService = Common.retrofitService
@@ -66,54 +70,82 @@ class TreatmentActivity : AppCompatActivity() {
         //viewSize = result!!.size
         return result
     }
-    private fun addConclusionRequest(position: Int,conc_text: String?): Boolean {
+
+    private fun addConclusionRequest(position: Int, conc_text: String?): Boolean {
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
-        val call = mService.addConclusion("addConclusion.php", position, conc_text, sPref.getString("login",""))
+        val call = mService.addConclusion(
+            "addConclusion.php",
+            position,
+            conc_text,
+            sPref.getString("login", "")
+        )
         call?.execute()?.body()
         return call!!.isExecuted
     }
+
     private fun getSymptomsForAlertRequest(position: Int): String? {
         val mService = Common.retrofitService
         val call = mService.getSymptomsForUser("getSymptoms.php", position)
         val result = call?.execute()?.body()
         return result?.get(0)?.symptoms_name
     }
+
     private fun deleteTreatmentRequest(position: Int): Boolean {
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
-        val call = mService.deleteTreatment("deleteTreatment.php", position,sPref.getString("login",""))
+        val call =
+            mService.deleteTreatment("deleteTreatment.php", position, sPref.getString("login", ""))
         call?.execute()?.body()
         return call!!.isExecuted
     }
+
     private fun treatmentAdding(symptoms_id: Int, sound_server_link_id: Int): Boolean {
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
-        val call = mService.addTreatment("addTreatment.php", sPref.getString("login", ""), Calendar.getInstance().time.toString("yyyy/MM/dd HH:mm:ss"), symptoms_id, sound_server_link_id)
+        val call = mService.addTreatment(
+            "addTreatment.php",
+            sPref.getString("login", ""),
+            Calendar.getInstance().time.toString("yyyy/MM/dd HH:mm:ss"),
+            symptoms_id,
+            sound_server_link_id
+        )
         val result = call?.execute()?.body()
         return result?.get(0)?.response != "false"
     }
+
     private fun symptomsRequest(): ArrayAdapter<String> {
         val mService = Common.retrofitService
         val call = mService.getAllSymptoms("getSymptoms.php")
         val result = call?.execute()?.body()
-        val symptoms: Array<String?> = arrayOf(result?.get(0)?.symptoms_name, result?.get(1)?.symptoms_name, result?.get(2)?.symptoms_name, result?.get(3)?.symptoms_name, result?.get(4)?.symptoms_name, result?.get(5)?.symptoms_name)
-        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, symptoms)
+        val symptoms: Array<String?> = arrayOf(
+            result?.get(0)?.symptoms_name,
+            result?.get(1)?.symptoms_name,
+            result?.get(2)?.symptoms_name,
+            result?.get(3)?.symptoms_name,
+            result?.get(4)?.symptoms_name,
+            result?.get(5)?.symptoms_name
+        )
+        val adapter: ArrayAdapter<String> =
+            ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, symptoms)
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
         return adapter
     }
+
     private fun getPatientName(result: List<TreatmentModel?>?) {
         val mService = Common.retrofitService
         val call = mService.getPatientFromId("getPatient.php", result?.get(0)?.patient_id)
         val result2 = call?.execute()?.body()
         patientSurename = result2?.get(0)?.surename
     }
+
     private fun getDoctorName(result: List<TreatmentModel?>?) {
         val mService = Common.retrofitService
         val call = mService.getPatientFromId("getDoctor.php", result?.get(0)?.doctor_id)
         val result3 = call?.execute()?.body()
         doctorSurename = result3?.get(0)?.surename
     }
+
     private fun doctorRequest(): List<TreatmentModel?>? {
         val mService = Common.retrofitService
         val call = mService.getAllTreatment("getTreatment.php")
@@ -121,14 +153,16 @@ class TreatmentActivity : AppCompatActivity() {
         //viewSize = result!!.size
         return result
     }
+
     private fun getPatientNameForDoctor(patientId: Int?) {
         val mService = Common.retrofitService
         val call = mService.getPatientFromId("getPatient.php", patientId)
         val result2 = call?.execute()?.body()
         patientSurename = result2?.get(0)?.surename
     }
+
     private fun getDoctorNameForDoctor(doctorId: Int?) {
-        if(doctorId == 0){
+        if (doctorId == 0) {
             return
         }
         val mService = Common.retrofitService
@@ -136,6 +170,7 @@ class TreatmentActivity : AppCompatActivity() {
         val result3 = call?.execute()?.body()
         doctorSurename = result3?.get(0)?.surename
     }
+
     private fun startRecording() {
         try {
             mediaRecorder.prepare()
@@ -148,9 +183,43 @@ class TreatmentActivity : AppCompatActivity() {
         }
     }
 
+    fun setOnBottomSheetCallbacks(onBottomSheetCallbacks: OnBottomSheetCallbacks) {
+        this.listener = onBottomSheetCallbacks
+    }
+
+    fun closeBottomSheet() {
+        mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    fun openBottomSheet() {
+        mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private var mBottomSheetBehavior: BottomSheetBehavior<View?>? = null
+
+    private fun configureBackdrop() {
+        val fragment = supportFragmentManager.findFragmentById(R.id.filter_fragment)
+
+        fragment?.view?.let {
+            BottomSheetBehavior.from(it).let { bs ->
+                bs.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                    override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+
+                    override fun onStateChanged(bottomSheet: View, newState: Int) {
+                        listener.onStateChanged(bottomSheet, newState)
+                    }
+                })
+
+                bs.state = BottomSheetBehavior.STATE_EXPANDED
+                mBottomSheetBehavior = bs
+            }
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_treatment)
+        supportActionBar?.elevation = 0f
+        configureBackdrop()
         //mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
         //mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
         //mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
