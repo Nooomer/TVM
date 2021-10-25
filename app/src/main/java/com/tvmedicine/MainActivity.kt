@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
     /**A method that implements the logic of patient authorization*/
-    fun patientAuthBtn() {
+    fun patientAuthBtn(view: android.view.View) {
         val li: LayoutInflater = LayoutInflater.from(this)
         val alertView: View = li.inflate(R.layout.alert, null)
         val loadingView: View = li.inflate(R.layout.loading, null)
@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
         alertDialog.show()
     }
    /**A method that implements the logic of doctor authorization*/
-    fun doctorAuthBtn() {
+    fun doctorAuthBtn(view: android.view.View) {
         val li: LayoutInflater = LayoutInflater.from(this)
         val alertView: View = li.inflate(R.layout.alert, null)
         val loadingView: View = li.inflate(R.layout.loading, null)

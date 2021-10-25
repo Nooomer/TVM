@@ -1,16 +1,19 @@
 package com.tvmedicine
 
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import androidx.appcompat.widget.AppCompatTextView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+
 
 class WindowFragment : BottomSheetDialogFragment(), OnBottomSheetCallbacks {
 
     private var currentState: Int = BottomSheetBehavior.STATE_EXPANDED
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -20,11 +23,11 @@ class WindowFragment : BottomSheetDialogFragment(), OnBottomSheetCallbacks {
 
         return inflater.inflate(R.layout.fragment_window, container, false)
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-       /* textResult.setOnClickListener {
+        val textResult = getView()!!.findViewById<AppCompatTextView>(R.id.textResult)
+        val filterImage = getView()!!.findViewById<ImageButton>(R.id.filterImage)
+        textResult.setOnClickListener {
             (activity as TreatmentActivity).openBottomSheet()
         }
 
@@ -34,12 +37,14 @@ class WindowFragment : BottomSheetDialogFragment(), OnBottomSheetCallbacks {
             } else  {
                 (activity as TreatmentActivity).openBottomSheet()
             }
-        }*/
+        }
     }
 
     override fun onStateChanged(bottomSheet: View, newState: Int) {
+        val textResult = getView()!!.findViewById<AppCompatTextView>(R.id.textResult)
+        val filterImage = getView()!!.findViewById<ImageButton>(R.id.filterImage)
         currentState = newState
-       /* when (newState) {
+        when (newState) {
             BottomSheetBehavior.STATE_EXPANDED -> {
                 textResult.text = "0 results"
                 filterImage.setImageResource(R.drawable.ic_baseline_filter_list_24)
@@ -48,6 +53,6 @@ class WindowFragment : BottomSheetDialogFragment(), OnBottomSheetCallbacks {
                 textResult.text = "See the results"
                 filterImage.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
             }
-        }*/
+        }
     }
 }
