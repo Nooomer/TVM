@@ -33,7 +33,7 @@ import java.util.*
 
 
 class TreatmentActivity : AppCompatActivity() {
-    val output = File(getExternalFilesDir(null), "/recording.mp3")
+    //val output = File(getExternalFilesDir(null), "/recording.mp3")
     var mediaRecorder = MediaRecorder()
 
 
@@ -199,7 +199,7 @@ class TreatmentActivity : AppCompatActivity() {
                             Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 val permissions = arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
                 ActivityCompat.requestPermissions(this, permissions,0)
-            } else {
+            } /*else {
                 stopRecording()
                 fab3.setOnClickListener(fisrtButtonListener)
             }
@@ -213,10 +213,10 @@ class TreatmentActivity : AppCompatActivity() {
             } else {
                 startRecording()
                 fab3.setOnClickListener(secondButtonListener)
-            }
+            }*/
         }
 
-        fab3.setOnClickListener(firstButtonListener)
+        //fab3.setOnClickListener(firstButtonListener)
         if (sPref.getString("user_type", "") == "doctor") {
             fab2.visibility = View.GONE
         }
