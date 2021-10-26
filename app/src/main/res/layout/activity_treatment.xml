@@ -6,12 +6,12 @@
     android:layout_height="match_parent">
 
     <fragment
-        android:elevation="1dp"
-        app:behavior_peekHeight="70dp"
         android:id="@+id/filter_fragment"
         android:name="com.tvmedicine.WindowFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:elevation="1dp"
+        app:behavior_peekHeight="150dp"
         app:behavior_skipCollapsed="true"
         app:layout_behavior=".GestureLockedBottomSheetBehavior"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -19,30 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/ProgressIndicator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.004" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_view"
-        android:layout_width="339dp"
-        android:layout_height="611dp"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/rv_item" />
-
-<!--    <TextView-->
+    <!--    <TextView-->
 <!--        android:id="@+id/you_treatment"-->
 <!--        android:layout_width="326dp"-->
 <!--        android:layout_height="53dp"-->
@@ -55,35 +32,7 @@
 <!--        app:layout_constraintTop_toTopOf="parent"-->
 <!--        app:layout_constraintVertical_bias="1.0" />-->
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:contentDescription="000"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.929"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.928"
-        app:srcCompat="@drawable/ic_action_name" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/out_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_margin="16dp"
-        android:contentDescription="000"
-        app:layout_anchor="@+id/add_btn"
-        app:layout_anchorGravity="bottom|center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/add_btn"
-        app:layout_constraintHorizontal_bias="0.095"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.928"
-        app:srcCompat="@drawable/ic_action_name" />
+
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
