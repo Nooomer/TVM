@@ -42,24 +42,24 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/rv_item" />
 
-    <TextView
-        android:id="@+id/you_treatment"
-        android:layout_width="326dp"
-        android:layout_height="53dp"
-        android:text="@string/you_treatment"
-        android:textSize="40sp"
-        app:layout_constraintBottom_toTopOf="@+id/rv_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.188"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+<!--    <TextView-->
+<!--        android:id="@+id/you_treatment"-->
+<!--        android:layout_width="326dp"-->
+<!--        android:layout_height="53dp"-->
+<!--        android:text="@string/you_treatment"-->
+<!--        android:textSize="40sp"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/rv_view"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.188"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="1.0" />-->
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
+        android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:contentDescription="000"
         app:layout_constraintBottom_toBottomOf="parent"
