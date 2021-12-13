@@ -76,7 +76,7 @@ interface API {
             @Path("method") method_name: String?,
     ): Call<List<SymptomsModel?>?>?
     @GET("api/{method}")
-            /**Add new treatment method. P
+            /**Add new treatment method.
              * @param phone_number use for get user ID
              * @param start_date Date of start treatment
              * @param symptoms_id User choice him symptoms
