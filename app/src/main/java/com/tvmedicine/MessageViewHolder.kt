@@ -10,21 +10,16 @@ abstract class MessageViewHolder<in T>(itemView: View) : RecyclerView.ViewHolder
 
 class MyMessageViewHolder(val view: View) : MessageViewHolder<MessageItemUi>(view) {
     private val messageContent = view.findViewById<TextView>(R.id.message)
-
     override fun bind(item: MessageItemUi) {
         messageContent.text = item.content
         messageContent.setTextColor(item.textColor)
     }
-
-
 }
+
 class FriendMessageViewHolder(val view: View) : MessageViewHolder<MessageItemUi>(view) {
     private val messageContent = view.findViewById<TextView>(R.id.message)
-
     override fun bind(item: MessageItemUi) {
         messageContent.text = item.content
         messageContent.setTextColor(item.textColor)
     }
-
-
 }
