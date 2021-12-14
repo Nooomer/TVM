@@ -12,7 +12,6 @@ class RvAdapter(private var ppl_list: Array<Array<String?>>, private val item_co
         var largeTextView: TextView? = null
         var largeTextView2: TextView? = null
         var smallTextView: TextView? = null
-
         init {
             largeTextView = itemView.findViewById(R.id.textViewLarge)
             largeTextView2 = itemView.findViewById(R.id.textViewLarge2)

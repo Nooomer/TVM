@@ -30,7 +30,6 @@ class WindowFragment : BottomSheetDialogFragment(), OnBottomSheetCallbacks {
         textResult.setOnClickListener {
             (activity as TreatmentActivity).openBottomSheet()
         }
-
         filterImage.setOnClickListener {
             if (currentState == BottomSheetBehavior.STATE_EXPANDED) {
                 (activity as TreatmentActivity).closeBottomSheet()
@@ -39,7 +38,6 @@ class WindowFragment : BottomSheetDialogFragment(), OnBottomSheetCallbacks {
             }
         }
     }
-
     override fun onStateChanged(bottomSheet: View, newState: Int) {
         val textResult = view!!.findViewById<AppCompatTextView>(R.id.textResult)
         val filterImage = view!!.findViewById<ImageButton>(R.id.filterImage)

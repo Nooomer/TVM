@@ -35,11 +35,7 @@ import java.util.*
 
 class TreatmentActivity : AppCompatActivity() {
     private lateinit var listener: OnBottomSheetCallbacks
-
-    //val output = File(getExternalFilesDir(null), "/recording.mp3")
     var mediaRecorder = MediaRecorder()
-
-
     val data: Array<Array<String?>> = Array(10) { Array(3) { "" } }
     val symptomsArray: Array<Array<String?>> = Array(6) { Array(2) { "" } }
     private var viewSize: Int = 0
@@ -57,9 +53,7 @@ class TreatmentActivity : AppCompatActivity() {
     private fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
         val formatter = SimpleDateFormat(format, locale)
         return formatter.format(this)
-
     }
-
     /**Метод для запроса через Корутину*/
     private fun patientRequest(): List<TreatmentModel?>? {
         val mService = Common.retrofitService
@@ -70,7 +64,6 @@ class TreatmentActivity : AppCompatActivity() {
         //viewSize = result!!.size
         return result
     }
-
     private fun addConclusionRequest(position: Int, conc_text: String?): Boolean {
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
@@ -83,14 +76,12 @@ class TreatmentActivity : AppCompatActivity() {
         call?.execute()?.body()
         return call!!.isExecuted
     }
-
     private fun getSymptomsForAlertRequest(position: Int): String? {
         val mService = Common.retrofitService
         val call = mService.getSymptomsForUser("getSymptoms.php", position)
         val result = call?.execute()?.body()
         return result?.get(0)?.symptoms_name
     }
-
     private fun deleteTreatmentRequest(position: Int): Boolean {
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
@@ -99,7 +90,6 @@ class TreatmentActivity : AppCompatActivity() {
         call?.execute()?.body()
         return call!!.isExecuted
     }
-
     private fun treatmentAdding(symptoms_id: Int, sound_server_link_id: Int): Boolean {
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
@@ -113,7 +103,6 @@ class TreatmentActivity : AppCompatActivity() {
         val result = call?.execute()?.body()
         return result?.get(0)?.response != "false"
     }
-
     private fun symptomsRequest(): ArrayAdapter<String> {
         val mService = Common.retrofitService
         val call = mService.getAllSymptoms("getSymptoms.php")
@@ -131,21 +120,18 @@ class TreatmentActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
         return adapter
     }
-
     private fun getPatientName(result: List<TreatmentModel?>?) {
         val mService = Common.retrofitService
         val call = mService.getPatientFromId("getPatient.php", result?.get(0)?.patient_id)
         val result2 = call?.execute()?.body()
         patientSurename = result2?.get(0)?.surename
     }
-
     private fun getDoctorName(result: List<TreatmentModel?>?) {
         val mService = Common.retrofitService
         val call = mService.getPatientFromId("getDoctor.php", result?.get(0)?.doctor_id)
         val result3 = call?.execute()?.body()
         doctorSurename = result3?.get(0)?.surename
     }
-
     private fun doctorRequest(): List<TreatmentModel?>? {
         val mService = Common.retrofitService
         val call = mService.getAllTreatment("getTreatment.php")
@@ -153,14 +139,12 @@ class TreatmentActivity : AppCompatActivity() {
         //viewSize = result!!.size
         return result
     }
-
     private fun getPatientNameForDoctor(patientId: Int?) {
         val mService = Common.retrofitService
         val call = mService.getPatientFromId("getPatient.php", patientId)
         val result2 = call?.execute()?.body()
         patientSurename = result2?.get(0)?.surename
     }
-
     private fun getDoctorNameForDoctor(doctorId: Int?) {
         if (doctorId == 0) {
             return
@@ -170,7 +154,6 @@ class TreatmentActivity : AppCompatActivity() {
         val result3 = call?.execute()?.body()
         doctorSurename = result3?.get(0)?.surename
     }
-
     private fun startRecording() {
         try {
             mediaRecorder.prepare()
@@ -182,21 +165,16 @@ class TreatmentActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
-
     fun setOnBottomSheetCallbacks(onBottomSheetCallbacks: OnBottomSheetCallbacks) {
         this.listener = onBottomSheetCallbacks
     }
-
     fun closeBottomSheet() {
         mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
     }
-
     fun openBottomSheet() {
         mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
     }
-
     private var mBottomSheetBehavior: BottomSheetBehavior<View?>? = null
-
     private fun configureBackdrop() {
         val fragment = supportFragmentManager.findFragmentById(R.id.filter_fragment)
 
@@ -220,10 +198,6 @@ class TreatmentActivity : AppCompatActivity() {
         setContentView(R.layout.activity_treatment)
         supportActionBar?.elevation = 0f
         configureBackdrop()
-        //mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
-        //mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-        //mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-        //mediaRecorder.setOutputFile(output)
         sPref = getSharedPreferences("User", MODE_PRIVATE)
         indicator = findViewById(R.id.ProgressIndicator)
         indicator.showAnimationBehavior = BaseProgressIndicator.SHOW_OUTWARD
@@ -245,7 +219,6 @@ class TreatmentActivity : AppCompatActivity() {
         val fab1 = findViewById<FloatingActionButton>(R.id.out_btn)
         val spinner = addView.findViewById<View>(R.id.symptoms_spinner) as Spinner
         val fab2 = findViewById<FloatingActionButton>(R.id.add_btn)
-        //val fab3 = findViewById<FloatingActionButton>(R.id.fab3)
         lateinit var firstButtonListener:View.OnClickListener
         var rep = false
         mDialogBuilder.setView(alertView)
@@ -261,31 +234,14 @@ class TreatmentActivity : AppCompatActivity() {
             ed.apply()
             finish()
         }
-
         val secondButtonListener:View.OnClickListener = View.OnClickListener() {
             if (ContextCompat.checkSelfPermission(this,
                             Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 val permissions = arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
                 ActivityCompat.requestPermissions(this, permissions,0)
-            } /*else {
-                stopRecording()
-                fab3.setOnClickListener(fisrtButtonListener)
             }
         }
-        firstButtonListener = View.OnClickListener() {
-            if (ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                val permissions = arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-                ActivityCompat.requestPermissions(this, permissions,0)
-            } else {
-                startRecording()
-                fab3.setOnClickListener(secondButtonListener)
-            }*/
-        }
-
-        //fab3.setOnClickListener(firstButtonListener)
         if (sPref.getString("user_type", "") == "doctor") {
             fab2.visibility = View.GONE
         }
@@ -305,7 +261,6 @@ class TreatmentActivity : AppCompatActivity() {
                             def.await()
                             load(sPref, scope, result, recyclerView, indicator)
                         }
-
                     }
                     .setNegativeButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->
                         dialogInterface.cancel()
@@ -313,12 +268,10 @@ class TreatmentActivity : AppCompatActivity() {
 
            val alert3 = mDialogBuilder3.create()
             alert3.show()
-
         }
         mDialogBuilder4
                .setCancelable(false)
                .setPositiveButton(getString(R.string.add_conclusion)) { _: DialogInterface, _: Int ->
-
                        scope.launch {
                            val m: EditText = addConclusion.findViewById(R.id.conclusion_add_text_field)
 
@@ -385,7 +338,6 @@ class TreatmentActivity : AppCompatActivity() {
                 })
         )
     }
-
     private fun loadSymptomsName(addConclusion: View) {
         val m2: TextView = addConclusion.findViewById(R.id.symptoms_field)
         scope.launch {
@@ -395,7 +347,6 @@ class TreatmentActivity : AppCompatActivity() {
             m2.text = symptoms
         }
     }
-
     private fun load(sPref: SharedPreferences, scope: CoroutineScope, result: List<TreatmentModel?>?, recyclerView: RecyclerView, indicator: LinearProgressIndicator) {
         var result1 = result
         indicator.show()
