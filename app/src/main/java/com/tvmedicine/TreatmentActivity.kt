@@ -3,10 +3,8 @@ package com.tvmedicine
 
 
 import RecyclerItemClickListener
-import android.Manifest
 import android.content.DialogInterface
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.media.MediaRecorder
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,8 +14,6 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -27,15 +23,17 @@ import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.tvmedicine.RetrifitService.Common
 import com.tvmedicine.models.TreatmentModel
 import kotlinx.coroutines.*
-import java.io.File
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 class TreatmentActivity : AppCompatActivity() {
     private lateinit var listener: OnBottomSheetCallbacks
+
+    //val output = File(getExternalFilesDir(null), "/recording.mp3")
     var mediaRecorder = MediaRecorder()
+
+
     val data: Array<Array<String?>> = Array(10) { Array(3) { "" } }
     val symptomsArray: Array<Array<String?>> = Array(6) { Array(2) { "" } }
     private var viewSize: Int = 0
@@ -49,11 +47,14 @@ class TreatmentActivity : AppCompatActivity() {
     lateinit var recyclerView: RecyclerView
     val scope = CoroutineScope(Dispatchers.Main + Job())
     val result: List<TreatmentModel?>? = null
-    private fun <T> CoroutineScope.asyncIO(ioFun: () -> T) = async(Dispatchers.IO) { ioFun() }
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private fun <T> CoroutineScope.asyncIO(ioFun: () -> T) = async(dispatcher) { ioFun() }
     private fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
         val formatter = SimpleDateFormat(format, locale)
         return formatter.format(this)
+
     }
+
     /**Метод для запроса через Корутину*/
     private fun patientRequest(): List<TreatmentModel?>? {
         val mService = Common.retrofitService
@@ -64,24 +65,27 @@ class TreatmentActivity : AppCompatActivity() {
         //viewSize = result!!.size
         return result
     }
-    private fun addConclusionRequest(position: Int, conc_text: String?): Boolean {
+
+    private fun addConclusionRequest(position: Int, concText: String?): Boolean {
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
         val call = mService.addConclusion(
             "addConclusion.php",
             position,
-            conc_text,
+            concText,
             sPref.getString("login", "")
         )
         call?.execute()?.body()
         return call!!.isExecuted
     }
+
     private fun getSymptomsForAlertRequest(position: Int): String? {
         val mService = Common.retrofitService
         val call = mService.getSymptomsForUser("getSymptoms.php", position)
         val result = call?.execute()?.body()
-        return result?.get(0)?.symptoms_name
+        return result?.get(0)?.symptomsName
     }
+
     private fun deleteTreatmentRequest(position: Int): Boolean {
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
@@ -90,48 +94,53 @@ class TreatmentActivity : AppCompatActivity() {
         call?.execute()?.body()
         return call!!.isExecuted
     }
-    private fun treatmentAdding(symptoms_id: Int, sound_server_link_id: Int): Boolean {
+
+    private fun treatmentAdding(symptomsId: Int, soundServerLinkId: Int): Boolean {
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
         val call = mService.addTreatment(
             "addTreatment.php",
             sPref.getString("login", ""),
             Calendar.getInstance().time.toString("yyyy/MM/dd HH:mm:ss"),
-            symptoms_id,
-            sound_server_link_id
+            symptomsId,
+            soundServerLinkId
         )
         val result = call?.execute()?.body()
         return result?.get(0)?.response != "false"
     }
+
     private fun symptomsRequest(): ArrayAdapter<String> {
         val mService = Common.retrofitService
         val call = mService.getAllSymptoms("getSymptoms.php")
         val result = call?.execute()?.body()
         val symptoms: Array<String?> = arrayOf(
-            result?.get(0)?.symptoms_name,
-            result?.get(1)?.symptoms_name,
-            result?.get(2)?.symptoms_name,
-            result?.get(3)?.symptoms_name,
-            result?.get(4)?.symptoms_name,
-            result?.get(5)?.symptoms_name
+            result?.get(0)?.symptomsName,
+            result?.get(1)?.symptomsName,
+            result?.get(2)?.symptomsName,
+            result?.get(3)?.symptomsName,
+            result?.get(4)?.symptomsName,
+            result?.get(5)?.symptomsName
         )
         val adapter: ArrayAdapter<String> =
             ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, symptoms)
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
         return adapter
     }
-    private fun getPatientName(result: List<TreatmentModel?>?) {
-        val mService = Common.retrofitService
-        val call = mService.getPatientFromId("getPatient.php", result?.get(0)?.patient_id)
-        val result2 = call?.execute()?.body()
-        patientSurename = result2?.get(0)?.surename
-    }
-    private fun getDoctorName(result: List<TreatmentModel?>?) {
-        val mService = Common.retrofitService
-        val call = mService.getPatientFromId("getDoctor.php", result?.get(0)?.doctor_id)
-        val result3 = call?.execute()?.body()
-        doctorSurename = result3?.get(0)?.surename
-    }
+
+//    private fun getPatientName(result: List<TreatmentModel?>?) {
+//        val mService = Common.retrofitService
+//        val call = mService.getPatientFromId("getPatient.php", result?.get(0)?.patientId)
+//        val result2 = call?.execute()?.body()
+//        patientSurename = result2?.get(0)?.surename
+//    }
+
+//    private fun getDoctorName(result: List<TreatmentModel?>?) {
+//        val mService = Common.retrofitService
+//        val call = mService.getPatientFromId("getDoctor.php", result?.get(0)?.doctorId)
+//        val result3 = call?.execute()?.body()
+//        doctorSurename = result3?.get(0)?.surename
+//    }
+
     private fun doctorRequest(): List<TreatmentModel?>? {
         val mService = Common.retrofitService
         val call = mService.getAllTreatment("getTreatment.php")
@@ -139,12 +148,14 @@ class TreatmentActivity : AppCompatActivity() {
         //viewSize = result!!.size
         return result
     }
+
     private fun getPatientNameForDoctor(patientId: Int?) {
         val mService = Common.retrofitService
         val call = mService.getPatientFromId("getPatient.php", patientId)
         val result2 = call?.execute()?.body()
         patientSurename = result2?.get(0)?.surename
     }
+
     private fun getDoctorNameForDoctor(doctorId: Int?) {
         if (doctorId == 0) {
             return
@@ -154,34 +165,40 @@ class TreatmentActivity : AppCompatActivity() {
         val result3 = call?.execute()?.body()
         doctorSurename = result3?.get(0)?.surename
     }
-    private fun startRecording() {
-        try {
-            mediaRecorder.prepare()
-            mediaRecorder.start()
-            Toast.makeText(this, "Recording started!", Toast.LENGTH_SHORT).show()
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
+
+//    private fun startRecording() {
+//        try {
+//            mediaRecorder.prepare()
+//            mediaRecorder.start()
+//            Toast.makeText(this, "Recording started!", Toast.LENGTH_SHORT).show()
+//        } catch (e: IllegalStateException) {
+//            e.printStackTrace()
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//        }
+//    }
+
     fun setOnBottomSheetCallbacks(onBottomSheetCallbacks: OnBottomSheetCallbacks) {
         this.listener = onBottomSheetCallbacks
     }
+
     fun closeBottomSheet() {
         mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
     }
+
     fun openBottomSheet() {
         mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
     }
+
     private var mBottomSheetBehavior: BottomSheetBehavior<View?>? = null
+
     private fun configureBackdrop() {
         val fragment = supportFragmentManager.findFragmentById(R.id.filter_fragment)
 
         fragment?.view?.let {
             BottomSheetBehavior.from(it).let { bs ->
                 bs.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                    override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+                    override fun onSlide(bottomSheet: View, slideOffset: Float) {/*Тут должно быть пусто*/}
 
                     override fun onStateChanged(bottomSheet: View, newState: Int) {
                         listener.onStateChanged(bottomSheet, newState)
@@ -198,6 +215,10 @@ class TreatmentActivity : AppCompatActivity() {
         setContentView(R.layout.activity_treatment)
         supportActionBar?.elevation = 0f
         configureBackdrop()
+        //mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
+        //mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+        //mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+        //mediaRecorder.setOutputFile(output)
         sPref = getSharedPreferences("User", MODE_PRIVATE)
         indicator = findViewById(R.id.ProgressIndicator)
         indicator.showAnimationBehavior = BaseProgressIndicator.SHOW_OUTWARD
@@ -219,7 +240,8 @@ class TreatmentActivity : AppCompatActivity() {
         val fab1 = findViewById<FloatingActionButton>(R.id.out_btn)
         val spinner = addView.findViewById<View>(R.id.symptoms_spinner) as Spinner
         val fab2 = findViewById<FloatingActionButton>(R.id.add_btn)
-        lateinit var firstButtonListener:View.OnClickListener
+        //val fab3 = findViewById<FloatingActionButton>(R.id.fab3)
+        //lateinit var firstButtonListener:View.OnClickListener
         var rep = false
         mDialogBuilder.setView(alertView)
         mDialogBuilder2.setView(loadingView)
@@ -234,14 +256,29 @@ class TreatmentActivity : AppCompatActivity() {
             ed.apply()
             finish()
         }
-        val secondButtonListener:View.OnClickListener = View.OnClickListener() {
-            if (ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                val permissions = arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-                ActivityCompat.requestPermissions(this, permissions,0)
-            }
-        }
+
+//        val secondButtonListener:View.OnClickListener = View.OnClickListener() {
+//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                val permissions = arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+//                ActivityCompat.requestPermissions(this, permissions,0)
+//            } else {
+//                stopRecording()
+//                fab3.setOnClickListener(fisrtButtonListener)
+//            }
+//        }
+//        firstButtonListener = View.OnClickListener() {
+//            if (ContextCompat.checkSelfPermission(this,
+//                            Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
+//                            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                val permissions = arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+//                ActivityCompat.requestPermissions(this, permissions,0)
+//            } else {
+//                startRecording()
+//                fab3.setOnClickListener(secondButtonListener)
+//            }
+//        }
+
+        //fab3.setOnClickListener(firstButtonListener)
         if (sPref.getString("user_type", "") == "doctor") {
             fab2.visibility = View.GONE
         }
@@ -257,10 +294,11 @@ class TreatmentActivity : AppCompatActivity() {
                     .setPositiveButton(getString(R.string.add_treatment)) { _: DialogInterface, _: Int ->
                         scope.launch {
 
-                            val def = scope.asyncIO { treatmentAdding(spinner.selectedItemPosition + 1, sound_server_link_id = 1) }
+                            val def = scope.asyncIO { treatmentAdding(spinner.selectedItemPosition + 1, soundServerLinkId = 1) }
                             def.await()
                             load(sPref, scope, result, recyclerView, indicator)
                         }
+
                     }
                     .setNegativeButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->
                         dialogInterface.cancel()
@@ -268,10 +306,12 @@ class TreatmentActivity : AppCompatActivity() {
 
            val alert3 = mDialogBuilder3.create()
             alert3.show()
+
         }
         mDialogBuilder4
                .setCancelable(false)
                .setPositiveButton(getString(R.string.add_conclusion)) { _: DialogInterface, _: Int ->
+
                        scope.launch {
                            val m: EditText = addConclusion.findViewById(R.id.conclusion_add_text_field)
 
@@ -338,6 +378,7 @@ class TreatmentActivity : AppCompatActivity() {
                 })
         )
     }
+
     private fun loadSymptomsName(addConclusion: View) {
         val m2: TextView = addConclusion.findViewById(R.id.symptoms_field)
         scope.launch {
@@ -347,6 +388,7 @@ class TreatmentActivity : AppCompatActivity() {
             m2.text = symptoms
         }
     }
+
     private fun load(sPref: SharedPreferences, scope: CoroutineScope, result: List<TreatmentModel?>?, recyclerView: RecyclerView, indicator: LinearProgressIndicator) {
         var result1 = result
         indicator.show()
@@ -357,11 +399,11 @@ class TreatmentActivity : AppCompatActivity() {
                 viewSize = result1!!.size
                 println(viewSize)
                 for (i in 0 until viewSize) {
-                    val def1 = scope.asyncIO { getPatientNameForDoctor(result1?.get(i)?.patient_id) }
+                    val def1 = scope.asyncIO { getPatientNameForDoctor(result1?.get(i)?.patientId) }
                     def1.await()
-                    val def2 = scope.asyncIO { getDoctorNameForDoctor(result1?.get(i)?.doctor_id) }
+                    val def2 = scope.asyncIO { getDoctorNameForDoctor(result1?.get(i)?.doctorId) }
                     def2.await()
-                    startDate = result1?.get(i)?.start_date
+                    startDate = result1?.get(i)?.startDate
                     if(doctorSurename==""){
                         doctorSurename = getString(R.string.doctor_assign)
                     }
@@ -385,11 +427,11 @@ class TreatmentActivity : AppCompatActivity() {
                 viewSize = result1!!.size
                 println(viewSize)
                 for (i in 0 until viewSize) {
-                    val def1 = scope.asyncIO { getPatientNameForDoctor(result1?.get(i)?.patient_id) }
+                    val def1 = scope.asyncIO { getPatientNameForDoctor(result1?.get(i)?.patientId) }
                     def1.await()
-                    val def2 = scope.asyncIO { getDoctorNameForDoctor(result1?.get(i)?.doctor_id) }
+                    val def2 = scope.asyncIO { getDoctorNameForDoctor(result1?.get(i)?.doctorId) }
                     def2.await()
-                    startDate = result1?.get(i)?.start_date
+                    startDate = result1?.get(i)?.startDate
                     if(doctorSurename==""){
                         doctorSurename = getString(R.string.doctor_assign)
                     }

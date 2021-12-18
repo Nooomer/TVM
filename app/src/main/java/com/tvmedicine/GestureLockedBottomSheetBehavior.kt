@@ -10,8 +10,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 class GestureLockedBottomSheetBehavior<V: View>(context: Context, attributeSet: AttributeSet?) : BottomSheetBehavior<V>(context, attributeSet) {
 
     constructor(context: Context):this(context, null)
+
     override fun onInterceptTouchEvent(parent: CoordinatorLayout, child: V, event: MotionEvent): Boolean = false
+
     override fun onTouchEvent(parent: CoordinatorLayout, child: V, event: MotionEvent): Boolean = false
+
     override fun onStartNestedScroll(
         coordinatorLayout: CoordinatorLayout,
         child: V,
@@ -20,6 +23,7 @@ class GestureLockedBottomSheetBehavior<V: View>(context: Context, attributeSet: 
         axes: Int,
         type: Int
     ): Boolean = false
+
     override fun onNestedPreScroll(
         coordinatorLayout: CoordinatorLayout,
         child: V,
@@ -28,8 +32,10 @@ class GestureLockedBottomSheetBehavior<V: View>(context: Context, attributeSet: 
         dy: Int,
         consumed: IntArray,
         type: Int
-    ) { }
-    override fun onStopNestedScroll(coordinatorLayout: CoordinatorLayout, child: V, target: View, type: Int) { }
+    ) {/* Эта функция должна быть пустой */}
+
+    override fun onStopNestedScroll(coordinatorLayout: CoordinatorLayout, child: V, target: View, type: Int) {/*Эта функция должна быть пустой*/ }
+
     override fun onNestedFling(
         coordinatorLayout: CoordinatorLayout,
         child: V,

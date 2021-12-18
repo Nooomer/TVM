@@ -10,111 +10,111 @@ import retrofit2.http.Query
 interface API {
     @GET("api/{method}")
     /**Auth methods.
-     * @param method_name it method name which need use. Type - [String]
-     * @param phone_number it phone number which use like login. Type - [String]
+     * @param methodName it method name which need use. Type - [String]
+     * @param phoneNumber it phone number which use like login. Type - [String]
      * @param password it password for auth. Type - [String]
      *@return [AuthModel] */
     fun auth(
-            @Path("method") method_name: String?,
-            @Query("phone_number") phone_number: String?,
-            @Query("password") password: String
+        @Path("method") methodName: String?,
+        @Query("phone_number") phoneNumber: String?,
+        @Query("password") password: String
     ): Call<List<AuthModel?>?>?
     @GET("api/{method}")
             /**Get all patient methods.
              * @return [PatientModel]*/
     fun getAllPatient(
-            @Path("method") method_name: String?
+            @Path("method") methodName: String?
     ): Call<List<PatientModel?>?>?
     @GET("api/{method}")
             /**Get patient by ID methods
              * @param id Patient id information about which need get. Type - [String]
              * @return [PatientModel]*/
     fun getPatientFromId(
-            @Path("method") method_name: String?,
-            @Query("id") id:Int?
+        @Path("method") methodName: String?,
+        @Query("id") id:Int?
     ): Call<List<PatientModel?>?>?
     @GET("api/{method}")
             /**Get all treatment methods.
              * @return [TreatmentModel]*/
     fun getAllTreatment(
-            @Path("method") method_name: String?,
+        @Path("method") methodName: String?,
     ): Call<List<TreatmentModel?>?>?
     @GET("api/{method}")
             /**Get treatment by ID methods.
              *  @param id Treatment id information about which need get. Type - [String]
              *  @return [TreatmentModel]*/
     fun getTreatmentFromId(
-            @Path("method") method_name: String?,
-            @Query("id") id:Int
+        @Path("method") methodName: String?,
+        @Query("id") id:Int
     ): Call<List<TreatmentModel?>?>?
     @GET("api/{method}")
             /**Get treatment for User by phone number.
-             * @param phone_number it Param use for get Treatment for user
+             * @param phoneNumber it Param use for get Treatment for user
              * @return [TreatmentModel]*/
     fun getTreatmentByUser(
-            @Path("method") method_name: String?,
-            @Query("phone_number") phone_number: String?
+        @Path("method") methodName: String?,
+        @Query("phone_number") phoneNumber: String?
     ): Call<List<TreatmentModel?>?>?
     @GET("api/{method}")
             /**Get all doctors methods.
              * @return [DoctorModel]*/
     fun getAllDoctor(
-            @Path("method") method_name: String?,
+        @Path("method") methodName: String?,
     ): Call<List<DoctorModel?>?>?
     @GET("api/{method}")
             /**Get doctor by ID methods.
              * @param id Get Doctor info y ID
              * @return [DoctorModel]*/
     fun getDoctorFromId(
-            @Path("method") method_name: String?,
-            @Query("id") id:Int?
+        @Path("method") methodName: String?,
+        @Query("id") id:Int?
     ): Call<List<DoctorModel?>?>?
     @GET("api/{method}")
             /**Get symptoms methods.
              * @return [SymptomsModel]*/
     fun getAllSymptoms(
-            @Path("method") method_name: String?,
+        @Path("method") methodName: String?,
     ): Call<List<SymptomsModel?>?>?
     @GET("api/{method}")
             /**Add new treatment method.
-             * @param phone_number use for get user ID
-             * @param start_date Date of start treatment
-             * @param symptoms_id User choice him symptoms
-             * @param sound_server_link_id User record him sound*
+             * @param phoneNumber use for get user ID
+             * @param startDate Date of start treatment
+             * @param symptomsId User choice him symptoms
+             * @param soundServerLinkId User record him sound*
              * @return [AuthModel]*/
     fun addTreatment(
-            @Path("method") method_name: String?,
-            @Query("phone_number") phone_number: String?,
-            @Query("start_date") start_date:String?,
-            @Query("symptoms_id") symptoms_id:Int?,
-            @Query("sound_server_link_id") sound_server_link_id:Int?
+        @Path("method") methodName: String?,
+        @Query("phone_number") phoneNumber: String?,
+        @Query("start_date") startDate:String?,
+        @Query("symptoms_id") symptomsId:Int?,
+        @Query("sound_server_link_id") soundServerLinkId:Int?
     ): Call<List<AuthModel?>?>?
     /**Add conclusion methods.
-     * @param treat_id Treatment ID where need add conclusion
-     * @param conc_text Conclusion text for treatment
-     * @param phone_number Phone number for get patient ID
+     * @param treatId Treatment ID where need add conclusion
+     * @param concText Conclusion text for treatment
+     * @param phoneNumber Phone number for get patient ID
      * @return [AuthModel] */
     @GET("api/{method}")
     fun addConclusion(
-            @Path("method") method_name: String?,
-            @Query("treat_id") treat_id: Int?,
-            @Query("conc_text") conc_text: String?,
-            @Query("phone_number") phone_number: String?
+        @Path("method") methodName: String?,
+        @Query("treat_id") treatId: Int?,
+        @Query("conc_text") concText: String?,
+        @Query("phone_number") phoneNumber: String?
     ): Call<List<AuthModel?>?>?
     /**Delete treatment methods.
-     * @param treat_id Treatment ID which need delete
+     * @param treatId Treatment ID which need delete
      * @return [AuthModel]*/
     @GET("api/{method}")
     fun deleteTreatment(
-            @Path("method") method_name: String?,
-            @Query("treat_id") treat_id: Int?,
-            @Query("phone_number") phone_number: String?
+        @Path("method") methodName: String?,
+        @Query("treat_id") treatId: Int?,
+        @Query("phone_number") phoneNumber: String?
     ): Call<List<AuthModel?>?>?
     @GET("api/{method}")
             /**Get symptoms methods.
              * @return [SymptomsModel]*/
     fun getSymptomsForUser(
-            @Path("method") method_name: String?,
-            @Query("treat_id") treat_id: Int?
+        @Path("method") methodName: String?,
+        @Query("treat_id") treatId: Int?
     ): Call<List<SymptomsModel?>?>?
 }
