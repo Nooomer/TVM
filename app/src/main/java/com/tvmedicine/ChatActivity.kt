@@ -65,7 +65,7 @@ class ChatActivity : AppCompatActivity() {
                 viewSize = result1!!.size
                 println(viewSize)
                 for (i in 0 until viewSize) {
-                    messageDate = result1?.get(i)?.messageDateTime.toString()
+                    messageDate = result1?.get(i)?.message_date_time.toString()
                     data.add(i,MessageItemUi(result1!![i]?.text,Color.WHITE,result1!![i]?.text.toUserType()))
                     recyclerView.adapter = ChatAdapter(data)
                 }

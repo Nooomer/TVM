@@ -55,14 +55,13 @@ class TreatmentActivity : AppCompatActivity() {
     }
 
     /**Метод для запроса через Корутину*/
-    private fun patientRequest(): List<TreatmentModel?> {
+    private fun patientRequest(): List<TreatmentModel?>? {
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
         val call = mService.getTreatmentByUser("getTreatment.php", sPref.getString("login", ""))
         println(sPref.getString("login", ""))
         val result = call?.execute()?.body()
-        //viewSize = result!!.size
-        println(result!![0]?.patientId)
+        println(result)
         return result
     }
 
@@ -83,7 +82,7 @@ class TreatmentActivity : AppCompatActivity() {
         val mService = Common.retrofitService
         val call = mService.getSymptomsForUser("getSymptoms.php", position)
         val result = call?.execute()?.body()
-        return result?.get(0)?.symptomsName
+        return result?.get(0)?.symptoms_name
     }
 
     private fun deleteTreatmentRequest(position: Int): Boolean {
@@ -114,12 +113,12 @@ class TreatmentActivity : AppCompatActivity() {
         val call = mService.getAllSymptoms("getSymptoms.php")
         val result = call?.execute()?.body()
         val symptoms: Array<String?> = arrayOf(
-            result?.get(0)?.symptomsName,
-            result?.get(1)?.symptomsName,
-            result?.get(2)?.symptomsName,
-            result?.get(3)?.symptomsName,
-            result?.get(4)?.symptomsName,
-            result?.get(5)?.symptomsName
+            result?.get(0)?.symptoms_name,
+            result?.get(1)?.symptoms_name,
+            result?.get(2)?.symptoms_name,
+            result?.get(3)?.symptoms_name,
+            result?.get(4)?.symptoms_name,
+            result?.get(5)?.symptoms_name
         )
         val adapter: ArrayAdapter<String> =
             ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, symptoms)
@@ -127,19 +126,19 @@ class TreatmentActivity : AppCompatActivity() {
         return adapter
     }
 
-//    private fun getPatientName(result: List<TreatmentModel?>?) {
-//        val mService = Common.retrofitService
-//        val call = mService.getPatientFromId("getPatient.php", result?.get(0)?.patientId)
-//        val result2 = call?.execute()?.body()
-//        patientSurename = result2?.get(0)?.surename
-//    }
+    private fun getPatientName(result: List<TreatmentModel?>?) {
+        val mService = Common.retrofitService
+        val call = mService.getPatientFromId("getPatient.php", result?.get(0)?.patient_id)
+        val result2 = call?.execute()?.body()
+        patientSurename = result2?.get(0)?.surename
+    }
 
-//    private fun getDoctorName(result: List<TreatmentModel?>?) {
-//        val mService = Common.retrofitService
-//        val call = mService.getPatientFromId("getDoctor.php", result?.get(0)?.doctorId)
-//        val result3 = call?.execute()?.body()
-//        doctorSurename = result3?.get(0)?.surename
-//    }
+    private fun getDoctorName(result: List<TreatmentModel?>?) {
+        val mService = Common.retrofitService
+        val call = mService.getPatientFromId("getDoctor.php", result?.get(0)?.doctor_id)
+        val result3 = call?.execute()?.body()
+        doctorSurename = result3?.get(0)?.surename
+    }
 
     private fun doctorRequest(): List<TreatmentModel?>? {
         val mService = Common.retrofitService
@@ -405,11 +404,11 @@ class TreatmentActivity : AppCompatActivity() {
                 viewSize = result1!!.size
                 println(viewSize)
                 for (i in 0 until viewSize) {
-                    val def1 = scope.asyncIO { getPatientNameForDoctor(result1?.get(i)?.patientId) }
+                    val def1 = scope.asyncIO { getPatientNameForDoctor(result1?.get(i)?.patient_id) }
                     def1.await()
-                    val def2 = scope.asyncIO { getDoctorNameForDoctor(result1?.get(i)?.doctorId) }
+                    val def2 = scope.asyncIO { getDoctorNameForDoctor(result1?.get(i)?.doctor_id) }
                     def2.await()
-                    startDate = result1?.get(i)?.startDate
+                    startDate = result1?.get(i)?.start_date
                     if(doctorSurename==""){
                         doctorSurename = getString(R.string.doctor_assign)
                     }
@@ -431,13 +430,15 @@ class TreatmentActivity : AppCompatActivity() {
                 val def = scope.asyncIO { result1 = doctorRequest() }
                 def.await()
                 viewSize = result1!!.size
+                println(result1)
                 println(viewSize)
+
                 for (i in 0 until viewSize) {
-                    val def1 = scope.asyncIO { getPatientNameForDoctor(result1?.get(i)?.patientId) }
+                    val def1 = scope.asyncIO { getPatientNameForDoctor(result1?.get(i)?.patient_id) }
                     def1.await()
-                    val def2 = scope.asyncIO { getDoctorNameForDoctor(result1?.get(i)?.doctorId) }
+                    val def2 = scope.asyncIO { getDoctorNameForDoctor(result1?.get(i)?.doctor_id) }
                     def2.await()
-                    startDate = result1?.get(i)?.startDate
+                    startDate = result1?.get(i)?.start_date
                     if(doctorSurename==""){
                         doctorSurename = getString(R.string.doctor_assign)
                     }

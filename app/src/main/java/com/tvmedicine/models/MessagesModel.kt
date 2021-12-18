@@ -3,12 +3,12 @@ package com.tvmedicine.models
 import java.util.*
 
 data class MessagesModel(
-    val messageId: Int,
-    val chatId: Int,
-    val atUserId: Int,
-    val userType: String,
+    val message_id: Int,
+    val chat_id: Int,
+    val atUser_id: Int,
+    val user_type: String,
     val text: String,
-    val messageDateTime: Date
+    val message_date_time: Date
     )
 
 

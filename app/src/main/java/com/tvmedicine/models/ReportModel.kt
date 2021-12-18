@@ -2,6 +2,6 @@ package com.tvmedicine.models
 
 data class ReportModel(
     val id:Int,
-    val treatmentId:Int,
-    val reportDate:String
+    val treatment_id:Int,
+    val report_date:String
 )

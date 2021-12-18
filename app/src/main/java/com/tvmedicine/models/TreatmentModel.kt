@@ -2,11 +2,11 @@ package com.tvmedicine.models
 
 data class TreatmentModel(
         val id : Int,
-        val chatId: Int,
-        val patientId : Int,
-        val doctorId : Int,
-        val startDate: String,
-        val symptomsId: Int,
-        val soundServerLinkId: Int,
-        val conclusionId:Int
+        val chat_id: Int,
+        val patient_id : Int,
+        val doctor_id : Int,
+        val start_date: String,
+        val symptoms_id: Int,
+        val sound_server_link_id: Int,
+        val conclusion_Id:Int
 )

@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TVMedicine">
         <activity
-            android:name=".chatActivity"
+            android:name=".ChatActivity"
             android:exported="true" />
         <activity
             android:name=".TreatmentActivity"
