@@ -117,4 +117,12 @@ interface API {
         @Path("method") methodName: String?,
         @Query("treat_id") treatId: Int?
     ): Call<List<SymptomsModel?>?>?
+
+    @GET("api/{method}")
+            /**Get all message from treatment chat methods.
+             * @return [MessagesModel]*/
+    fun getMessages(
+        @Path("method") methodName: String?,
+        @Query("treatment_id") treatId: Int?
+    ): Call<List<MessagesModel?>?>?
 }
