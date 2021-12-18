@@ -22,9 +22,9 @@ class ChatActivity : AppCompatActivity() {
     lateinit var indicator: LinearProgressIndicator
     lateinit var recyclerView: RecyclerView
     val scope = CoroutineScope(Dispatchers.Main + Job())
-    val result: List<MessagesModel?>? = null
+    var result: List<MessagesModel?>? = null
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-    private fun <T> CoroutineScope.asyncIO(ioFun: () -> T) = async(dispatcher) { ioFun() }
+    private fun <T> CoroutineScope.asyncIO(ioFun: () -> T) = async(Dispatchers.IO) { ioFun() }
     private fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
         val formatter = SimpleDateFormat(format, locale)
         return formatter.format(this)
@@ -42,9 +42,10 @@ class ChatActivity : AppCompatActivity() {
     private fun allMessageRequest(): List<MessagesModel?>? {
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
-        val call = mService.getMessages("getAllMessage.php", 1)
+        val call = mService.getMessages("getChatMessage.php", 1)
         //viewSize = result!!.size
-        return call?.execute()?.body()
+        result = call?.execute()?.body()
+        return result
     }
     private fun String?.toUserType():Int {
         if (this == "patient") {
@@ -64,9 +65,10 @@ class ChatActivity : AppCompatActivity() {
                 def.await()
                 viewSize = result1!!.size
                 println(viewSize)
+                println(result1)
                 for (i in 0 until viewSize) {
                     messageDate = result1?.get(i)?.message_date_time.toString()
-                    data.add(i,MessageItemUi(result1!![i]?.text,Color.WHITE,result1!![i]?.text.toUserType()))
+                    data.add(i,MessageItemUi(result1!![i]?.text,Color.WHITE,result1!![i]?.user_type.toUserType()))
                     recyclerView.adapter = ChatAdapter(data)
                 }
             }
