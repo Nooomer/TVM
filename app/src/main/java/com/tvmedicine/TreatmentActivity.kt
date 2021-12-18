@@ -4,6 +4,7 @@ package com.tvmedicine
 
 import RecyclerItemClickListener
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.SharedPreferences
 import android.media.MediaRecorder
 import android.os.Bundle
@@ -32,8 +33,6 @@ class TreatmentActivity : AppCompatActivity() {
 
     //val output = File(getExternalFilesDir(null), "/recording.mp3")
     var mediaRecorder = MediaRecorder()
-
-
     val data: Array<Array<String?>> = Array(10) { Array(3) { "" } }
     val symptomsArray: Array<Array<String?>> = Array(6) { Array(2) { "" } }
     private var viewSize: Int = 0
@@ -363,10 +362,14 @@ class TreatmentActivity : AppCompatActivity() {
                 RecyclerItemClickListener(this, recyclerView, object : RecyclerItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
                         this@TreatmentActivity.position = position+1
-                        if(sPref.getString("user_type","")=="doctor") {
-                            loadSymptomsName(addConclusion)
-                           alert2.show()
-                        }
+//                        if(sPref.getString("user_type","")=="doctor") {
+//                            loadSymptomsName(addConclusion)
+//                           alert2.show()
+                        val intent = Intent(
+                            applicationContext,
+                            ChatActivity::class.java
+                        )
+                        startActivity(intent)
                     }
                     override fun onLongItemClick(view: View?, position: Int) {
                         this@TreatmentActivity.position = position
