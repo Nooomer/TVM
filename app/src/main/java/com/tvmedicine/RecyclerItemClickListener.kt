@@ -34,7 +34,7 @@ class RecyclerItemClickListener(context: Context?, recyclerView: RecyclerView, p
         return false
     }
 
-    override fun onTouchEvent(view: RecyclerView, motionEvent: MotionEvent) {}
-    override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+    override fun onTouchEvent(view: RecyclerView, motionEvent: MotionEvent) {/*Тут должно быть пусто*/}
+    override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {/*Тут должно быть пусто*/}
 
 }

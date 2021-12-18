@@ -32,9 +32,9 @@ class GestureLockedBottomSheetBehavior<V: View>(context: Context, attributeSet: 
         dy: Int,
         consumed: IntArray,
         type: Int
-    ) { }
+    ) {/* Эта функция должна быть пустой */}
 
-    override fun onStopNestedScroll(coordinatorLayout: CoordinatorLayout, child: V, target: View, type: Int) { }
+    override fun onStopNestedScroll(coordinatorLayout: CoordinatorLayout, child: V, target: View, type: Int) {/*Эта функция должна быть пустой*/ }
 
     override fun onNestedFling(
         coordinatorLayout: CoordinatorLayout,

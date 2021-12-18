@@ -74,9 +74,9 @@ class MainActivity : AppCompatActivity() {
                                 ?.enqueue(object : Callback<List<AuthModel?>?> {
                                     override fun onResponse(
                                         call: Call<List<AuthModel?>?>?,
-                                        AuthResponse: Response<List<AuthModel?>?>?
+                                        authResponse: Response<List<AuthModel?>?>?
                                     ) {
-                                        if (AuthResponse?.body()?.get(0)?.response == "true") {
+                                        if (authResponse?.body()?.get(0)?.response == "true") {
                                             val intent = Intent(
                                                     applicationContext,
                                                     TreatmentActivity::class.java
