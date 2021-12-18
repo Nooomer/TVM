@@ -47,7 +47,7 @@ class TreatmentActivity : AppCompatActivity() {
     val scope = CoroutineScope(Dispatchers.Main + Job())
     val result: List<TreatmentModel?>? = null
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-    private fun <T> CoroutineScope.asyncIO(ioFun: () -> T) = async(dispatcher) { ioFun() }
+    private fun <T> CoroutineScope.asyncIO(ioFun: () -> T) = async(Dispatchers.IO) { ioFun() }
     private fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
         val formatter = SimpleDateFormat(format, locale)
         return formatter.format(this)
@@ -55,13 +55,14 @@ class TreatmentActivity : AppCompatActivity() {
     }
 
     /**Метод для запроса через Корутину*/
-    private fun patientRequest(): List<TreatmentModel?>? {
+    private fun patientRequest(): List<TreatmentModel?> {
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
         val call = mService.getTreatmentByUser("getTreatment.php", sPref.getString("login", ""))
         println(sPref.getString("login", ""))
         val result = call?.execute()?.body()
         //viewSize = result!!.size
+        println(result!![0]?.patientId)
         return result
     }
 
@@ -398,7 +399,9 @@ class TreatmentActivity : AppCompatActivity() {
         if (sPref.getString("user_type", "") == "patient") {
             scope.launch {
                 val def = scope.asyncIO { result1 = patientRequest() }
+                //result1 = patientRequest()
                 def.await()
+                println(result1)
                 viewSize = result1!!.size
                 println(viewSize)
                 for (i in 0 until viewSize) {
