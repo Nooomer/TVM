@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.tvmedicine.MessageItemUi
+import com.tvmedicine.MessageItemUi.Companion.TYPE_FRIEND_MESSAGE
+import com.tvmedicine.MessageItemUi.Companion.TYPE_MY_MESSAGE
 
 class ChatAdapter(var data: MutableList<MessageItemUi>) : RecyclerView.Adapter<MessageViewHolder<*>>() {
 
@@ -37,7 +40,7 @@ class ChatAdapter(var data: MutableList<MessageItemUi>) : RecyclerView.Adapter<M
 
     override fun getItemCount(): Int = data.size
 
-    override fun getItemViewType(position: Int): Int = data[position].type
+    override fun getItemViewType(position: Int): Int = data[position].messageType
 
     class MyMessageViewHolder(val view: View) : MessageViewHolder<MessageItemUi>(view) {
         private val messageContent = view.findViewById<TextView>(R.id.message)
