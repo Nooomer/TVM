@@ -43,8 +43,8 @@ class ChatActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.rv_view2)
         recyclerView.layoutManager = LinearLayoutManager(this)
         var itemCount = recyclerView.adapter?.itemCount
-        //itemCount = 0
-        load(scope, result, recyclerView/*,itemCount*/)
+        itemCount = 0
+        load(scope, result, recyclerView,itemCount)
         sendMessageButton.setOnClickListener {
                 scope.launch {
                     val def = scope.asyncIO { result2 = sendMessage() }
@@ -54,7 +54,7 @@ class ChatActivity : AppCompatActivity() {
                     println(result2)
                     when(result2!![0]?.response){
                         "true" -> {
-                            load(scope, result, recyclerView/*, recyclerView.adapter?.itemCount*/)
+                            load(scope, result, recyclerView, recyclerView.adapter?.itemCount)
 
                         }
                         "false" -> {
@@ -132,7 +132,7 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun load(scope: CoroutineScope, result: List<MessagesModel?>?, recyclerView: RecyclerView/*, itemCount: Int?*/){
+    private fun load(scope: CoroutineScope, result: List<MessagesModel?>?, recyclerView: RecyclerView, itemCount: Int?){
         var result1 = result
             scope.launch {
                 val def = scope.asyncIO { result1 = allMessageRequest() }
@@ -140,12 +140,13 @@ class ChatActivity : AppCompatActivity() {
                 viewSize = result1!!.size
                 println(viewSize)
                 println(result1)
-                //if (itemCount != null) {
-                    for (i in 0..viewSize) {
+                if (itemCount != null) {
+                    for (i in itemCount until viewSize) {
                         messageDate = result1?.get(i)?.message_date_time.toString()
                         data.add(i,MessageItemUi(result1!![i]?.text,Color.WHITE,result1!![i]?.user_type.toUserType()))
                         recyclerView.adapter = ChatAdapter(data)
                     }
                 }
             }
+    }
 }
