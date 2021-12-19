@@ -48,18 +48,56 @@ class ChatActivity : AppCompatActivity() {
         return result
     }
     private fun String?.toUserType():Int {
-        if (this == "patient") {
-            return 0
-        } else {
-            if (this == "doctor") {
-                return 1
+        when(this){
+            "patient" -> {
+                when(sPref.getString("user_type", "")){
+                    "patient" ->{
+                        return  0
+                    }
+                    "doctor" -> {
+                        return  1
+                    }
+                    else -> {
+                        return  -1
+                    }
+                }
+
+            }
+            "doctor" ->{
+                when(sPref.getString("user_type", "")){
+                    "patient" ->{
+                        return  1
+                    }
+                    "doctor" -> {
+                        return  0
+                    }
+                    else -> {
+                        return  -1
+                    }
+                }
+            }
+            else ->{
+                return -1
             }
         }
-        return -1
     }
     private fun load(sPref: SharedPreferences, scope: CoroutineScope, result: List<MessagesModel?>?, recyclerView: RecyclerView){
         var result1 = result
         if (sPref.getString("user_type", "") == "patient") {
+            scope.launch {
+                val def = scope.asyncIO { result1 = allMessageRequest() }
+                def.await()
+                viewSize = result1!!.size
+                println(viewSize)
+                println(result1)
+                for (i in 0 until viewSize) {
+                    messageDate = result1?.get(i)?.message_date_time.toString()
+                    data.add(i,MessageItemUi(result1!![i]?.text,Color.WHITE,result1!![i]?.user_type.toUserType()))
+                    recyclerView.adapter = ChatAdapter(data)
+                }
+            }
+        }
+        if (sPref.getString("user_type", "") == "doctor") {
             scope.launch {
                 val def = scope.asyncIO { result1 = allMessageRequest() }
                 def.await()
