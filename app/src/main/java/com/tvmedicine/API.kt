@@ -125,4 +125,19 @@ interface API {
         @Path("method") methodName: String?,
         @Query("treatment_id") treatId: Int?
     ): Call<List<MessagesModel?>?>?
+
+    @GET("api/{method}")
+            /**Send Message.
+             * @param treatId Id of open treatment
+             * @param text Message text
+             * @param messageDateTime Date and time when message be send
+             * @param userType Type of user who sending message
+             * @return [MessagesModel]*/
+    fun sendMessages(
+        @Path("method") methodName: String?,
+        @Query("treatment_id") treatId: Int?,
+        @Query("text") text: String?,
+        @Query("message_datetime")  messageDateTime: String?,
+        @Query("user_type") userType: String?
+    ): Call<List<MessagesModel?>?>?
 }
