@@ -4,10 +4,14 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.tvmedicine.RetrifitService.Common
+import com.tvmedicine.models.AuthModel
 import com.tvmedicine.models.MessagesModel
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
@@ -16,13 +20,14 @@ import java.util.*
 class ChatActivity : AppCompatActivity() {
     lateinit var sPref: SharedPreferences
 
-    val data = mutableListOf<MessageItemUi>()
+    var data = mutableListOf<MessageItemUi>()
     private var viewSize: Int = 0
     private var messageDate = ""
     lateinit var indicator: LinearProgressIndicator
     lateinit var recyclerView: RecyclerView
     val scope = CoroutineScope(Dispatchers.Main + Job())
     var result: List<MessagesModel?>? = null
+    var result2: List<AuthModel?>? = null
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
     private fun <T> CoroutineScope.asyncIO(ioFun: () -> T) = async(Dispatchers.IO) { ioFun() }
     private fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
@@ -33,11 +38,45 @@ class ChatActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.chat_activity)
+        val sendMessageButton = findViewById<FloatingActionButton>(R.id.send_message_button)
         sPref = getSharedPreferences("User", MODE_PRIVATE)
         recyclerView = findViewById(R.id.rv_view2)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        load(sPref, scope, result, recyclerView)
+        var itemCount = recyclerView.adapter?.itemCount
+        //itemCount = 0
+        load(scope, result, recyclerView/*,itemCount*/)
+        sendMessageButton.setOnClickListener {
+                scope.launch {
+                    val def = scope.asyncIO { result2 = sendMessage() }
+                    def.await()
+                    viewSize = result2!!.size
+                    println(viewSize)
+                    println(result2)
+                    when(result2!![0]?.response){
+                        "true" -> {
+                            load(scope, result, recyclerView/*, recyclerView.adapter?.itemCount*/)
 
+                        }
+                        "false" -> {
+                            val toast = Toast.makeText(
+                                applicationContext,
+                                "Что-то пошло не так, сообщение не отправилось",
+                                Toast.LENGTH_SHORT
+                            )
+                            toast.show()
+                        }
+                        else -> {
+                            val toast = Toast.makeText(
+                                applicationContext,
+                                "Все еще хуже,все совсем сломалось",
+                                Toast.LENGTH_SHORT
+                            )
+                            toast.show()
+                        }
+                    }
+
+            }
+        }
     }
     private fun allMessageRequest(): List<MessagesModel?>? {
         val mService = Common.retrofitService
@@ -46,6 +85,17 @@ class ChatActivity : AppCompatActivity() {
         //viewSize = result!!.size
         result = call?.execute()?.body()
         return result
+    }
+    fun getCurrentDateTime(): Date {
+        return Calendar.getInstance().time
+    }
+    private fun sendMessage(): List<AuthModel?>? {
+        val messageText = findViewById<TextView>(R.id.message_text)
+        val mService = Common.retrofitService
+        val sPref = getSharedPreferences("User", MODE_PRIVATE)
+        val call = mService.sendMessages("sendMessage.php",1,messageText.text.toString(),getCurrentDateTime().toString("yyyy/MM/dd HH:mm:ss"),sPref.getString("user_type", ""))
+        result2 = call?.execute()?.body()
+        return result2
     }
     private fun String?.toUserType():Int {
         when(this){
@@ -81,36 +131,21 @@ class ChatActivity : AppCompatActivity() {
             }
         }
     }
-    private fun load(sPref: SharedPreferences, scope: CoroutineScope, result: List<MessagesModel?>?, recyclerView: RecyclerView){
-        var result1 = result
-        if (sPref.getString("user_type", "") == "patient") {
-            scope.launch {
-                val def = scope.asyncIO { result1 = allMessageRequest() }
-                def.await()
-                viewSize = result1!!.size
-                println(viewSize)
-                println(result1)
-                for (i in 0 until viewSize) {
-                    messageDate = result1?.get(i)?.message_date_time.toString()
-                    data.add(i,MessageItemUi(result1!![i]?.text,Color.WHITE,result1!![i]?.user_type.toUserType()))
-                    recyclerView.adapter = ChatAdapter(data)
-                }
-            }
-        }
-        if (sPref.getString("user_type", "") == "doctor") {
-            scope.launch {
-                val def = scope.asyncIO { result1 = allMessageRequest() }
-                def.await()
-                viewSize = result1!!.size
-                println(viewSize)
-                println(result1)
-                for (i in 0 until viewSize) {
-                    messageDate = result1?.get(i)?.message_date_time.toString()
-                    data.add(i,MessageItemUi(result1!![i]?.text,Color.WHITE,result1!![i]?.user_type.toUserType()))
-                    recyclerView.adapter = ChatAdapter(data)
-                }
-            }
-        }
-    }
 
+    private fun load(scope: CoroutineScope, result: List<MessagesModel?>?, recyclerView: RecyclerView/*, itemCount: Int?*/){
+        var result1 = result
+            scope.launch {
+                val def = scope.asyncIO { result1 = allMessageRequest() }
+                def.await()
+                viewSize = result1!!.size
+                println(viewSize)
+                println(result1)
+                //if (itemCount != null) {
+                    for (i in 0..viewSize) {
+                        messageDate = result1?.get(i)?.message_date_time.toString()
+                        data.add(i,MessageItemUi(result1!![i]?.text,Color.WHITE,result1!![i]?.user_type.toUserType()))
+                        recyclerView.adapter = ChatAdapter(data)
+                    }
+                }
+            }
 }

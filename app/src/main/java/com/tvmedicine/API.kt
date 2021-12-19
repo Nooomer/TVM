@@ -139,5 +139,5 @@ interface API {
         @Query("text") text: String?,
         @Query("message_datetime")  messageDateTime: String?,
         @Query("user_type") userType: String?
-    ): Call<List<MessagesModel?>?>?
+    ): Call<List<AuthModel?>?>?
 }

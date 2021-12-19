@@ -12,7 +12,10 @@ import com.tvmedicine.MessageItemUi.Companion.TYPE_MY_MESSAGE
 
 class ChatAdapter(var data: MutableList<MessageItemUi>) : RecyclerView.Adapter<MessageViewHolder<*>>() {
 
-
+    fun update(modelList:ArrayList<MessageItemUi>){
+        data = modelList
+        this.notifyDataSetChanged()
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder<*> {
         val context = parent.context
         return when (viewType) {
