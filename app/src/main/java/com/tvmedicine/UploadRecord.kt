@@ -20,7 +20,7 @@ class UploadRecord {
         val scope = CoroutineScope(Dispatchers.Main + Job())
         val fClient = FTPClient()
         val fInput = FileInputStream(path)
-        val fs = "/www/u1554079.isp.regruhosting.ru/audio/$name"
+        val fs = "/www/u1554079.isp.regruhosting.ru/audio/$name.wav"
         scope.launch {
             val def = scope.asyncIO { val hostAddress = "31.31.196.105"
                 fClient.connect(hostAddress)
