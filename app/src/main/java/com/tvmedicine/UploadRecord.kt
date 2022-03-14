@@ -16,7 +16,7 @@ class UploadRecord {
     fun upload() {
         val fClient = FTPClient()
         val fInput = FileInputStream(path)
-        val fs = name
+        val fs = "/www/u1554079.isp.regruhosting.ru/audio/$name"
         try {
             val hostAddress = "31.31.196.105"
             fClient.connect(hostAddress)

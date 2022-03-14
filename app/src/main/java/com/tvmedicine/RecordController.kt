@@ -30,6 +30,7 @@ class RecordController(private val context: Context) {
         audioRecorder?.let {
             Log.d(TAG, "Stop")
             it.stop()
+            upload.upload()
             it.release()
         }
         audioRecorder = null
