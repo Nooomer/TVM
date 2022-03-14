@@ -1,10 +1,7 @@
 package com.tvmedicine
 
-import android.Manifest
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.graphics.Color
-import android.media.MediaRecorder
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -14,7 +11,6 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -23,7 +19,6 @@ import com.tvmedicine.RetrifitService.Common
 import com.tvmedicine.models.AuthModel
 import com.tvmedicine.models.MessagesModel
 import kotlinx.coroutines.*
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import android.view.animation.OvershootInterpolator
@@ -109,7 +104,7 @@ class ChatActivity : AppCompatActivity() {
             countDownTimer?.cancel()
             countDownTimer = null
         } else {
-            recordController.start()
+            recordController.start(result)
             countDownTimer = object : CountDownTimer(60_000, VOLUME_UPDATE_DURATION) {
                 override fun onTick(p0: Long) {
                     val volume = recordController.getVolume()
