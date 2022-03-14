@@ -3,8 +3,10 @@ import android.content.Context
 import android.media.MediaRecorder
 import android.util.Log
 import com.tvmedicine.models.MessagesModel
+import com.tvmedicine.UploadRecord
 
 class RecordController(private val context: Context) {
+    private var upload = UploadRecord()
     private var audioRecorder: MediaRecorder? = null
     fun start(result: List<MessagesModel?>?) {
         Log.d(TAG, "Start")
@@ -17,6 +19,8 @@ class RecordController(private val context: Context) {
             prepare()
             start()
         }
+        upload.savePath(getAudioPath(result?.get(result.lastIndex)!!.chat_id,
+            result[result.lastIndex]!!.message_id),"${result[result.lastIndex]!!.chat_id}+${result[result.lastIndex]!!.message_id}")
     }
     private fun getAudioPath(chatId: Int, messageId: Int): String {
         return "${context.cacheDir.absolutePath}${chatId}-${messageId}.wav"
