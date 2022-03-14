@@ -1,11 +1,20 @@
 package com.tvmedicine
 
+import android.Manifest
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.media.MediaRecorder
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.provider.MediaStore.Audio
+import android.util.Log
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -14,8 +23,11 @@ import com.tvmedicine.RetrifitService.Common
 import com.tvmedicine.models.AuthModel
 import com.tvmedicine.models.MessagesModel
 import kotlinx.coroutines.*
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import android.view.animation.OvershootInterpolator
+import kotlin.math.min
 
 class ChatActivity : AppCompatActivity() {
     lateinit var sPref: SharedPreferences
@@ -28,23 +40,36 @@ class ChatActivity : AppCompatActivity() {
     val scope = CoroutineScope(Dispatchers.Main + Job())
     var result: List<MessagesModel?>? = null
     var result2: List<AuthModel?>? = null
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
     private fun <T> CoroutineScope.asyncIO(ioFun: () -> T) = async(Dispatchers.IO) { ioFun() }
+    var output = Audio()
+    //bar mediaRecorder = MediaRecorder()
+    private lateinit var audioButton: View
+    private val recordController = RecordController(this)
+    private var countDownTimer: CountDownTimer? = null
     private fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
         val formatter = SimpleDateFormat(format, locale)
         return formatter.format(this)
 
     }
     override fun onCreate(savedInstanceState: Bundle?) {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(android.Manifest.permission.RECORD_AUDIO),
+            777,
+        )
         super.onCreate(savedInstanceState)
         setContentView(R.layout.chat_activity)
         val sendMessageButton = findViewById<FloatingActionButton>(R.id.send_message_button)
         sPref = getSharedPreferences("User", MODE_PRIVATE)
+        //mediaRecorder.setOutputFile(output)
         recyclerView = findViewById(R.id.rv_view2)
         recyclerView.layoutManager = LinearLayoutManager(this)
         var itemCount = recyclerView.adapter?.itemCount
         itemCount = 0
         load(scope, result, recyclerView,itemCount)
+        audioButton = findViewById<View>(R.id.start_button).apply {
+            setOnClickListener { onButtonClicked() }
+        }
         sendMessageButton.setOnClickListener {
                 scope.launch {
                     val def = scope.asyncIO { result2 = sendMessage() }
@@ -78,6 +103,37 @@ class ChatActivity : AppCompatActivity() {
             }
         }
     }
+    private fun onButtonClicked() {
+        if (recordController.isAudioRecording()) {
+            recordController.stop()
+            countDownTimer?.cancel()
+            countDownTimer = null
+        } else {
+            recordController.start()
+            countDownTimer = object : CountDownTimer(60_000, VOLUME_UPDATE_DURATION) {
+                override fun onTick(p0: Long) {
+                    val volume = recordController.getVolume()
+                    Log.d(TAG, "Volume = $volume")
+                    handleVolume(volume)
+                }
+
+                override fun onFinish() {
+                }
+            }.apply {
+                start()
+            }
+        }
+    }
+    private fun handleVolume(volume: Int) {
+        val scale = min(8.0, volume / MAX_RECORD_AMPLITUDE + 1.0).toFloat()
+        Log.d(TAG, "Scale = $scale")
+
+        audioButton.animate()
+            .scaleX(scale)
+            .scaleY(scale)
+            .setInterpolator(interpolator)
+            .duration= VOLUME_UPDATE_DURATION
+    }
     private fun allMessageRequest(): List<MessagesModel?>? {
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
@@ -89,6 +145,38 @@ class ChatActivity : AppCompatActivity() {
     fun getCurrentDateTime(): Date {
         return Calendar.getInstance().time
     }
+    //var mediaRecorder = MediaRecorder()
+    /*private fun startRecording() {
+        try {
+            mediaRecorder.prepare()
+            mediaRecorder.start()
+            Toast.makeText(this, "Recording started!", Toast.LENGTH_SHORT).show()
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }*/
+
+/*    lateinit var firstButtonListener:View.OnClickListener
+    private fun stopRecording(){
+        mediaRecorder.stop()
+        mediaRecorder.reset()
+        mediaRecorder.release()
+    }*/
+//        firstButtonListener = View.OnClickListener() {
+//            if (ContextCompat.checkSelfPermission(this,
+//                            Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
+//                            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                val permissions = arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+//                ActivityCompat.requestPermissions(this, permissions,0)
+//            } else {
+//                startRecording()
+//                fab3.setOnClickListener(secondButtonListener)
+//            }
+//        }
+
+        //fab3.setOnClickListener(firstButtonListener)
     private fun sendMessage(): List<AuthModel?>? {
         val messageText = findViewById<TextView>(R.id.message_text)
         val mService = Common.retrofitService
@@ -100,29 +188,29 @@ class ChatActivity : AppCompatActivity() {
     private fun String?.toUserType():Int {
         when(this){
             "patient" -> {
-                when(sPref.getString("user_type", "")){
+                return when(sPref.getString("user_type", "")){
                     "patient" ->{
-                        return  0
+                        0
                     }
                     "doctor" -> {
-                        return  1
+                        1
                     }
                     else -> {
-                        return  -1
+                        -1
                     }
                 }
 
             }
             "doctor" ->{
-                when(sPref.getString("user_type", "")){
+                return when(sPref.getString("user_type", "")){
                     "patient" ->{
-                        return  1
+                        1
                     }
                     "doctor" -> {
-                        return  0
+                        0
                     }
                     else -> {
-                        return  -1
+                        -1
                     }
                 }
             }
@@ -148,5 +236,11 @@ class ChatActivity : AppCompatActivity() {
                     }
                 }
             }
+    }
+    private companion object {
+        private val TAG = MainActivity::class.java.name
+        private const val MAX_RECORD_AMPLITUDE = 32768.0
+        private const val VOLUME_UPDATE_DURATION = 100L
+        private val interpolator = OvershootInterpolator()
     }
 }
