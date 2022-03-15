@@ -8,6 +8,7 @@ data class MessagesModel(
     val at_User_id: Int,
     val user_type: String,
     val text: String,
+    val sound_server_link: String,
     val message_date_time: Date
     )
 
