@@ -226,7 +226,13 @@ class ChatActivity : AppCompatActivity() {
                 if (itemCount != null) {
                     for (i in itemCount until viewSize) {
                         messageDate = result1?.get(i)?.message_date_time.toString()
-                        data.add(i,MessageItemUi(result1!![i]?.text,Color.WHITE,result1!![i]?.user_type.toUserType()))
+                        if(result1!![i]?.sound_server_link!=null)
+                        {
+                        data.add(i,MessageItemUi("${result1!![i]?.text}\n${result1!![i]?.sound_server_link}",Color.WHITE,result1!![i]?.user_type.toUserType()))
+                            }
+                        else{
+                            data.add(i,MessageItemUi("${result1!![i]?.text}",Color.WHITE,result1!![i]?.user_type.toUserType()))
+                        }
                         recyclerView.adapter = ChatAdapter(data)
                     }
                 }
