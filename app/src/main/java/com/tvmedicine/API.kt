@@ -137,6 +137,7 @@ interface API {
         @Path("method") methodName: String?,
         @Query("treatment_id") treatId: Int?,
         @Query("text") text: String?,
+        @Query("link") sound_server_link: String?,
         @Query("message_datetime")  messageDateTime: String?,
         @Query("user_type") userType: String?
     ): Call<List<AuthModel?>?>?
