@@ -31,6 +31,7 @@ class ChatActivity : AppCompatActivity() {
     private var viewSize: Int = 0
     private var messageDate = ""
     lateinit var indicator: LinearProgressIndicator
+    lateinit var playButton: View
     lateinit var recyclerView: RecyclerView
     val scope = CoroutineScope(Dispatchers.Main + Job())
     var result: List<MessagesModel?>? = null
@@ -65,6 +66,9 @@ class ChatActivity : AppCompatActivity() {
         audioButton = findViewById<View>(R.id.start_button).apply {
             setOnClickListener { onButtonClicked() }
         }
+        playButton = findViewById<View>(R.id.play_button).apply {
+            setOnClickListener { onButtonClicked() }
+        }
         sendMessageButton.setOnClickListener {
                 scope.launch {
                     val def = scope.asyncIO { result2 = sendMessage() }
@@ -75,7 +79,6 @@ class ChatActivity : AppCompatActivity() {
                     when(result2!![0]?.response){
                         "true" -> {
                             load(scope, result, recyclerView, recyclerView.adapter?.itemCount)
-
                         }
                         "false" -> {
                             val toast = Toast.makeText(
@@ -103,6 +106,35 @@ class ChatActivity : AppCompatActivity() {
             recordController.stop()
             countDownTimer?.cancel()
             countDownTimer = null
+            scope.launch {
+                val def = scope.asyncIO { result2 = sendMessage() }
+                def.await()
+                viewSize = result2!!.size
+                println(viewSize)
+                println(result2)
+                when(result2!![0]?.response){
+                    "true" -> {
+                        load(scope, result, recyclerView, recyclerView.adapter?.itemCount)
+                    }
+                    "false" -> {
+                        val toast = Toast.makeText(
+                            applicationContext,
+                            "Что-то пошло не так, сообщение не отправилось",
+                            Toast.LENGTH_SHORT
+                        )
+                        toast.show()
+                    }
+                    else -> {
+                        val toast = Toast.makeText(
+                            applicationContext,
+                            "Все еще хуже,все совсем сломалось",
+                            Toast.LENGTH_SHORT
+                        )
+                        toast.show()
+                    }
+                }
+
+            }
         } else {
             recordController.start(result)
             countDownTimer = object : CountDownTimer(60_000, VOLUME_UPDATE_DURATION) {
@@ -113,6 +145,7 @@ class ChatActivity : AppCompatActivity() {
                 }
 
                 override fun onFinish() {
+
                 }
             }.apply {
                 start()
@@ -176,7 +209,7 @@ class ChatActivity : AppCompatActivity() {
         val messageText = findViewById<TextView>(R.id.message_text)
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
-        val call = mService.sendMessages("sendMessage.php",1,messageText.text.toString(),getCurrentDateTime().toString("yyyy/MM/dd HH:mm:ss"),sPref.getString("user_type", ""))
+        val call = mService.sendMessages("sendMessage.php",1,messageText.text.toString(),recordController.getLastUploadPath(),getCurrentDateTime().toString("yyyy/MM/dd HH:mm:ss"),sPref.getString("user_type", ""))
         result2 = call?.execute()?.body()
         return result2
     }
@@ -232,6 +265,7 @@ class ChatActivity : AppCompatActivity() {
                             }
                         else{
                             data.add(i,MessageItemUi("${result1!![i]?.text}",Color.WHITE,result1!![i]?.user_type.toUserType()))
+
                         }
                         recyclerView.adapter = ChatAdapter(data)
                     }
