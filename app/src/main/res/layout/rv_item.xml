@@ -27,4 +27,5 @@
         android:layout_gravity="right"
 
         android:textAppearance="?android:attr/textAppearanceSmall" />
+
 </LinearLayout>
