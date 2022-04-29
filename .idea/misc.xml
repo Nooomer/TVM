@@ -19,6 +19,7 @@
         <entry key="..\:/Users/ampil/Desktop/TVMedicine/app/src/main/res/layout/activity_treatment.xml" value="0.3625" />
         <entry key="..\:/Users/ampil/Desktop/TVMedicine/app/src/main/res/layout/add_layout.xml" value="0.3625" />
         <entry key="..\:/Users/ampil/Desktop/TVMedicine/app/src/main/res/layout/alert.xml" value="0.3625" />
+        <entry key="..\:/Users/ampil/Desktop/TVMedicine/app/src/main/res/layout/chat_activity.xml" value="0.23854166666666668" />
         <entry key="..\:/Users/ampil/Desktop/TVMedicine/app/src/main/res/layout/conclusion.xml" value="0.3625" />
         <entry key="..\:/Users/ampil/Desktop/TVMedicine/app/src/main/res/layout/delete_alert.xml" value="0.3625" />
         <entry key="..\:/Users/ampil/Desktop/TVMedicine/app/src/main/res/layout/fragment_window.xml" value="0.33" />
@@ -27,6 +28,13 @@
         <entry key="..\:/Users/ampil/Desktop/TVMedicine/app/src/main/res/layout/patient_auth_alert.xml" value="0.3625" />
         <entry key="..\:/Users/ampil/Desktop/TVMedicine/app/src/main/res/layout/rv_item.xml" value="0.3625" />
         <entry key="..\:/Users/ampil/Desktop/TVMedicine/app/src/main/res/layout/shape.xml" value="0.3625" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/drawable/oval.xml" value="0.253" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/activity_treatment.xml" value="0.17592592592592593" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/chat_activity.xml" value="0.264" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/fragment_window.xml" value="0.25" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/my_message_item.xml" value="0.4" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/rv_item.xml" value="0.25" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/xml/network_security_config.xml" value="0.1" />
       </map>
     </option>
   </component>

@@ -68,7 +68,6 @@ class MainActivity : AppCompatActivity() {
                     hideKeyboardFrom(applicationContext, alertView)
                     alertDialog2.show()
                     //Авторизация для пациента
-
                         val mService2 = Common.retrofitService
                         mService2.auth("authUser.php", userInput1.text.toString(), userInput2.text.toString())
                                 ?.enqueue(object : Callback<List<AuthModel?>?> {
@@ -108,7 +107,6 @@ class MainActivity : AppCompatActivity() {
                                         toast.show()
                                     }
                                 })
-
                     }
 
                 .setNegativeButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->
@@ -173,7 +171,6 @@ class MainActivity : AppCompatActivity() {
                                     toast.show()
                                 }
                             }
-
                             override fun onFailure(call: Call<List<AuthModel?>?>?, t: Throwable?) {
                                 val toast = Toast.makeText(
                                         applicationContext,
@@ -184,7 +181,6 @@ class MainActivity : AppCompatActivity() {
                                 toast.show()
                             }
                         })
-
                 }
                 .setNegativeButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->
                     dialogInterface.cancel()
@@ -192,5 +188,4 @@ class MainActivity : AppCompatActivity() {
         val alertDialog: AlertDialog = mDialogBuilder.create()
         alertDialog.show()
     }
-
 }
