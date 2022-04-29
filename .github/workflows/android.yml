@@ -22,5 +22,6 @@ jobs:
     - name: Releasing using Hub
       uses: Nooomer/action-release-releaseapk@master
       env:
+       REPO_BRANCH: master
        GITHUB_TOKEN: ${{ secrets.TOKEN }}
        APP_FOLDER: app
