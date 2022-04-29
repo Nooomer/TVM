@@ -18,7 +18,7 @@ jobs:
     - name: Make Gradle executable
       run: chmod +x ./gradlew
     - name: Build Release APK
-      run: ./gradlew assembleRelease
+      run: ./gradlew assembleDebug
     - name: Releasing using Hub
       uses: Nooomer/action-release-releaseapk@master
       env:
