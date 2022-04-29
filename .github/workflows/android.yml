@@ -9,9 +9,5 @@ jobs:
  build:
     runs-on: ubuntu-latest
     steps:
-    - name: Releasing using Hub
-      uses: ShaunLWM/action-release-debugapk@master
-      env:
-       GITHUB_TOKEN: ${{ secrets.TOKEN }}
-       APP_FOLDER: app
-       RELEASE_TITLE: New Build
+    - name: Build Android release APK when create new tag
+      uses: kyze8439690/action-release-releaseapk@1.0.0
