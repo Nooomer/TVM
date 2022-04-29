@@ -20,12 +20,14 @@ class RecordController(private val context: Context) {
             start()
         }
         upload.savePath(getAudioPath(result?.get(result.lastIndex)!!.chat_id,
-            result[result.lastIndex]!!.message_id),"${result[result.lastIndex]!!.chat_id}-${result[result.lastIndex]!!.message_id}")
+            result[result.lastIndex]!!.message_id),"${result[result.lastIndex]!!.chat_id}-${result[result.lastIndex]!!.message_id+1}")
     }
     private fun getAudioPath(chatId: Int, messageId: Int): String {
-        return "${context.cacheDir.absolutePath}${chatId}-${messageId}.wav"
+        return "${context.cacheDir.absolutePath}${chatId}-${messageId+1}.wav"
     }
-
+    fun getLastUploadPath(): String {
+        return upload.getLastUploadPath()
+    }
     fun stop() {
         audioRecorder?.let {
             Log.d(TAG, "Stop")
