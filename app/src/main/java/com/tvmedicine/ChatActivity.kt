@@ -2,15 +2,18 @@ package com.tvmedicine
 
 import android.content.SharedPreferences
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.provider.MediaStore.Audio
 import android.util.Log
 import android.view.View
+import android.view.animation.OvershootInterpolator
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -21,24 +24,26 @@ import com.tvmedicine.models.MessagesModel
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
-import android.view.animation.OvershootInterpolator
 import kotlin.math.min
+
 
 class ChatActivity : AppCompatActivity() {
     lateinit var sPref: SharedPreferences
-
+    var chatId: Int = -1
     var data = mutableListOf<MessageItemUi>()
+    var numOfMessageWithSound = mutableListOf<Int>()
     private var viewSize: Int = 0
     private var messageDate = ""
     lateinit var indicator: LinearProgressIndicator
-    lateinit var playButton: View
     lateinit var recyclerView: RecyclerView
     val scope = CoroutineScope(Dispatchers.Main + Job())
     var result: List<MessagesModel?>? = null
     var result2: List<AuthModel?>? = null
     private fun <T> CoroutineScope.asyncIO(ioFun: () -> T) = async(Dispatchers.IO) { ioFun() }
     var output = Audio()
+    private var player: AppVoicePlayer = AppVoicePlayer(this)
     //bar mediaRecorder = MediaRecorder()
+    private lateinit var playButton: View
     private lateinit var audioButton: View
     private val recordController = RecordController(this)
     private var countDownTimer: CountDownTimer? = null
@@ -63,11 +68,11 @@ class ChatActivity : AppCompatActivity() {
         var itemCount = recyclerView.adapter?.itemCount
         itemCount = 0
         load(scope, result, recyclerView,itemCount)
-        audioButton = findViewById<View>(R.id.start_button).apply {
-            setOnClickListener { onButtonClicked() }
-        }
         playButton = findViewById<View>(R.id.play_button).apply {
-            setOnClickListener { onButtonClicked() }
+            setOnClickListener { onPlayButtonClicked() }
+        }
+        audioButton = findViewById<View>(R.id.start_button).apply {
+            setOnClickListener { onSendMessageButtonClicked() }
         }
         sendMessageButton.setOnClickListener {
                 scope.launch {
@@ -101,7 +106,11 @@ class ChatActivity : AppCompatActivity() {
             }
         }
     }
-    private fun onButtonClicked() {
+
+    private fun onPlayButtonClicked() {
+        player.play("10","1")
+    }
+    private fun onSendMessageButtonClicked() {
         if (recordController.isAudioRecording()) {
             recordController.stop()
             countDownTimer?.cancel()
@@ -249,6 +258,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun load(scope: CoroutineScope, result: List<MessagesModel?>?, recyclerView: RecyclerView, itemCount: Int?){
+        numOfMessageWithSound.clear()
         var result1 = result
             scope.launch {
                 val def = scope.asyncIO { result1 = allMessageRequest() }
@@ -262,10 +272,10 @@ class ChatActivity : AppCompatActivity() {
                         if(result1!![i]?.sound_server_link!=null)
                         {
                         data.add(i,MessageItemUi("${result1!![i]?.text}\n${result1!![i]?.sound_server_link}",Color.WHITE,result1!![i]?.user_type.toUserType()))
+                            numOfMessageWithSound.add(i)
                             }
                         else{
                             data.add(i,MessageItemUi("${result1!![i]?.text}",Color.WHITE,result1!![i]?.user_type.toUserType()))
-
                         }
                         recyclerView.adapter = ChatAdapter(data)
                     }

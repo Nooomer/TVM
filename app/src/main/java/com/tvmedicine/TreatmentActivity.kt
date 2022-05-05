@@ -365,6 +365,9 @@ class TreatmentActivity : AppCompatActivity() {
 //                        if(sPref.getString("user_type","")=="doctor") {
 //                            loadSymptomsName(addConclusion)
 //                           alert2.show()
+                        val sPref = getSharedPreferences("User", MODE_PRIVATE)
+                        val ed: SharedPreferences.Editor = sPref.edit()
+                        ed.putInt("TreatID",this@TreatmentActivity.position)
                         val intent = Intent(
                             applicationContext,
                             ChatActivity::class.java

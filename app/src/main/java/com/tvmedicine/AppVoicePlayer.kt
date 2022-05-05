@@ -10,12 +10,10 @@ class AppVoicePlayer(private val context: Context) {
     private lateinit var mFile: File
     private var recordController = UploadRecord()
 
-    fun play(messageId: String,chatId: String, fileUrl: String, function: () -> Unit) {
+    fun play(messageId: String,chatId: String) {
         mFile = File("${context.cacheDir.absolutePath}${chatId}-${messageId+1}.wav")
         if (mFile.exists() && mFile.length() > 0 && mFile.isFile) {
-            startPlay {
-                function()
-            }
+            startPlay()
         } else {
             mFile.createNewFile()
             mFile = File("${context.cacheDir.absolutePath}${recordController.download()}.wav")
@@ -24,27 +22,23 @@ class AppVoicePlayer(private val context: Context) {
 
 
 
-    private fun startPlay(function: () -> Unit) {
+    private fun startPlay() {
         try {
             mMediaPlayer.setDataSource(mFile.absolutePath)
             mMediaPlayer.prepare()
             mMediaPlayer.start()
             mMediaPlayer.setOnCompletionListener {
-                stop {
-                    function()
-                }
+                stop()
             }
         } catch (e: Exception) {
         }
     }
 
-    fun stop(function: () -> Unit) {
+    fun stop() {
         try {
             mMediaPlayer.stop()
             mMediaPlayer.reset()
-            function()
         } catch (e: Exception) {
-            function()
         }
     }
 

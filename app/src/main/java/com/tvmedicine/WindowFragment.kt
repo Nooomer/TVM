@@ -25,8 +25,8 @@ class WindowFragment : BottomSheetDialogFragment(), OnBottomSheetCallbacks {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val textResult = getView()!!.findViewById<AppCompatTextView>(R.id.textResult)
-        val filterImage = getView()!!.findViewById<ImageButton>(R.id.filterImage)
+        val textResult = requireView().findViewById<AppCompatTextView>(R.id.textResult)
+        val filterImage = requireView().findViewById<ImageButton>(R.id.filterImage)
         textResult.setOnClickListener {
             (activity as TreatmentActivity).openBottomSheet()
         }
@@ -39,8 +39,8 @@ class WindowFragment : BottomSheetDialogFragment(), OnBottomSheetCallbacks {
         }
     }
     override fun onStateChanged(bottomSheet: View, newState: Int) {
-        val textResult = view!!.findViewById<AppCompatTextView>(R.id.textResult)
-        val filterImage = view!!.findViewById<ImageButton>(R.id.filterImage)
+        val textResult = requireView().findViewById<AppCompatTextView>(R.id.textResult)
+        val filterImage = requireView().findViewById<ImageButton>(R.id.filterImage)
         currentState = newState
         when (newState) {
             BottomSheetBehavior.STATE_EXPANDED -> {
