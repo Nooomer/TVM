@@ -4,8 +4,10 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.PersistableBundle
 import android.provider.MediaStore.Audio
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.OvershootInterpolator
 import android.widget.TextView
@@ -68,11 +70,19 @@ class ChatActivity : AppCompatActivity() {
         var itemCount = recyclerView.adapter?.itemCount
         itemCount = 0
         load(scope, result, recyclerView,itemCount)
-        playButton = findViewById<View>(R.id.play_button).apply {
-            setOnClickListener { onPlayButtonClicked() }
-        }
+
         audioButton = findViewById<View>(R.id.start_button).apply {
             setOnClickListener { onSendMessageButtonClicked() }
+        }
+        playButton = findViewById<View>(R.id.play_button).apply {
+            setOnClickListener {
+
+
+
+                player.play("10","1")
+
+
+            }
         }
         sendMessageButton.setOnClickListener {
                 scope.launch {
@@ -105,10 +115,6 @@ class ChatActivity : AppCompatActivity() {
 
             }
         }
-    }
-
-    private fun onPlayButtonClicked() {
-        player.play("10","1")
     }
     private fun onSendMessageButtonClicked() {
         if (recordController.isAudioRecording()) {
@@ -256,7 +262,9 @@ class ChatActivity : AppCompatActivity() {
             }
         }
     }
-
+    private fun onPlayButtonClicked() {
+        player.play("10","1")
+    }
     private fun load(scope: CoroutineScope, result: List<MessagesModel?>?, recyclerView: RecyclerView, itemCount: Int?){
         numOfMessageWithSound.clear()
         var result1 = result
