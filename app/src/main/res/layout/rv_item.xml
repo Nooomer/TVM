@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
 
         android:textAppearance="?android:attr/textAppearanceLarge" />
-
     <TextView
         android:id="@+id/textViewLarge"
         android:layout_width="wrap_content"

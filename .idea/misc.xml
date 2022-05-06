@@ -33,9 +33,10 @@
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/activity_treatment.xml" value="0.17592592592592593" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/chat_activity.xml" value="0.264" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/fragment_window.xml" value="0.25" />
-        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/my_message_item.xml" value="0.152" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/friend_message_item.xml" value="0.25" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/my_message_item.xml" value="0.2" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/patient_auth_alert.xml" value="0.1203125" />
-        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/rv_item.xml" value="0.25" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/rv_item.xml" value="0.4" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/xml/network_security_config.xml" value="0.1" />
       </map>
     </option>
