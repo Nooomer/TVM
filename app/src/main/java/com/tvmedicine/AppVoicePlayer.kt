@@ -7,7 +7,7 @@ import java.io.File
 
 class AppVoicePlayer(private val context: Context) {
 
-    private var mMediaPlayer: MediaPlayer = MediaPlayer()
+    private lateinit var mMediaPlayer: MediaPlayer
     private lateinit var mFile: File
     private var recordController = UploadRecord()
 
@@ -28,6 +28,7 @@ class AppVoicePlayer(private val context: Context) {
 
 
     private fun startPlay() {
+        init()
             mMediaPlayer.setDataSource(mFile.absolutePath)
             mMediaPlayer.prepare()
             mMediaPlayer.start()
@@ -38,11 +39,9 @@ class AppVoicePlayer(private val context: Context) {
     }
 
     fun stop() {
-        try {
             mMediaPlayer.stop()
             mMediaPlayer.reset()
-        } catch (e: Exception) {
-        }
+        release()
     }
 
     fun release() {
