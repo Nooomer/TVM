@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.tvmedicine.RetrifitService.Common
@@ -26,6 +27,7 @@ import kotlin.math.min
 
 
 class ChatActivity : AppCompatActivity() {
+    private lateinit var listener: OnBottomSheetCallbacks
     lateinit var sPref: SharedPreferences
     var chatId: Int = -1
     var data = mutableListOf<MessageItemUi>()
@@ -50,6 +52,38 @@ class ChatActivity : AppCompatActivity() {
         return formatter.format(this)
 
     }
+    fun setOnBottomSheetCallbacks(onBottomSheetCallbacks: OnBottomSheetCallbacks) {
+        this.listener = onBottomSheetCallbacks
+    }
+
+    fun closeBottomSheet() {
+        mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    fun openBottomSheet() {
+        mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private var mBottomSheetBehavior: BottomSheetBehavior<View?>? = null
+
+    private fun configureBackdrop() {
+        val fragment = supportFragmentManager.findFragmentById(R.id.filter_fragment)
+
+        fragment?.view?.let {
+            BottomSheetBehavior.from(it).let { bs ->
+                bs.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                    override fun onSlide(bottomSheet: View, slideOffset: Float) {/*Тут должно быть пусто*/}
+
+                    override fun onStateChanged(bottomSheet: View, newState: Int) {
+                        listener.onStateChanged(bottomSheet, newState)
+                    }
+                })
+
+                bs.state = BottomSheetBehavior.STATE_EXPANDED
+                mBottomSheetBehavior = bs
+            }
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         ActivityCompat.requestPermissions(
             this,
@@ -58,6 +92,7 @@ class ChatActivity : AppCompatActivity() {
         )
         super.onCreate(savedInstanceState)
         setContentView(R.layout.chat_activity)
+        configureBackdrop()
         val sendMessageButton = findViewById<FloatingActionButton>(R.id.send_message_button)
         sPref = getSharedPreferences("User", MODE_PRIVATE)
         //mediaRecorder.setOutputFile(output)
@@ -69,18 +104,15 @@ class ChatActivity : AppCompatActivity() {
         audioButton = findViewById<View>(R.id.start_button).apply {
             setOnClickListener { onSendMessageButtonClicked() }
         }
-        var mLastClickTime: Long = 0
-        val TIME_INTERVAL: Long = 1000
-        var playing:Boolean = false
+        var playing = false
         playButton = findViewById<View>(R.id.play_button).apply {
             setOnClickListener {
-                if (!playing) {
-                    player.play("10","1")
-                    mLastClickTime = System.currentTimeMillis();
-                    playing = true;
+                playing = if (!playing) {
+                    player.play("12","1")
+                    true;
                 } else {
                     player.stop()
-                    playing = false
+                    false
                 }
                 //player.play("10","1")
             }
