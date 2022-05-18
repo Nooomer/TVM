@@ -177,43 +177,11 @@ class TreatmentActivity : AppCompatActivity() {
 //        }
 //    }
 
-    fun setOnBottomSheetCallbacks(onBottomSheetCallbacks: OnBottomSheetCallbacks) {
-        this.listener = onBottomSheetCallbacks
-    }
 
-    fun closeBottomSheet() {
-        mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
-    }
-
-    fun openBottomSheet() {
-        mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-    }
-
-    private var mBottomSheetBehavior: BottomSheetBehavior<View?>? = null
-
-    private fun configureBackdrop() {
-        val fragment = supportFragmentManager.findFragmentById(R.id.filter_fragment)
-
-        fragment?.view?.let {
-            BottomSheetBehavior.from(it).let { bs ->
-                bs.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                    override fun onSlide(bottomSheet: View, slideOffset: Float) {/*Тут должно быть пусто*/}
-
-                    override fun onStateChanged(bottomSheet: View, newState: Int) {
-                        listener.onStateChanged(bottomSheet, newState)
-                    }
-                })
-
-                bs.state = BottomSheetBehavior.STATE_EXPANDED
-                mBottomSheetBehavior = bs
-            }
-        }
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_treatment)
         supportActionBar?.elevation = 0f
-        configureBackdrop()
         //mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
         //mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
         //mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
