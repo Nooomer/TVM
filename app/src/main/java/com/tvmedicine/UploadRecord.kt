@@ -1,5 +1,6 @@
 package com.tvmedicine
 
+import android.content.Context
 import android.graphics.Color
 import kotlinx.coroutines.*
 import org.apache.commons.net.ftp.FTPClient
@@ -41,11 +42,11 @@ class UploadRecord {
             }
         }
     @Throws(FileNotFoundException::class)
-    fun download(): String {
+    fun download(chat_id:String, message_id: String, context: Context) {
         val scope = CoroutineScope(Dispatchers.Main + Job())
         val fClient = FTPClient()
-        val fInput = FileOutputStream(path)
-        val fs = "/www/u1554079.isp.regruhosting.ru/audio/$name.wav"
+        val fInput = FileOutputStream("${context.cacheDir.absolutePath}${chat_id}-${message_id}")
+        val fs = "/www/u1554079.isp.regruhosting.ru/audio/${chat_id}-${message_id}.wav"
         scope.launch {
             val def = scope.asyncIO { val hostAddress = "31.31.196.105"
                 fClient.connect(hostAddress)
@@ -58,7 +59,6 @@ class UploadRecord {
                 fClient.disconnect() }
             def.await()
         }
-        return name
     }
 
     }
