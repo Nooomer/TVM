@@ -45,10 +45,10 @@ class UploadRecord {
     fun download(chat_id:String, message_id: String, context: Context) {
         val scope = CoroutineScope(Dispatchers.Main + Job())
         val fClient = FTPClient()
-        val fInput = FileOutputStream("${context.cacheDir.absolutePath}${chat_id}-${message_id}")
+        val fInput = FileOutputStream("${context.cacheDir.absolutePath}${chat_id}-${message_id}.wav")
         val fs = "/www/u1554079.isp.regruhosting.ru/audio/${chat_id}-${message_id}.wav"
-        scope.launch {
-            val def = scope.asyncIO { val hostAddress = "31.31.196.105"
+
+           val hostAddress = "31.31.196.105"
                 fClient.connect(hostAddress)
                 fClient.enterLocalPassiveMode()
                 val log = "u1554079"
@@ -56,9 +56,9 @@ class UploadRecord {
                 fClient.login(log, password)
                 fClient.retrieveFile(fs, fInput)
                 fClient.logout()
-                fClient.disconnect() }
-            def.await()
-        }
+                fClient.disconnect()
+
+
     }
 
     }

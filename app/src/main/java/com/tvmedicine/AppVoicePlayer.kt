@@ -15,7 +15,9 @@ class AppVoicePlayer(private val context: Context) {
     fun play(messageId: String,chatId: String) {
         mFile = File("${context.cacheDir.absolutePath}${chatId}-${messageId.toInt()}.wav")
         println(mFile.absoluteFile)
-        println(mFile.absolutePath)
+        println(mFile.exists())
+        println(mFile.length())
+        println(mFile.isFile)
         if (mFile.exists() && mFile.length() > 0 && mFile.isFile) {
             println("start play")
             startPlay()
@@ -34,10 +36,12 @@ class AppVoicePlayer(private val context: Context) {
                     )
                 }
                 def.await()
+                println("downloaded")
                 mFile = File(
                     "${context.cacheDir.absolutePath}${chatId}-${messageId.toInt()}.wav"
                 )
                 startPlay()
+                println("started")
             }
             }
         }
