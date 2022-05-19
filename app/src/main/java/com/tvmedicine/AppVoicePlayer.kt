@@ -32,7 +32,6 @@ class AppVoicePlayer(private val context: Context) {
                         messageId,
                         context
                     )
-
                 }
                 def.await()
                 mFile = File(

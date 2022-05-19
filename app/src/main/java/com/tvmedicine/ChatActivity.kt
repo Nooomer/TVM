@@ -4,9 +4,11 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.PersistableBundle
 import android.provider.MediaStore.Audio
 import android.util.Log
 import android.view.View
+import android.view.Window
 import android.view.animation.OvershootInterpolator
 import android.widget.TextView
 import android.widget.Toast
@@ -21,6 +23,7 @@ import com.tvmedicine.RetrifitService.Common
 import com.tvmedicine.models.AuthModel
 import com.tvmedicine.models.MessagesModel
 import kotlinx.coroutines.*
+import org.apache.commons.net.telnet.WindowSizeOptionHandler
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.min
@@ -30,6 +33,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var listener: OnBottomSheetCallbacks
     lateinit var sPref: SharedPreferences
     var chatId: Int = -1
+    val wndfrg = WindowFragment()
     var data = mutableListOf<MessageItemUi>()
     var numOfMessageWithSound = mutableListOf<Int>()
     private var viewSize: Int = 0
@@ -66,8 +70,8 @@ class ChatActivity : AppCompatActivity() {
 
     private var mBottomSheetBehavior: BottomSheetBehavior<View?>? = null
 
-    private fun configureBackdrop() {
-        val fragment = supportFragmentManager.findFragmentById(R.id.filter_fragment)
+   /* private fun configureBackdrop() {
+     val fragment = supportFragmentManager.findFragmentById(R.id.filter_fragment)
 
         fragment?.view?.let {
             BottomSheetBehavior.from(it).let { bs ->
@@ -83,7 +87,7 @@ class ChatActivity : AppCompatActivity() {
                 mBottomSheetBehavior = bs
             }
         }
-    }
+    }*/
     override fun onCreate(savedInstanceState: Bundle?) {
         ActivityCompat.requestPermissions(
             this,
@@ -92,15 +96,17 @@ class ChatActivity : AppCompatActivity() {
         )
         super.onCreate(savedInstanceState)
         setContentView(R.layout.chat_activity)
-        configureBackdrop()
+        //configureBackdrop()
+        sPref = getSharedPreferences("User", MODE_PRIVATE)
+        println("here")
+        recyclerView = findViewById(R.id.rv_view2)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        var itemCount: Int?
+        itemCount = 0
         val sendMessageButton = findViewById<FloatingActionButton>(R.id.send_message_button)
         sPref = getSharedPreferences("User", MODE_PRIVATE)
         //mediaRecorder.setOutputFile(output)
-        recyclerView = findViewById(R.id.rv_view2)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        var itemCount = recyclerView.adapter?.itemCount
-        itemCount = 0
-        load(scope, result, recyclerView,itemCount)
+
         audioButton = findViewById<View>(R.id.start_button).apply {
             setOnClickListener { onSendMessageButtonClicked() }
         }
@@ -118,38 +124,38 @@ class ChatActivity : AppCompatActivity() {
             }
         }
         sendMessageButton.setOnClickListener {
-                scope.launch {
-                    val def = scope.asyncIO { result2 = sendMessage() }
-                    def.await()
-                    viewSize = result2!!.size
-                    println(viewSize)
-                    println(result2)
-                    when(result2!![0]?.response){
-                        "true" -> {
-                            load(scope, result, recyclerView, recyclerView.adapter?.itemCount)
-                        }
-                        "false" -> {
-                            val toast = Toast.makeText(
-                                applicationContext,
-                                "Что-то пошло не так, сообщение не отправилось",
-                                Toast.LENGTH_SHORT
-                            )
-                            toast.show()
-                        }
-                        else -> {
-                            val toast = Toast.makeText(
-                                applicationContext,
-                                "Все еще хуже,все совсем сломалось",
-                                Toast.LENGTH_SHORT
-                            )
-                            toast.show()
-                        }
+            scope.launch {
+                val def = scope.asyncIO { result2 = sendMessage() }
+                def.await()
+                viewSize = result2!!.size
+                println(viewSize)
+                println(result2)
+                when(result2!![0]?.response){
+                    "true" -> {
+                        load(scope, result, recyclerView, recyclerView.adapter?.itemCount)
                     }
+                    "false" -> {
+                        val toast = Toast.makeText(
+                            applicationContext,
+                            "Что-то пошло не так, сообщение не отправилось",
+                            Toast.LENGTH_SHORT
+                        )
+                        toast.show()
+                    }
+                    else -> {
+                        val toast = Toast.makeText(
+                            applicationContext,
+                            "Все еще хуже,все совсем сломалось",
+                            Toast.LENGTH_SHORT
+                        )
+                        toast.show()
+                    }
+                }
 
             }
         }
+        load(scope, result, recyclerView,itemCount)
     }
-
     private fun onSendMessageButtonClicked() {
         if (recordController.isAudioRecording()) {
             recordController.stop()
