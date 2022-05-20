@@ -42,7 +42,7 @@ class ChatActivity : AppCompatActivity() {
     private var player: AppVoicePlayer = AppVoicePlayer(this)
     private lateinit var playButton: View
     private lateinit var audioButton: View
-    private lateinit var attachButton: Button
+    private lateinit var attachButton: FloatingActionButton
     private val recordController = RecordController(this)
     private var countDownTimer: CountDownTimer? = null
     private fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
@@ -66,7 +66,7 @@ class ChatActivity : AppCompatActivity() {
         itemCount = 0
         val sendMessageButton = findViewById<FloatingActionButton>(R.id.send_message_button)
         sPref = getSharedPreferences("User", MODE_PRIVATE)
-       attachButton = findViewById<Button>(R.id.attach_button).apply {
+       attachButton = findViewById<FloatingActionButton>(R.id.attach_button).apply {
            setOnClickListener {
                val intent = Intent(
                    applicationContext,
