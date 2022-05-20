@@ -5,11 +5,9 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.provider.MediaStore.Audio
 import android.util.Log
 import android.view.View
 import android.view.animation.OvershootInterpolator
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +15,6 @@ import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.tvmedicine.RetrifitService.Common
 import com.tvmedicine.models.AuthModel
 import com.tvmedicine.models.MessagesModel
@@ -70,7 +67,7 @@ class ChatActivity : AppCompatActivity() {
            setOnClickListener {
                val intent = Intent(
                    applicationContext,
-                   ChatActivity::class.java
+                   AttachActivity::class.java
                )
                intent.putExtra("audio_num", data_string)
                startActivity(intent) }
@@ -249,7 +246,7 @@ class ChatActivity : AppCompatActivity() {
                 println(result1)
                 if (itemCount != null) {
                     for (i in itemCount until viewSize) {
-                        messageDate = result1?.get(i)?.message_date_time.toString()
+                        //messageDate = result1?.get(i)?.message_datetime.toString()
                         if(result1!![i]?.sound_server_link!=null)
                         {
                         data.add(i,MessageItemUi("${result1!![i]?.text}\n${result1!![i]?.sound_server_link}",Color.WHITE,result1!![i]?.user_type.toUserType()))
