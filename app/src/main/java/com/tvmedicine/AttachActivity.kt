@@ -1,6 +1,5 @@
 package com.tvmedicine
 
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,14 +41,14 @@ class AttachActivity : AppCompatActivity() {
             println(result1)
             if (itemCount != null) {
                 for (i in itemCount until viewSize) {
-                   // messageDate = result1?.get(i)?.message_date_time.toString()
+                   // messageDate = result1?.get(i)?.message_datetime.toString()
                     if(result1!![i]?.sound_server_link!=null)
                     {
-                        data[i][0] = result1?.get(i)?.message_date_time.toString()
+                        data[i][1] = result1?.get(i)?.message_datetime
                         data_string[i] = result1!![i]?.message_id.toString()
                     }
-                    recyclerView.adapter = soundRvAdapter(data)
                 }
+                recyclerView.adapter = soundRvAdapter(data)
             }
         }
     }
