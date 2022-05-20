@@ -28,10 +28,15 @@
         <entry key="..\:/Users/ampil/Desktop/TVMedicine/app/src/main/res/layout/patient_auth_alert.xml" value="0.3625" />
         <entry key="..\:/Users/ampil/Desktop/TVMedicine/app/src/main/res/layout/rv_item.xml" value="0.3625" />
         <entry key="..\:/Users/ampil/Desktop/TVMedicine/app/src/main/res/layout/shape.xml" value="0.3625" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/drawable-anydpi/ic_action_name.xml" value="0.189" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/drawable/friend_bubble_shape.xml" value="0.189" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/drawable/ic_baseline_attach_file_24.xml" value="0.189" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/drawable/my_bubble_shape.xml" value="0.189" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/drawable/oval.xml" value="0.253" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/activity_attach.xml" value="0.25" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/activity_treatment.xml" value="0.17592592592592593" />
-        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/chat_activity.xml" value="0.264" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/chat_activity.xml" value="0.176" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/fragment_window.xml" value="0.25" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/friend_message_item.xml" value="0.25" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/my_message_item.xml" value="0.2" />

@@ -1,5 +1,6 @@
 package com.tvmedicine
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.animation.OvershootInterpolator
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -49,6 +51,7 @@ class ChatActivity : AppCompatActivity() {
     //bar mediaRecorder = MediaRecorder()
     private lateinit var playButton: View
     private lateinit var audioButton: View
+    private lateinit var attachButton: Button
     private val recordController = RecordController(this)
     private var countDownTimer: CountDownTimer? = null
     private fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
@@ -106,7 +109,18 @@ class ChatActivity : AppCompatActivity() {
         val sendMessageButton = findViewById<FloatingActionButton>(R.id.send_message_button)
         sPref = getSharedPreferences("User", MODE_PRIVATE)
         //mediaRecorder.setOutputFile(output)
-
+       attachButton = findViewById<Button>(R.id.attach_button).apply {
+           setOnClickListener {
+               //val sPref = getSharedPreferences("User", MODE_PRIVATE)
+               //val ed: SharedPreferences.Editor = sPref.edit()
+              // ed.put("audio_num",numOfMessageWithSound)
+               val intent = Intent(
+                   applicationContext,
+                   ChatActivity::class.java
+               )
+               intent.putExtra("audio_num", numOfMessageWithSound.toString())
+               startActivity(intent) }
+       }
         audioButton = findViewById<View>(R.id.start_button).apply {
             setOnClickListener { onSendMessageButtonClicked() }
         }
