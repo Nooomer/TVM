@@ -32,7 +32,7 @@ class soundRvAdapter(private var soundList: Array<Array<String?>>) :
     }
 
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+        return 10
     }
 
 }

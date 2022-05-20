@@ -31,6 +31,8 @@
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/drawable-anydpi/ic_action_name.xml" value="0.189" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/drawable/friend_bubble_shape.xml" value="0.189" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/drawable/ic_baseline_attach_file_24.xml" value="0.189" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/drawable/ic_baseline_filter_list_24.xml" value="0.1275" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/drawable/ic_baseline_keyboard_arrow_up_24.xml" value="0.1275" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/drawable/ic_baseline_play_arrow_24.xml" value="0.189" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/drawable/ic_launcher_background.xml" value="0.189" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/drawable/my_bubble_shape.xml" value="0.189" />
@@ -39,15 +41,22 @@
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/activity_doctor.xml" value="0.11041666666666666" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/activity_treatment.xml" value="0.17592592592592593" />
-        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/chat_activity.xml" value="0.176" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/add_layout.xml" value="0.11666666666666667" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/alert.xml" value="0.11666666666666667" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/chat_activity.xml" value="0.4" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/conclusion.xml" value="0.11666666666666667" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/delete_alert.xml" value="0.11666666666666667" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/fragment_window.xml" value="0.25" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/friend_message_item.xml" value="0.25" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/loading.xml" value="0.11666666666666667" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/my_message_item.xml" value="0.2" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/patient_auth_alert.xml" value="0.1203125" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/rv_item.xml" value="0.4" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/layout/sound_rv_item.xml" value="0.264" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/menu/app_bar_menu.xml" value="0.1203125" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/menu/menu_doctor.xml" value="0.1203125" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1275" />
+        <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1275" />
         <entry key="..\:/Users/ampil/StudioProjects/TVMedicine/app/src/main/res/xml/network_security_config.xml" value="0.1" />
       </map>
     </option>
