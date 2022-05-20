@@ -3,7 +3,6 @@ package com.tvmedicine
 import android.content.Context
 import android.media.MediaPlayer
 import kotlinx.coroutines.*
-import java.io.Console
 import java.io.File
 
 class AppVoicePlayer(private val context: Context) {
@@ -25,10 +24,8 @@ class AppVoicePlayer(private val context: Context) {
             println("download")
             mFile.createNewFile()
             val scope = CoroutineScope(Dispatchers.Main + Job())
-            var name = ""
             scope.launch {
                 val def = scope.asyncIO {
-                    val hostAddress = "31.31.196.105"
                     recordController.download(
                         chatId,
                         messageId,

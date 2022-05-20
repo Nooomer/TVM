@@ -6,25 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.tvmedicine.MessageItemUi
 import com.tvmedicine.MessageItemUi.Companion.TYPE_FRIEND_MESSAGE
 import com.tvmedicine.MessageItemUi.Companion.TYPE_MY_MESSAGE
 
-class ChatAdapter(var data: MutableList<MessageItemUi>) : RecyclerView.Adapter<MessageViewHolder<*>>() {
+class ChatAdapter(var data: MutableList<MessageItemUi>) :
+    RecyclerView.Adapter<MessageViewHolder<*>>() {
 
-    fun update(modelList:ArrayList<MessageItemUi>){
-        data = modelList
-        this.notifyDataSetChanged()
-    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder<*> {
         val context = parent.context
         return when (viewType) {
             TYPE_MY_MESSAGE -> {
-                val view = LayoutInflater.from(context).inflate(R.layout.my_message_item, parent, false)
+                val view =
+                    LayoutInflater.from(context).inflate(R.layout.my_message_item, parent, false)
                 MyMessageViewHolder(view)
             }
             TYPE_FRIEND_MESSAGE -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.friend_message_item, parent, false)
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.friend_message_item, parent, false)
                 FriendMessageViewHolder(view)
             }
             else -> throw IllegalArgumentException("Invalid view type")
@@ -53,6 +51,7 @@ class ChatAdapter(var data: MutableList<MessageItemUi>) : RecyclerView.Adapter<M
             messageContent.setTextColor(item.textColor)
         }
     }
+
     class FriendMessageViewHolder(val view: View) : MessageViewHolder<MessageItemUi>(view) {
         private val messageContent = view.findViewById<TextView>(R.id.message)
 

@@ -5,11 +5,9 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.PersistableBundle
 import android.provider.MediaStore.Audio
 import android.util.Log
 import android.view.View
-import android.view.Window
 import android.view.animation.OvershootInterpolator
 import android.widget.Button
 import android.widget.TextView
@@ -18,37 +16,30 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.tvmedicine.RetrifitService.Common
 import com.tvmedicine.models.AuthModel
 import com.tvmedicine.models.MessagesModel
 import kotlinx.coroutines.*
-import org.apache.commons.net.telnet.WindowSizeOptionHandler
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.min
 
 
 class ChatActivity : AppCompatActivity() {
-    private lateinit var listener: OnBottomSheetCallbacks
     lateinit var sPref: SharedPreferences
-    var chatId: Int = -1
-    val wndfrg = WindowFragment()
     var data = mutableListOf<MessageItemUi>()
-    var numOfMessageWithSound = mutableListOf<Int>()
+    var data_string = Array<String>(10) { "" }
+    var numOfMessageWithSound = mutableListOf<Int?>()
     private var viewSize: Int = 0
     private var messageDate = ""
-    lateinit var indicator: LinearProgressIndicator
     lateinit var recyclerView: RecyclerView
     val scope = CoroutineScope(Dispatchers.Main + Job())
     var result: List<MessagesModel?>? = null
     var result2: List<AuthModel?>? = null
     private fun <T> CoroutineScope.asyncIO(ioFun: () -> T) = async(Dispatchers.IO) { ioFun() }
-    var output = Audio()
     private var player: AppVoicePlayer = AppVoicePlayer(this)
-    //bar mediaRecorder = MediaRecorder()
     private lateinit var playButton: View
     private lateinit var audioButton: View
     private lateinit var attachButton: Button
@@ -59,38 +50,6 @@ class ChatActivity : AppCompatActivity() {
         return formatter.format(this)
 
     }
-    fun setOnBottomSheetCallbacks(onBottomSheetCallbacks: OnBottomSheetCallbacks) {
-        this.listener = onBottomSheetCallbacks
-    }
-
-    fun closeBottomSheet() {
-        mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
-    }
-
-    fun openBottomSheet() {
-        mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-    }
-
-    private var mBottomSheetBehavior: BottomSheetBehavior<View?>? = null
-
-   /* private fun configureBackdrop() {
-     val fragment = supportFragmentManager.findFragmentById(R.id.filter_fragment)
-
-        fragment?.view?.let {
-            BottomSheetBehavior.from(it).let { bs ->
-                bs.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                    override fun onSlide(bottomSheet: View, slideOffset: Float) {/*Тут должно быть пусто*/}
-
-                    override fun onStateChanged(bottomSheet: View, newState: Int) {
-                        listener.onStateChanged(bottomSheet, newState)
-                    }
-                })
-
-                bs.state = BottomSheetBehavior.STATE_EXPANDED
-                mBottomSheetBehavior = bs
-            }
-        }
-    }*/
     override fun onCreate(savedInstanceState: Bundle?) {
         ActivityCompat.requestPermissions(
             this,
@@ -99,26 +58,21 @@ class ChatActivity : AppCompatActivity() {
         )
         super.onCreate(savedInstanceState)
         setContentView(R.layout.chat_activity)
-        //configureBackdrop()
         sPref = getSharedPreferences("User", MODE_PRIVATE)
         println("here")
         recyclerView = findViewById(R.id.rv_view2)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        var itemCount: Int?
+        val itemCount: Int?
         itemCount = 0
         val sendMessageButton = findViewById<FloatingActionButton>(R.id.send_message_button)
         sPref = getSharedPreferences("User", MODE_PRIVATE)
-        //mediaRecorder.setOutputFile(output)
        attachButton = findViewById<Button>(R.id.attach_button).apply {
            setOnClickListener {
-               //val sPref = getSharedPreferences("User", MODE_PRIVATE)
-               //val ed: SharedPreferences.Editor = sPref.edit()
-              // ed.put("audio_num",numOfMessageWithSound)
                val intent = Intent(
                    applicationContext,
                    ChatActivity::class.java
                )
-               intent.putExtra("audio_num", numOfMessageWithSound.toString())
+               intent.putExtra("audio_num", data_string)
                startActivity(intent) }
        }
         audioButton = findViewById<View>(R.id.start_button).apply {
@@ -129,12 +83,11 @@ class ChatActivity : AppCompatActivity() {
             setOnClickListener {
                 playing = if (!playing) {
                     player.play("12","1")
-                    true;
+                    true
                 } else {
                     player.stop()
                     false
                 }
-                //player.play("10","1")
             }
         }
         sendMessageButton.setOnClickListener {
@@ -239,41 +192,9 @@ class ChatActivity : AppCompatActivity() {
         result = call?.execute()?.body()
         return result
     }
-    fun getCurrentDateTime(): Date {
+    private fun getCurrentDateTime(): Date {
         return Calendar.getInstance().time
     }
-    //var mediaRecorder = MediaRecorder()
-    /*private fun startRecording() {
-        try {
-            mediaRecorder.prepare()
-            mediaRecorder.start()
-            Toast.makeText(this, "Recording started!", Toast.LENGTH_SHORT).show()
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }*/
-
-/*    lateinit var firstButtonListener:View.OnClickListener
-    private fun stopRecording(){
-        mediaRecorder.stop()
-        mediaRecorder.reset()
-        mediaRecorder.release()
-    }*/
-//        firstButtonListener = View.OnClickListener() {
-//            if (ContextCompat.checkSelfPermission(this,
-//                            Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
-//                            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//                val permissions = arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-//                ActivityCompat.requestPermissions(this, permissions,0)
-//            } else {
-//                startRecording()
-//                fab3.setOnClickListener(secondButtonListener)
-//            }
-//        }
-
-        //fab3.setOnClickListener(firstButtonListener)
     private fun sendMessage(): List<AuthModel?>? {
         val messageText = findViewById<TextView>(R.id.message_text)
         val mService = Common.retrofitService
@@ -316,9 +237,7 @@ class ChatActivity : AppCompatActivity() {
             }
         }
     }
-    private fun onPlayButtonClicked() {
-        player.play("10","1")
-    }
+
     private fun load(scope: CoroutineScope, result: List<MessagesModel?>?, recyclerView: RecyclerView, itemCount: Int?){
         numOfMessageWithSound.clear()
         var result1 = result
@@ -334,7 +253,8 @@ class ChatActivity : AppCompatActivity() {
                         if(result1!![i]?.sound_server_link!=null)
                         {
                         data.add(i,MessageItemUi("${result1!![i]?.text}\n${result1!![i]?.sound_server_link}",Color.WHITE,result1!![i]?.user_type.toUserType()))
-                            numOfMessageWithSound.add(i)
+                            numOfMessageWithSound.add(result1!![i]?.message_id)
+                            data_string[i] = result1!![i]?.message_id.toString()
                             }
                         else{
                             data.add(i,MessageItemUi("${result1!![i]?.text}",Color.WHITE,result1!![i]?.user_type.toUserType()))

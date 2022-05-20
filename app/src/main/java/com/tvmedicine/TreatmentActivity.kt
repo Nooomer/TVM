@@ -1,7 +1,6 @@
 package com.tvmedicine
 
 
-
 import RecyclerItemClickListener
 import android.content.DialogInterface
 import android.content.Intent
@@ -17,7 +16,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.BaseProgressIndicator
 import com.google.android.material.progressindicator.LinearProgressIndicator
@@ -29,24 +27,18 @@ import java.util.*
 
 
 class TreatmentActivity : AppCompatActivity() {
-    private lateinit var listener: OnBottomSheetCallbacks
 
-    //val output = File(getExternalFilesDir(null), "/recording.mp3")
-    var mediaRecorder = MediaRecorder()
     val data: Array<Array<String?>> = Array(10) { Array(3) { "" } }
-    val symptomsArray: Array<Array<String?>> = Array(6) { Array(2) { "" } }
     private var viewSize: Int = 0
     var startDate: String? = ""
     var patientSurename: String? = ""
     var doctorSurename: String? = ""
-    var spinner: Spinner? = null
     var position = 0
     lateinit var sPref: SharedPreferences
     lateinit var indicator: LinearProgressIndicator
     lateinit var recyclerView: RecyclerView
     val scope = CoroutineScope(Dispatchers.Main + Job())
     val result: List<TreatmentModel?>? = null
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
     private fun <T> CoroutineScope.asyncIO(ioFun: () -> T) = async(Dispatchers.IO) { ioFun() }
     private fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
         val formatter = SimpleDateFormat(format, locale)
@@ -165,27 +157,10 @@ class TreatmentActivity : AppCompatActivity() {
         doctorSurename = result3?.get(0)?.surename
     }
 
-//    private fun startRecording() {
-//        try {
-//            mediaRecorder.prepare()
-//            mediaRecorder.start()
-//            Toast.makeText(this, "Recording started!", Toast.LENGTH_SHORT).show()
-//        } catch (e: IllegalStateException) {
-//            e.printStackTrace()
-//        } catch (e: IOException) {
-//            e.printStackTrace()
-//        }
-//    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_treatment)
         supportActionBar?.elevation = 0f
-        //mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
-        //mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-        //mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-        //mediaRecorder.setOutputFile(output)
         sPref = getSharedPreferences("User", MODE_PRIVATE)
         indicator = findViewById(R.id.ProgressIndicator)
         indicator.showAnimationBehavior = BaseProgressIndicator.SHOW_OUTWARD
@@ -207,8 +182,6 @@ class TreatmentActivity : AppCompatActivity() {
         val fab1 = findViewById<FloatingActionButton>(R.id.out_btn)
         val spinner = addView.findViewById<View>(R.id.symptoms_spinner) as Spinner
         val fab2 = findViewById<FloatingActionButton>(R.id.add_btn)
-        //val fab3 = findViewById<FloatingActionButton>(R.id.fab3)
-        //lateinit var firstButtonListener:View.OnClickListener
         var rep = false
         mDialogBuilder.setView(alertView)
         mDialogBuilder2.setView(loadingView)
@@ -223,29 +196,6 @@ class TreatmentActivity : AppCompatActivity() {
             ed.apply()
             finish()
         }
-
-//        val secondButtonListener:View.OnClickListener = View.OnClickListener() {
-//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//                val permissions = arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-//                ActivityCompat.requestPermissions(this, permissions,0)
-//            } else {
-//                stopRecording()
-//                fab3.setOnClickListener(fisrtButtonListener)
-//            }
-//        }
-//        firstButtonListener = View.OnClickListener() {
-//            if (ContextCompat.checkSelfPermission(this,
-//                            Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
-//                            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//                val permissions = arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-//                ActivityCompat.requestPermissions(this, permissions,0)
-//            } else {
-//                startRecording()
-//                fab3.setOnClickListener(secondButtonListener)
-//            }
-//        }
-
-        //fab3.setOnClickListener(firstButtonListener)
         if (sPref.getString("user_type", "") == "doctor") {
             fab2.visibility = View.GONE
         }
@@ -257,96 +207,107 @@ class TreatmentActivity : AppCompatActivity() {
                 spinner.adapter = adapter
             }
             mDialogBuilder3
-                    .setCancelable(false)
-                    .setPositiveButton(getString(R.string.add_treatment)) { _: DialogInterface, _: Int ->
-                        scope.launch {
-
-                            val def = scope.asyncIO { treatmentAdding(spinner.selectedItemPosition + 1, soundServerLinkId = 1) }
-                            def.await()
-                            load(sPref, scope, result, recyclerView, indicator)
-                        }
-
-                    }
-                    .setNegativeButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->
-                        dialogInterface.cancel()
-                    }
-
-           val alert3 = mDialogBuilder3.create()
-            alert3.show()
-
-        }
-        mDialogBuilder4
-               .setCancelable(false)
-               .setPositiveButton(getString(R.string.add_conclusion)) { _: DialogInterface, _: Int ->
-
-                       scope.launch {
-                           val m: EditText = addConclusion.findViewById(R.id.conclusion_add_text_field)
-
-                           if (sPref.getString("user_type", "") == "doctor") {
-                           val def = scope.asyncIO { rep = addConclusionRequest(position,m.text.toString()) }
-                           def.await()
-                           if (rep) {
-                               val toast = Toast.makeText(
-                                       applicationContext,
-                                       getString(R.string.good_add),
-                                       Toast.LENGTH_SHORT
-                               )
-                               toast.show()
-                               load(sPref, scope, result, recyclerView, indicator)
-                           }
-                       }
-                   }
-               }
-               .setNegativeButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->
-                   dialogInterface.cancel()
-               }
-        mDialogBuilder5
                 .setCancelable(false)
-                .setPositiveButton(getString(R.string.delete_string)) { _: DialogInterface, _: Int ->
-                    if (sPref.getString("user_type", "") == "patient") {
-                        scope.launch {
-                            addConclusion.findViewById<EditText>(R.id.conclusion_add_text_field)
-                            val def = scope.asyncIO { rep = deleteTreatmentRequest(position) }
-                            def.await()
-                            if (rep) {
-                                val toast = Toast.makeText(
-                                        applicationContext,
-                                        "Удалено",
-                                        Toast.LENGTH_SHORT
-                                )
-                                toast.show()
-                                load(sPref, scope, result, recyclerView, indicator)
-                            }
+                .setPositiveButton(getString(R.string.add_treatment)) { _: DialogInterface, _: Int ->
+                    scope.launch {
+
+                        val def = scope.asyncIO {
+                            treatmentAdding(
+                                spinner.selectedItemPosition + 1,
+                                soundServerLinkId = 1
+                            )
                         }
+                        def.await()
+                        load(sPref, scope, result, recyclerView, indicator)
                     }
+
                 }
                 .setNegativeButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->
                     dialogInterface.cancel()
                 }
-       val alert2 = mDialogBuilder4.create()
+
+            val alert3 = mDialogBuilder3.create()
+            alert3.show()
+
+        }
+        mDialogBuilder4
+            .setCancelable(false)
+            .setPositiveButton(getString(R.string.add_conclusion)) { _: DialogInterface, _: Int ->
+
+                scope.launch {
+                    val m: EditText = addConclusion.findViewById(R.id.conclusion_add_text_field)
+
+                    if (sPref.getString("user_type", "") == "doctor") {
+                        val def = scope.asyncIO {
+                            rep = addConclusionRequest(position, m.text.toString())
+                        }
+                        def.await()
+                        if (rep) {
+                            val toast = Toast.makeText(
+                                applicationContext,
+                                getString(R.string.good_add),
+                                Toast.LENGTH_SHORT
+                            )
+                            toast.show()
+                            load(sPref, scope, result, recyclerView, indicator)
+                        }
+                    }
+                }
+            }
+            .setNegativeButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->
+                dialogInterface.cancel()
+            }
+        mDialogBuilder5
+            .setCancelable(false)
+            .setPositiveButton(getString(R.string.delete_string)) { _: DialogInterface, _: Int ->
+                if (sPref.getString("user_type", "") == "patient") {
+                    scope.launch {
+                        addConclusion.findViewById<EditText>(R.id.conclusion_add_text_field)
+                        val def = scope.asyncIO { rep = deleteTreatmentRequest(position) }
+                        def.await()
+                        if (rep) {
+                            val toast = Toast.makeText(
+                                applicationContext,
+                                "Удалено",
+                                Toast.LENGTH_SHORT
+                            )
+                            toast.show()
+                            load(sPref, scope, result, recyclerView, indicator)
+                        }
+                    }
+                }
+            }
+            .setNegativeButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->
+                dialogInterface.cancel()
+            }
+        val alert2 = mDialogBuilder4.create()
         val alert1 = mDialogBuilder5.create()
         val recyclerView = findViewById<RecyclerView>(R.id.rv_view)
         recyclerView.addOnItemTouchListener(
-                RecyclerItemClickListener(this, recyclerView, object : RecyclerItemClickListener.OnItemClickListener {
+            RecyclerItemClickListener(
+                this,
+                recyclerView,
+                object : RecyclerItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
-                        this@TreatmentActivity.position = position+1
+                        this@TreatmentActivity.position = position + 1
 //                        if(sPref.getString("user_type","")=="doctor") {
 //                            loadSymptomsName(addConclusion)
 //                           alert2.show()
                         val sPref = getSharedPreferences("User", MODE_PRIVATE)
                         val ed: SharedPreferences.Editor = sPref.edit()
-                        ed.putInt("TreatID",this@TreatmentActivity.position)
+                        ed.putInt("TreatID", this@TreatmentActivity.position)
                         val intent = Intent(
                             applicationContext,
                             ChatActivity::class.java
                         )
                         startActivity(intent)
                     }
+
                     override fun onLongItemClick(view: View?, position: Int) {
                         this@TreatmentActivity.position = position
-                        if(sPref.getString("user_type","")=="patient") {
+                        if (sPref.getString("user_type", "") == "patient") {
                             loadSymptomsName(addConclusion)
-                           alert1.show()
+                            alert1.show()
                         }
                     }
                 })
@@ -363,7 +324,13 @@ class TreatmentActivity : AppCompatActivity() {
         }
     }
 
-    private fun load(sPref: SharedPreferences, scope: CoroutineScope, result: List<TreatmentModel?>?, recyclerView: RecyclerView, indicator: LinearProgressIndicator) {
+    private fun load(
+        sPref: SharedPreferences,
+        scope: CoroutineScope,
+        result: List<TreatmentModel?>?,
+        recyclerView: RecyclerView,
+        indicator: LinearProgressIndicator
+    ) {
         var result1 = result
         indicator.show()
         if (sPref.getString("user_type", "") == "patient") {
@@ -375,12 +342,13 @@ class TreatmentActivity : AppCompatActivity() {
                 viewSize = result1!!.size
                 println(viewSize)
                 for (i in 0 until viewSize) {
-                    val def1 = scope.asyncIO { getPatientNameForDoctor(result1?.get(i)?.patient_id) }
+                    val def1 =
+                        scope.asyncIO { getPatientNameForDoctor(result1?.get(i)?.patient_id) }
                     def1.await()
                     val def2 = scope.asyncIO { getDoctorNameForDoctor(result1?.get(i)?.doctor_id) }
                     def2.await()
                     startDate = result1?.get(i)?.start_date
-                    if(doctorSurename==""){
+                    if (doctorSurename == "") {
                         doctorSurename = getString(R.string.doctor_assign)
                     }
                     data[i][0] = patientSurename
@@ -405,12 +373,13 @@ class TreatmentActivity : AppCompatActivity() {
                 println(viewSize)
 
                 for (i in 0 until viewSize) {
-                    val def1 = scope.asyncIO { getPatientNameForDoctor(result1?.get(i)?.patient_id) }
+                    val def1 =
+                        scope.asyncIO { getPatientNameForDoctor(result1?.get(i)?.patient_id) }
                     def1.await()
                     val def2 = scope.asyncIO { getDoctorNameForDoctor(result1?.get(i)?.doctor_id) }
                     def2.await()
                     startDate = result1?.get(i)?.start_date
-                    if(doctorSurename==""){
+                    if (doctorSurename == "") {
                         doctorSurename = getString(R.string.doctor_assign)
                     }
                     data[i][0] = patientSurename
@@ -427,15 +396,18 @@ class TreatmentActivity : AppCompatActivity() {
             }
         }
     }
+
     override fun onDestroy() {
         super.onDestroy()
         Job().cancel()
     }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.app_bar_menu, menu)
         return true
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.refresh_button -> load(sPref, scope, result, recyclerView, indicator)
