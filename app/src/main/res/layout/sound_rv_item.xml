@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/block"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <View
-        android:id="@+id/buttonViewLarge"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:background="@drawable/ic_baseline_play_arrow_24" />
+    android:orientation="vertical"
+    android:outlineSpotShadowColor="@color/black"
+    android:outlineProvider="paddedBounds">
 
     <TextView
         android:id="@+id/textViewLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
+        android:layout_gravity="start"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <View
+        android:id="@+id/buttonViewLarge"
+        android:layout_width="59dp"
+        android:layout_height="57dp"
+        android:background="@drawable/ic_baseline_play_arrow_24" />
 
 </LinearLayout>

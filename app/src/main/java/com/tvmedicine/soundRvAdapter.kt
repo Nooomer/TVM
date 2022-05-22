@@ -7,14 +7,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 /**Class for [RecyclerView.Adapter]*/
-class soundRvAdapter(private var soundList: Array<Array<String?>>) :
+class soundRvAdapter(private var soundList: MutableList<String?>, private val itemCount: Int) :
     RecyclerView.Adapter<soundRvAdapter.MyViewHolder>() {
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var buttonViewLarge: View? = null
         var textViewLarge: TextView? = null
 
         init {
-            buttonViewLarge = itemView.findViewById(R.id.play_button)
             textViewLarge = itemView.findViewById(R.id.textViewLarge)
         }
     }
@@ -27,12 +26,12 @@ class soundRvAdapter(private var soundList: Array<Array<String?>>) :
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.textViewLarge?.text = soundList[position][1]
+        holder.textViewLarge?.text = soundList[position]
 
     }
 
     override fun getItemCount(): Int {
-        return 10
+        return itemCount
     }
 
 }
