@@ -87,7 +87,7 @@ interface API {
         @Query("phone_number") phoneNumber: String?,
         @Query("start_date") startDate:String?,
         @Query("symptoms_id") symptomsId:Int?,
-        @Query("sound_server_link_id") soundServerLinkId:Int?
+        @Query("sound_server_link_id") soundServerLinkId: Any
     ): Call<List<AuthModel?>?>?
     /**Add conclusion methods.
      * @param treatId Treatment ID where need add conclusion
