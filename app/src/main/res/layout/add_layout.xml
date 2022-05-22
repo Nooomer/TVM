@@ -9,7 +9,7 @@
     android:padding="10dp" >
 
     <TextView
-        android:id="@+id/ыньзещьы_ашдуы"
+        android:id="@+id/category_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/deasease_category"
@@ -19,13 +19,5 @@
         android:id="@+id/symptoms_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        app:srcCompat="@android:drawable/ic_btn_speak_now"
-        android:focusable="true" />
 
 </LinearLayout>
