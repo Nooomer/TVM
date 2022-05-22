@@ -5,7 +5,6 @@ import RecyclerItemClickListener
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
-import android.media.MediaRecorder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -22,6 +21,7 @@ import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.tvmedicine.RetrifitService.Common
 import com.tvmedicine.models.TreatmentModel
 import kotlinx.coroutines.*
+import org.json.JSONObject.NULL
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -86,7 +86,7 @@ class TreatmentActivity : AppCompatActivity() {
         return call!!.isExecuted
     }
 
-    private fun treatmentAdding(symptomsId: Int, soundServerLinkId: Int): Boolean {
+    private fun treatmentAdding(symptomsId: Int, soundServerLinkId: Any): Boolean {
         val mService = Common.retrofitService
         val sPref = getSharedPreferences("User", MODE_PRIVATE)
         val call = mService.addTreatment(
@@ -210,22 +210,19 @@ class TreatmentActivity : AppCompatActivity() {
                 .setCancelable(false)
                 .setPositiveButton(getString(R.string.add_treatment)) { _: DialogInterface, _: Int ->
                     scope.launch {
-
                         val def = scope.asyncIO {
                             treatmentAdding(
                                 spinner.selectedItemPosition + 1,
-                                soundServerLinkId = 1
+                                soundServerLinkId = NULL
                             )
                         }
                         def.await()
                         load(sPref, scope, result, recyclerView, indicator)
                     }
-
                 }
                 .setNegativeButton(getString(R.string.cancel_btn)) { dialogInterface: DialogInterface, _: Int ->
                     dialogInterface.cancel()
                 }
-
             val alert3 = mDialogBuilder3.create()
             alert3.show()
 
@@ -233,7 +230,6 @@ class TreatmentActivity : AppCompatActivity() {
         mDialogBuilder4
             .setCancelable(false)
             .setPositiveButton(getString(R.string.add_conclusion)) { _: DialogInterface, _: Int ->
-
                 scope.launch {
                     val m: EditText = addConclusion.findViewById(R.id.conclusion_add_text_field)
 
@@ -307,7 +303,7 @@ class TreatmentActivity : AppCompatActivity() {
                         this@TreatmentActivity.position = position
                         if (sPref.getString("user_type", "") == "patient") {
                             loadSymptomsName(addConclusion)
-                            alert1.show()
+                            alert2.show()
                         }
                     }
                 })
