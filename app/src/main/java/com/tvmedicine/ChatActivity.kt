@@ -6,6 +6,8 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.animation.OvershootInterpolator
 import android.widget.TextView
@@ -31,6 +33,7 @@ class ChatActivity : AppCompatActivity() {
     var numOfMessageWithSound = mutableListOf<Int?>()
     private var viewSize: Int = 0
     private var messageDate = ""
+    val itemCount: Int = 0
     lateinit var recyclerView: RecyclerView
     val scope = CoroutineScope(Dispatchers.Main + Job())
     var result: List<MessagesModel?>? = null
@@ -59,8 +62,6 @@ class ChatActivity : AppCompatActivity() {
         println("here")
         recyclerView = findViewById(R.id.rv_view2)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        val itemCount: Int?
-        itemCount = 0
         val sendMessageButton = findViewById<FloatingActionButton>(R.id.send_message_button)
         sPref = getSharedPreferences("User", MODE_PRIVATE)
        attachButton = findViewById<FloatingActionButton>(R.id.attach_button).apply {
@@ -74,18 +75,6 @@ class ChatActivity : AppCompatActivity() {
        }
         audioButton = findViewById<View>(R.id.start_button).apply {
             setOnClickListener { onSendMessageButtonClicked() }
-        }
-        var playing = false
-        playButton = findViewById<View>(R.id.play_button).apply {
-            setOnClickListener {
-                playing = if (!playing) {
-                    player.play("12","1")
-                    true
-                } else {
-                    player.stop()
-                    false
-                }
-            }
         }
         sendMessageButton.setOnClickListener {
             scope.launch {
@@ -251,7 +240,7 @@ class ChatActivity : AppCompatActivity() {
                         {
                         data.add(i,MessageItemUi("${result1!![i]?.text}\n${result1!![i]?.sound_server_link}",Color.WHITE,result1!![i]?.user_type.toUserType()))
                             numOfMessageWithSound.add(result1!![i]?.message_id)
-                            data_string[i] = result1!![i]?.message_id.toString()
+                            //data_string[i] = result1!![i]?.message_id.toString()
                             }
                         else{
                             data.add(i,MessageItemUi("${result1!![i]?.text}",Color.WHITE,result1!![i]?.user_type.toUserType()))
@@ -266,5 +255,17 @@ class ChatActivity : AppCompatActivity() {
         private const val MAX_RECORD_AMPLITUDE = 32768.0
         private const val VOLUME_UPDATE_DURATION = 100L
         private val interpolator = OvershootInterpolator()
+    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.app_bar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.refresh_button -> load(scope, result, recyclerView,itemCount)
+        }
+        return true
     }
 }
