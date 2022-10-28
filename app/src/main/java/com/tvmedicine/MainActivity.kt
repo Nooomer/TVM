@@ -1,6 +1,7 @@
 package com.tvmedicine
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
